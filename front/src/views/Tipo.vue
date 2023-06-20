@@ -231,7 +231,13 @@ div
                 await this.axios.put('http://localhost:1081/registroCategoriaDespesas/edit', this.despesasCategoryEdit ).then(response => {
                     if(response.status === 200) {
                         this.centerDialogVisible = false;
-                        this.despesasCategoryEdit = {};
+                        this.despesasCategoryEdit = {
+                            id: '',
+                            name: '',
+                            tipo: {
+                                id:null
+                            }
+                        };
                         this.$notify({
                             title: 'Sucesso!',
                             message: 'Registro Editado!',
