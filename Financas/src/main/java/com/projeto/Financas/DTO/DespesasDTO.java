@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,8 +21,7 @@ public class DespesasDTO {
     private Short id;
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<ListagemDespesas> listagemDespesas;
-    Calendar calendar = Calendar.getInstance();
-    private int ano = calendar.get(Calendar.YEAR);
+    private Date calendar;
     private String mes;
     private Double total;
     private Double entrada;

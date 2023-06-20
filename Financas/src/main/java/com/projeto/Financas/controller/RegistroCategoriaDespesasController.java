@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("registroCategoriaDespesas/")
@@ -20,7 +21,7 @@ public class RegistroCategoriaDespesasController {
     @Autowired
     private RegistroCategoriaDespesasService registroCategoriaDespesasService;
     @Autowired
-    private static   CategoriaDespesasRepository categoriaDespesasRepository;
+    private static  CategoriaDespesasRepository categoriaDespesasRepository;
 
     public RegistroCategoriaDespesasController(RegistroCategoriaDespesasService registroCategoriaDespesasService, CategoriaDespesasRepository categoriaDespesasRepository) {
         this.registroCategoriaDespesasService = registroCategoriaDespesasService;
@@ -55,6 +56,16 @@ public class RegistroCategoriaDespesasController {
         } catch (DomainException e) {
             throw e;
         }
+    }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @GetMapping("listarFindById/{id}")
+    public Optional<CategoriaDespesas> getListById(@PathVariable Short id) throws DomainException {
+        if (Objects.isNull(id)) {
+            throw new DomainException("Id com valor nulo");
+        }
+            Optional<CategoriaDespesas> categoriaDespesas = categoriaDespesasRepository.findById(id);
+            return categoriaDespesas;
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")

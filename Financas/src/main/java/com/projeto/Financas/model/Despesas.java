@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,8 +26,7 @@ public class Despesas {
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<ListagemDespesas> listagemDespesas;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone="GMT-3")
-    Calendar calendar = Calendar.getInstance();
-    private int ano = calendar.get(Calendar.YEAR);
+    private Date calendar;
     @Column(nullable = false)
     private String mes;
     private Double total;

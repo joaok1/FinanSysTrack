@@ -49,6 +49,7 @@ public class DespesasService {
             }
             Despesas despesas = new Despesas();
             Optional<Usuario> usuario = usuarioRepository.findById(despesasDTO.getUsuario());
+            despesas.setCalendar(despesasDTO.getCalendar());
             despesas.setUsuario(usuario.get());
             despesas.setMes(despesasDTO.getMes());
             despesas.setEntrada(despesasDTO.getEntrada());

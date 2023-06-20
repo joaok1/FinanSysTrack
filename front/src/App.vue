@@ -1,32 +1,36 @@
 <template lang="pug">
-div(style="display:flex;")
-  el-col(:span="2")
-    h2(style="color:#fff; font-weight:bolder; margin-top:2.5rem; text-align:center;")
-      <span style ="color:red">Miranda</span><span style ="color:#fff">Dev</span>
-    div.navbar
-      el-row
-        div(@click='despesas()' :class="{ active: $route.path === '/Despesas' || $route.path ===  '/Relatorio' || $route.path ===  '/RegistroDespesas' }").rotate
-          el-button(type='text')
-            i(class='el-icon-s-data' :class="[$route.path === '/Despesas' || '/Relatorio' || '/RegistroDespesas' ? 'active' : 'activeRouter']")
-            span(:class="[$route.path === '/Despesas' || '/relatorio' || '/RegistroDespesas' ? 'active' : 'activeRouter']") {{' ' + 'Despesas.M'}}
-      el-row
-        div(@click='financiamento' :class="{ active: $route.path === '/financiamento' || $route.path === '/Quitacao' || $route.path === '/Registrofinanciamentos'}").rotate
-          el-button(type='text')
-            i(class='el-icon-wallet' :class="[$route.path === '/financiamento' ? 'active' : 'activeRouter']")
-            span(:class="[$route.path === '/financiamento' ? 'active' : 'activeRouter']") {{' ' + 'Controle.Fin'}}
-  el-col(:span="22")
-    div.dashboard
-      <router-view />
+div
+  div(style="display:flex;")
+    el-col(:span="2")
+      h2(style="color:#fff; font-weight:bolder; margin-top:2.5rem; text-align:center;")
+        <span style ="color:red">Miranda</span><span style ="color:#fff">Dev</span>
+      div.navbar
+        el-row
+          div(@click='despesas()' :class="{ active: $route.path === '/Despesas' || $route.path ===  '/relatorio' || $route.path ===  '/RegistroDespesas' || $route.path ===  '/Categorias' }").rotate
+            el-button(type='text')
+              i(style="font-weight:bold; color:#fff; font-size:14px;",class='el-icon-s-data' )
+              span(style="font-weight:bold; color:#fff; font-size:14px;") {{' ' + 'Home.Expenses'}}
+        el-row
+          div(@click='financiamento' :class="{ active: $route.path === '/financiamento' || $route.path === '/Quitacao' || $route.path === '/Registrofinanciamentos'}").rotate
+            el-button(type='text')
+              i(style="font-weight:bold; color:#fff; font-size:14px;",class='el-icon-wallet')
+              span(style="font-weight:bold; color:#fff; font-size:14px;") {{' ' + 'Home.Financing '}}
+    el-col(:span="22")
+      div.dashboard
+        <router-view />
+
 </template>
   
   <script>
   import { mapActions } from 'vuex'
   import DashBoard from './views/DashBoard.vue'
+  import Footer from "./components/Footer.vue"
   
   export default {
     name: 'app',
     components: {
       DashBoard,
+      Footer
       },
       data() {
         return {
@@ -91,11 +95,6 @@ div(style="display:flex;")
       despesas() {
         this.$router.push({
           name:'Despesas',
-        })
-      },
-      financiamento() {
-        this.$router.push({
-          name:'financiamento'
         })
       },
       financiamento() {
