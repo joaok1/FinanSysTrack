@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template lang="pug">
 div   
-    <el-tabs v-model="activeName">
+    //<el-tabs v-model="activeName">
         <el-tab-pane label="DashBoard">
             span(slot="label")
                 i(class="el-icon-date" style="color:#fff; font-size:16px; margin-left:10px;") DashBoard

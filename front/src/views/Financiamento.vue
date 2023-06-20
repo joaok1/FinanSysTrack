@@ -1,20 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template lang="pug">
 div   
-    <el-tabs v-model="activeName">
-        <el-tab-pane >
-            span(slot="label")
-                i(class="el-icon-date" style="color:#fff; font-size:16px; margin-left:10px;") DashBoard
-        </el-tab-pane>
-        <el-tab-pane label="Config"> 
-            span(slot="label") 
-                i(class="el-icon-edit"  style="color:#fff; font-size:16px;") Registro de baixas
-        </el-tab-pane>
-        <el-tab-pane label="Role">
-            span(slot="label") 
-                i(class="el-icon-document-add"  style="color:#fff; font-size:16px;") Cadastro
-        </el-tab-pane>
-    </el-tabs>
-        <router-view />
+    <router-view />
 </template>
 <script>
 import FinanciamentoDashBoard from '@/views/FinanciamentoDashBoard.vue';

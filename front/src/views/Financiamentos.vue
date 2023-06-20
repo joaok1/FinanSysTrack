@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template lang="pug">
 div.display(style="padding-top:2.5rem")
     div(style="display:flex; position:relative; align-items:center; justify-content:center")
@@ -174,6 +175,7 @@ div.display(style="padding-top:2.5rem")
 import vMask from 'v-mask'
 import DataTable from '@/components/DataTableFin.vue'
 export default{
+    // eslint-disable-next-line vue/multi-word-component-names
     name: 'financiamentos',
     components: {
         DataTable,

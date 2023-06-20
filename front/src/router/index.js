@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DashBoard from '@/views/DashBoard.vue'
 import Relatorio from '@/views/relatorio.vue'
-import RegistroDespesas from '@/views/RegistroDespesas.vue'
 import Financiamento from '@/views/Financiamento.vue'
 import FinanciamentoDashBoard from '@/views/FinanciamentoDashBoard.vue'
 import Quitacao from '@/views/Quitacao.vue'
@@ -14,28 +13,23 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '',
-    name: 'despesas',
+    path: '/',
+    name: 'Despesas',
     component: Despesas,
     children: [
       {
-        path: '/Despesas',
+        path: '/',
         name: 'Despesas',
         component: DashBoard,
       },
       {
         path: '/Relatorio',
-        name: 'relatorio',
+        name: 'Relatorio',
         component: Relatorio,
       },
       {
         path: '/RegistroDespesas',
-        name: 'registroDespesas',
-        component: RegistroDespesas,
-      },
-      {
-        path: '/Categorias',
-        name: 'categorias',
+        name: 'RegistroDespesas',
         component: Categorias,
       }
     ]
