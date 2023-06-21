@@ -6,7 +6,6 @@ import Financiamento from '@/views/Financiamento.vue'
 import FinanciamentoDashBoard from '@/views/FinanciamentoDashBoard.vue'
 import Quitacao from '@/views/Quitacao.vue'
 import Financiamentos from '@/views/Financiamentos.vue'
-import Despesas from '@/views/Despesas.vue'
 import Categorias from '@/views/Tipo.vue'
 
 Vue.use(VueRouter)
@@ -15,7 +14,7 @@ const routes = [
   {
     path: '/',
     name: 'Despesas',
-    component: Despesas,
+    component: DashBoard,
     children: [
       {
         path: '/',

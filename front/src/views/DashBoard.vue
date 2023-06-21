@@ -1,66 +1,146 @@
 <template lang="pug">
 div
-  div
-      el-dialog.border(title="" :visible.sync="dialogVisible" width="30%")
-          span.span Deseja excluir este registro ?
-          span(slot="footer" class="dialog-footer")
-            div.justify
-              div
-                el-button.bottomDialog(@click="closeModal") Cancelar
-              div
-                el-button.bottomDialog(type="primary" @click="deleteId"  style='color: #fff') Confirmar
-      el-row(style="margin-top: 1rem")
-        div.card
-          div.widthCard
-              el-card(style='border-radius:20px').card1
+  div(style="display:flex; align-items:center;")
+    el-col(:span="11")
+      div(style="position:relative; display:flex; padding-left:20px; padding-top:10px; flex-wrap:wrap;")
+        el-row(style="margin-top: 1rem")
+          div.card
+            div.widthCard
+                el-card(style='border-radius:20px').card1
+                  el-row
+                    label.labelCard Entrada
+                  el-row
+                    label.labelCard {{this.listCard && this.listCard.entrada ? this.listCard.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0' }}
+            div.widthCard
+                el-card(style='border-radius:20px').card2
+                  el-row
+                    label.labelCard Gastos
+                  el-row
+                    label.labelCard {{this.listCard && this.listCard.total ? this.listCard.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
+            div.widthCard
+              el-card(style='border-radius:20px').card3
                 el-row
-                  label.labelCard Entrada
+                  label.labelCard Saldo
                 el-row
-                  label.labelCard {{this.listCard && this.listCard.entrada ? this.listCard.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0' }}
-          div.widthCard
-              el-card(style='border-radius:20px').card2
-                el-row
-                  label.labelCard Gastos
-                el-row
-                  label.labelCard {{this.listCard && this.listCard.total ? this.listCard.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
-          div.widthCard
-            el-card(style='border-radius:20px').card3
-              el-row
-                label.labelCard Saldo
-              el-row
-                label.labelCard {{this.listCard && this.listCard.saldo ? this.listCard.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
-          div.widthCard
-              el-card(style='border-radius:20px').card4
-                el-row
-                  label.labelCard Mês referência
-                el-row
-                  label.labelCard {{this.listCard && this.listCard.mes ? this.listCard.mes : '-'}}
-      el-row.row
-        el-card.flex
-          el-select(v-model="date" clearable placeholder="Selecione o ano" size='mini')
-            el-option(
-              v-for="listAno in ano"
-              :key="listAno.value"
-              :label="listAno.label"
-              :value="listAno.value")
-          el-button.justifyBottom(type="primary" icon="el-icon-edit" @click='graphic' size='mini' ) Pesquisar
-          el-col(:span='24')
-            apexchart(type="bar" height="120%" width="100%" :options="chartOptions" :series="series")
+                  label.labelCard {{this.listCard && this.listCard.saldo ? this.listCard.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
+            div.widthCard
+                el-card(style='border-radius:20px').card4
+                  el-row
+                    label.labelCard Mês referência
+                  el-row
+                    label.labelCard {{this.listCard && this.listCard.mes ? this.listCard.mes : '-'}}
+    el-col(:span="11")
+      div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
+        el-button(type="primary" @click="centerDialogResgistroDespesas = true") Registrar despesas
+        el-button(type="primary" @click="centerDialog = true") Relatorio
+        el-dropdown(style="margin-left:10px;")
+          el-button(type="primary")
+            Dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
+          el-dropdown-menu(style="width:200px; align-items:center; text-align:center;")
+            el-button(type="text" @click="centerDialog = true") Cadastrar Despesa
+            el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
+  //Inserção das categorias//
+  el-dialog(title="Incluir depesa.", :visible.sync="centerDialog", width="30%", center,:before-close="handleClose")
+        div(style="padding:10px")
+            label(style="font-size:14px; margin-right:10px; font-weight:bold;") Digite o nome da despesa:
+            el-input(v-model="despesasCategory.name", size="small" placeholder="Digite um nome" style="width:215px")
+        div(style="padding:10px")
+            label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
+            el-select(v-model="despesasCategory.tipo",clearable,filterable ,style="width:200px", size="small")
+                el-option(
+                    v-for="select in listaTipo"
+                    :key="select.id"
+                    :label="select.name"
+                    :value="select.id"
+                )
+        
+        <span slot="footer" class="dialog-footer">
+            el-button(@click="centerDialog = false") Cancelar
+            el-button(type="primary" @click="despesasCategoryByTipo()") Confirmar
+        </span>
+  //Edição
+  el-dialog(title="Editar depesa", :visible.sync="centerDialogVisible", width="30%", center,:before-close="handleClose")
+      div(style="padding:10px")
+          label(style="font-size:14px; margin-right:10px; font-weight:bold;") Digite o nome da despesa:
+          el-input(v-model="despesasCategoryEdit.name", size="small" placeholder="Digite um nome" style="width:215px")
+      div(style="padding:10px")
+          label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
+          el-select(v-model="despesasCategoryEdit.tipo",clearable,filterable ,style="width:200px", size="small")
+              el-option(
+                  v-for="select in listaTipo"
+                  :key="select.id"
+                  :label="select.name"
+                  :value="select.id"
+              )
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">Cancelar</el-button>
+          <el-button type="primary" @click="despesasEdit()">Confirmar</el-button>
+      </span>
+  //Tabela de edição categoria
+  el-dialog(title="Editar depesa", :visible.sync="centerDialogVisibleTable", width="50%", center,:before-close="handleClose")
+    el-card
+      div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
+          div
+              label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Listagem das despesas
+          div
+          el-button(type="primary" @click="centerDialog = true") Registrar despesas
+      data-table(
+          :pageable='pageable'
+          :data="listaData.content",
+          :columns='columns',
+          @atualizarTabela='atualizarTabela',
+          :acoes='acoes',
+          @editar="editar"
+      )
+  //Registro de despesas
+  el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Inserir despesa",:before-close="handleClose")
+    el-card(style="margin-right:10px; padding:10px;")
+      div(style="display:flex; padding:10px;")
         div
-            el-col(:span='12')
-              el-card.flex
-                apexchart.marginRadar(type="radar" height="230%"  width="100%" :options="chartOptionsRadar" :series="seriesradar")
-            el-col(:span='12')
-              el-card.flex
-                apexchart(type="donut" width="100%" height="140%" :options="DonutOptions" :series="seriesDonut")
-            el-col(:span='12')
-              el-card.flex
-                apexchart(type="area" height="100%" width="100%" :options="chartOptionsline" :series="series")
+          span Insira a data:
+          el-date-picker( type="date", placeholder="Insira a data da despesa", v-model="despesas.calendar",size="small", style="width: 100%;")
+        div
+          div(id="chart")
+            apexchart(type="radialBar" :options="chartOptions" :series="series")
+        div
+          span Insira o valor recebido:
+          el-input-number(v-model="despesas.entrada" :min="0" size="small" style="width:100%")
+      div(style="display:flex; padding:10px;")
+        div
+          span {{ despesas.entrada }}
+        div
+          span {{ saida }}
+        div
+          span {{ saldo }}
+      div(style="display:flex; align-items:center;")
+        div(style="padding:10px")
+          label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
+          el-select(v-model="despesaId",clearable,filterable ,style="width:100%", size="small")
+            el-option(
+                v-for="selectCategoria in listaCategoria"
+                  :key="selectCategoria.id"
+                  :label="selectCategoria.name"
+                  :value="selectCategoria.id"
+            )
+        div(style="padding:10px")
+            label(style="font-size:14px; margin-right:10px;font-weight:bold;") Insira o valor da despesa
+            el-input-number(v-model="valorDespesa"  :min="0" size="small" style="width:100%")
+        div(style="padding:10px; align-items:center; margin-top:0.5rem;")
+            el-button(type="primary", @click="mountedDespesas()") Inserir
+      div
+        data-table(
+          :data="arrayDespesa",
+          :columns='columnsDesp',
+          :acoes='acoesDespesas',
+          @excluir="excluir"
+        )
+      div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px;")
+          el-button(type="primary", @click="inserirDespesas()") Salvar
 </template>
-  <script>
+<script>
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
-  
+
   export default {
     name: 'DashBoard',
     components: {
@@ -69,136 +149,140 @@ div
     },
     data() {
       return {
-        seriesradar:[
-        {
-            name: 'Entrada',
-            data: [0]
+        valorDespesa:null,
+        arrayDespesa:[],
+        despesaId:null,
+        listCard:{
+          entrada:null,
+          total:null,
+          saldo:null,
+          mes:null
         },
-          {
-            name: 'Saída',
-            data: [1]
-          }],
-          chartOptionsRadar: {
-            colors : ['#00FF00','#ff0230'],
+        fileList: [{
+                name: 'food.jpeg',
+                url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }, {
+            name: 'food2.jpeg',
+            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }],
+        series: [76],
+        chartOptions: {
             chart: {
-              foreColor: '#fff',
-              background: {
-                color: '#fff'
-              },
-              
-              height: 350,
-              type: 'radar',
-              colors: '#fff',
-              dropShadow: {
-                enabled: true,
-                blur: 1,
-                left: 1,
-                top: 1
-              },
+                type: 'radialBar',
+                offsetY: -20,
+                sparkline: {
+                    enabled: true
+                }
             },
-            title: {
-              text: 'Relatório anual',
-              style :{
-                color: '#fff',
-                fontSize:  '14px',
-                fontWeight:  'bold'
-              }
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5, // margin is in pixels
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
+                    }
+                }
             },
-            stroke: {
-              width: 2,
-              colors: ['#00FF00','#ff0230']
+            grid: {
+                padding: {
+                    top: -10
+                }
             },
             fill: {
-              opacity: 0.1,
-              colors: ['#fff']
-            },
-            markers: {
-              size: 0
-            },
-            xaxis: {
-              categories : []
-            }
-          },
-        selectAno: [],
-        date: null,
-        ano : [
-        {
-          label: 2023,
-          value: 2023
-        }
-        ],
-        chartOptionsline: {
-          title: {
-              text: 'Relatório Mensal',
-              style :{
-                color: '#fff',
-                fontSize:  '14px',
-                fontWeight:  'bold'
-              }
-            },
-          colors : ['#00FF00','#ff0230'],
-          chart: {
-            fontFamily: 'Bolder, Arial, sans-serif',
-            foreColor: '#fff',
-            toolbar: {
-                    show: true
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
                 },
-            grid: {
-              row: {
-                colors: ['#f3f3f3', 'transparent'],
-                opacity: 0.2
-              },
             },
-            height: 350,
-            type: 'line',
-            zoom: {
-              enabled: true
-            }
-          },
-          xaxis: {
-            categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul','Ago','Set','Out','Nov','Dez'],
-          },
-          yaxis: {
-                labels: {
-                show: true,
-                align: 'right',
-                minWidth: 0,
-                maxWidth: 100,
-                style: {
-                    colors: [],
-                    fontSize: '10px',
-                    fontFamily: 'Helvetica, Arial, sans-serif',
-                    fontWeight: 400,
-                    cssClass: 'apexcharts-yaxis-label',
+            labels: ['Average Results'],
+        },
+        centerDialogResgistroDespesas:false,
+        despesas:{
+          listagemDespesas:[
+              {
+                despesasCategory:{
+                  id:null
                 },
-                offsetX: 0,
-                offsetY: 0,
-                rotate: 0,
-                formatter: (value) => { 
-                  return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) 
-                }
+                valor:null,
+                despesas:null
               }
-          },
-          tooltip: {
-                y: {
-                  formatter: function(value) {
-                    return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                  }
-                }
-              },
-          dataLabels: {
-              enabled: false
-            }
+            ],
+          calendar:null,
+          mes:null,
+          total:null,
+          entrada:null,
+          saldo:null,
+          usuario:null
         },
-        dash: [],
-        page: null,
-        filtro: {
-          pagina: 0
+        centerDialogVisibleTable:false,
+        form: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
         },
+        listaDataById:{
+          name:null,
+          tipo:{
+              id:null,
+              name:null
+          }
+        },
+        centerDialog:false,
+        data:null,
+        despesasCategoryEdit:{
+          id:null,
+          name:null,
+          tipo:null
+        },
+        centerDialogVisible:false,
+        bootbox:null,
+        despesasCategory:{
+          name:null,
+          tipo:{},
+          usuario:null
+        },
+        listaData:{},
         pageable: {},
-        listaData: {},
-        donut: [],
-        editarFinanca: null,
+        listaTipo:{},
+        page:null,
+        acoesDespesas: [
+          {
+            text: 'Excluir',
+            codigo: 'EXCLUIR',
+            icon: 'el-icon-trash'
+          },
+          {
+          }
+        ],
         acoes: [
           {
             text: 'Editar',
@@ -206,440 +290,182 @@ div
             icon: 'el-icon-edit'
           },
           {
-            text: 'Excluir',
-            codigo: 'EXCLUIR',
-            icon: 'el-icon-delete'
           }
         ],
+        listaCategoria:null,
         columns: [
           {
-            label: 'Data',
-            prop: 'calendar',
-            width: '120px',
-            formatter: ({ calendar }) => calendar || '-'
+            label:'Nome',
+            prop: 'name',
           },
           {
-            label: 'Bc Digio',
-            prop: 'bancoDigio',
-            width: '120px',
-            formatter: ({ bancoDigio }) => bancoDigio || '-'
-          },
-          {
-            label: 'Bc Bradesco',
-            prop: 'bancoBradesco',
-            width: '120px',
-            formatter: ({ bancoBradesco }) => bancoBradesco || '-'
-          },
-          {
-            label: 'Bc Bv',
-            width: '120px',
-            prop: 'bancoBv',
-            formatter: ({ bancoBv }) => bancoBv || '-'
-          },
-          {
-            label: 'Padaria',
-            width: '120px',
-            prop: 'padaria',
-            formatter: ({ padaria }) => padaria || '-'
-          },
-          {
-            label: 'Água',
-            prop: 'agua',
-            width: '120px',
-            formatter: ({ agua }) => agua || '-'
-          },
-          {
-            label: 'Bc Brasil',
-            width: '110px',
-            prop: 'bancoBrasil',
-            formatter: ({ bancoBrasil }) => bancoBrasil || '-'
-          },
-          {
-            label: 'Mei',
-            prop: 'mei',
-            width: '120px',
-            formatter: ({ mei }) => mei || '-'
-          },
-          {
-            label: 'Faculdade',
-            width: '100px',
-            prop: 'faculdade',
-            formatter: ({ faculdade }) => faculdade || '-'
-          },
-          {
-            label: 'Vivo',
-            prop: 'vivo',
-            width: '100px',
-            formatter: ({ vivo }) => vivo || '-'
-          },
-          {
-            label: 'Carro',
-            prop: 'carro',
-            width: '100px',
-            formatter: ({ carro }) => carro || '-'
-          },
-          {
-            label: 'Internet',
-            prop: 'internet',
-            width: '100px',
-            formatter: ({ internet }) => internet || '-'
-          },
-          {
-            label: 'Entrada',
-            width: '120px',
-            prop: 'entrada',
-            formatter: ({ entrada }) => entrada || '-'
-          },
-          {
-            label: 'Total/Saída',
-            width: '120px',
-            prop: 'total',
-            formatter: ({ total }) => total || '-'
-          },
-          {
-            label: 'Mês referência',
-            prop: 'mes',
-            width: '140px',
-            formatter: ({ mes }) => mes || '-'
-          },
+            label:'Tipo',
+            prop: 'tipo.name',
+          }
         ],
-        listCard: {
-          saldo: null,
-          entrada: null,
-          total: null,
-          mes: null
-        },
-        delete: [],
-        idDeleteAcoes: null,
-        dialogVisible: false,
-        desserts: [],
-        lista: [],
-        series: [{
-            name: 'Entrada',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        columnsDesp: [
+          {
+            label:'Nome',
+            prop: 'despesasCategory.name',
           },
           {
-            name: 'Saída',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-          }],
-          chartOptions: {
-            title: {
-              text: 'Relatório Mensal',
-              style :{
-                color: '#fff',
-                fontSize:  '14px',
-                fontWeight:  'bold'
-              }
-            },
-            colors : ['#00FF00','#ff0230'],
-            chart: {
-              fontFamily: 'Bolder, Arial, sans-serif',
-              type: 'bar',
-              height: 350,
-              foreColor: '#fff'          
-            },
-            plotOptions: {
-              bar: {
-                borderRadius: 10,
-                horizontal: false,
-                columnWidth: '100%',
-                endingShape: 'rounded'
-              },
-            },
-            dataLabels: {
-              enabled: false,
-              style: {
-                color: '#fff'
-              }
-            },
-            stroke: {
-              show: true,
-              width: 2,
-              colors: ['transparent']
-            },
-            xaxis: {
-              categories: ['Janeiro','Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro','Novembro','Dezembro'],
-            },
-            tooltip: {
-              y: {
-                formatter: function(value) {
-                  return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                }
-              }
-            },
-            yaxis: {
-              labels: {
-              show: true,
-              align: 'right',
-              minWidth: 0,
-              maxWidth: 100,
-              style: {
-                  colors: [],
-                  fontSize: '10px',
-                  fontFamily: 'Helvetica, Arial, sans-serif',
-                  fontWeight: 400,
-                  cssClass: 'apexcharts-yaxis-label',
-              },
-              offsetX: 0,
-              offsetY: 0,
-              rotate: 0,
-              formatter: (value) => { 
-                return value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) 
-              }
-            }
-            },
-            fill: {
-              opacity: 1
-            }
-            },
-        seriesDonut: [],
-            DonutOptions: {
-              title: {
-                text: 'Ultimo mês',
-                style :{
-                  color: '#fff',
-                  fontSize:  '12px',
-                  fontWeight:  'bold'
-                }
-              },
-              labels:['Faculdade','Internet','Carro','Vivo','Agua','Bradesco','Brasil','Bv','Digio','Mei','Padaria'],
-              chart: {
-                fontFamily: 'Helvetica, Arial, sans-serif',
-                type: 'donut',
-                foreColor: '#fff',
-              },
-              plotOptions: {
-                pie: {
-                  height:'90%',
-                  startAngle: -100,
-                  endAngle: 290,
-                  donut: {
-                    size: '70px',
-                      labels: {
-                        show:true,
-                          total: {
-                            show:true,
-                            label: 'Total',
-                            formatter: function (w) {
-                              return w.globals.seriesTotals.reduce((a, b) => {
-                                return a + b
-                              }, 0).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                            }
-                        }
-                    }
-                  }
-                }
-              },
-              dataLabels: {
-                enabled: true
-              },
-              fill: {
-                type: 'gradient',
-              },
-              legend: {
-                formatter: function(val, opts) {
-                  const series = opts.w.globals.series[opts.seriesIndex];
-                  if (series === undefined) {
-                    return val;
-                  }
-                  return val + " : " + series.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                }
-              },
-              responsive: [{
-                breakpoint: 480,
-                options: {
-                  chart: {
-                    width: 200,
-                    color: '#fff'
-                  },
-                  legend: {
-                    position: 'bottom'
-                  }
-                }
-              }]
-            }
+            label:'Valor',
+            prop: 'valor',
+          }
+        ]
       }
     },
     async mounted() {
-      this.Loader();
-      this.graphic();
-      window.dispatchEvent(new Event('resize'));
+        this.despesasByCategory();
+        this.tipo();
     },
     methods: {
-      atualizarTabela(newPage) {
-        this.page = this.listaData.pageable.pageNumber = newPage - 1;
-        this.Loader();
-      },
-  
-      async graphic() {
-        if (this.date === null) {
-          const date = new Date();
-          this.date = date.getFullYear();
-        }
-        //Gravando os dados no grafico de radar
-        const listaDashArea = await this.axios.get(`http://localhost:1081/despesasMensal/listarAno/${1}`);
-        this.seriesradar[0].data = listaDashArea.data.map(item => item.entrada);
-        this.seriesradar[1].data = listaDashArea.data.map(item => item.total);
-        listaDashArea.data.forEach(item => 
-          this.chartOptionsRadar.xaxis.categories.push(item.ano)
-        );
-        //Gravando os dados no grafico de barras e no grafico de linha
-        const listaDashBoard = await this.axios.get(`http://localhost:1081/despesasMensal/listar/${1}/${this.date}`);
-        const listaDashBoardSaida = await this.axios.get(`http://localhost:1081/despesasMensal/listar/${1}/${this.date}`);
-
-        this.entrada = listaDashBoard.data;
-        this.saida = listaDashBoardSaida.data;
-
-        this.series[0].data = [
-        this.entrada[0] = this.entrada[0] ? this.entrada[0].entrada : 0,
-        this.entrada[1] = this.entrada[1] ? this.entrada[1].entrada : 0,
-        this.entrada[2] = this.entrada[2] ? this.entrada[2].entrada : 0,
-        this.entrada[3] = this.entrada[3] ? this.entrada[3].entrada : 0,
-        this.entrada[4] = this.entrada[4] ? this.entrada[4].entrada : 0,
-        this.entrada[5] = this.entrada[5] ? this.entrada[5].entrada : 0,
-        this.entrada[6] = this.entrada[6] ? this.entrada[6].entrada : 0,
-        this.entrada[7] = this.entrada[7] ? this.entrada[7].entrada : 0,
-        this.entrada[8] = this.entrada[8] ? this.entrada[8].entrada : 0,
-        this.entrada[9] = this.entrada[9] ? this.entrada[9].entrada : 0,
-        this.entrada[10] = this.entrada[10] ? this.entrada[10].entrada : 0,
-        this.entrada[11] = this.entrada[11] ? this.entrada[11].entrada : 0,
-      ];
-      this.series[1].data = [
-        this.saida[0] = this.saida[0] ? this.saida[0].total : 0,
-        this.saida[1] = this.saida[1] ? this.saida[1].total : 0,
-        this.saida[2] = this.saida[2] ? this.saida[2].total : 0,
-        this.saida[3] = this.saida[3] ? this.saida[3].total : 0,
-        this.saida[4] = this.saida[4] ? this.saida[4].total : 0,
-        this.saida[5] = this.saida[5] ? this.saida[5].total : 0,
-        this.saida[6] = this.saida[6] ? this.saida[6].total : 0,
-        this.saida[7] = this.saida[7] ? this.saida[7].total : 0,
-        this.saida[8] = this.saida[8] ? this.saida[8].total : 0,
-        this.saida[9] = this.saida[9] ? this.saida[9].total : 0,
-        this.saida[10] = this.saida[10] ? this.saida[10].total : 0,
-        this.saida[11] = this.saida[11] ? this.saida[11].total : 0,
-      ];
-        window.dispatchEvent(new Event('resize'));
-      },
-  
-      async Loader() {
-        const lista = await this.axios.get('http://localhost:1081/financeiro/listar');
-        const listaData = await this.axios.get(`http://localhost:1081/financeiro/listarData/${1}?size=10&page=${this.page}&sort=calendar,desc`);
-        this.listaData = listaData.data;
-        const {empty, number,numberOfElements,pageable,totalElements} = this.listaData;
-        this.pageable = {
-          empty,
-          number,
-          numberOfElements,
-          pageable,
-          totalElements
-        }
-        this.lista = lista.data;
-        this.list = lista.data;
-        this.seriesDonut = [this.list[this.list.length - 1].faculdade, this.list[this.list.length - 1].internet, this.list[this.list.length - 1].carro, this.list[this.list.length - 1].vivo, this.list[this.list.length - 1].agua, this.list[this.list.length - 1].bancoBradesco, this.list[this.list.length - 1].bancoBrasil, this.list[this.list.length - 1].bancoBv,
-        this.list[this.list.length - 1].bancoDigio, this.list[this.list.length - 1].mei,
-        this.list[this.list.length - 1].padaria ];
-        this.listCard = this.list[this.list.length - 1];
-        this.listaData.content.map(row => {
-          if (row) {
-            row.agua =  row.agua.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.bancoBradesco =  row.bancoBradesco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.vivo =  row.vivo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.internet =  row.internet.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.carro =  row.carro.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.bancoBrasil =  row.bancoBrasil.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.bancoBv =  row.bancoBv.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.bancoDigio =  row.bancoDigio.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.faculdade =  row.faculdade.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.entrada =  row.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.mei =  row.mei.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.padaria =  row.padaria.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.total =  row.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-            row.saldo =  row.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-          }
-        })
-        window.dispatchEvent(new Event('resize'));
-        this.$emit('excluir')
-      },
-      search() {
-        this.mounted()
-        this.Loader();
-        this.deleteId();
-        window.dispatchEvent(new Event('resize'));
-      },
-      closeModal() {
-        this.dialogVisible = false;
-      },
-      excluir(data) {
-        this.dialogVisible = true;
-        this.idDeleteAcoes = data.id;
-      },
-      editar(data) {
-        this.data = data.id;
-        this.$router.push({
-          name: 'despesas',
-          params: {data}
-        })
-      },
-
-  async downloadPDF() {
-    try {
-      const response = await this.axios({
-        url: `http://localhost:1081/financeiro/relatorioDownload/${1}`,
-        method: 'GET',
-        responseType: 'blob',
-      });
-      const url = URL.createObjectURL(response.data);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'Relatorio Despesas.pdf';
-
-      link.click();
-    } catch (error) {
-      console.log(error);
-    }
-},
-
-
-      async deleteId() {
-        this.dialogVisible = false;
-        const loading = this.$loading({
-              lock: true,
-              text: 'Deletando registro',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 1.7)'
+      handleClose(done) {
+        this.$confirm('Deseja fechar o modal?')
+          .then(confirm =>{
+            done(confirm);
+          })
+          .catch(cancel =>{
+            cancel
           });
-          setTimeout(() => {
-              loading.close();
-              this.axios.delete(`http://localhost:1081/financeiro/delete/${this.idDeleteAcoes}`).then(response => {
+      },
+      atualizarTabela(newPage) {
+          this.page = this.listaData.pageable.pageNumber = newPage - 1;
+          this.tipo();
+      },
+      async tipo() {
+          const listaData = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/page/${1}?size=10&page=${this.page}&sort=data_cadastro,desc`);
+          this.listaData = listaData.data;
+          const {empty, number,numberOfElements,pageable,totalElements} = this.listaData;
+          this.pageable = {
+              empty,
+              number,
+              numberOfElements,
+              pageable,
+              totalElements
+          }
+          const listaTipo = await this.axios.get(`http://localhost:1081/despesasTipo/listar`);
+          this.listaTipo = listaTipo.data;
+      },
+      async despesasCategoryByTipo() {
+          this.despesasCategory.usuario = 1;
+          await this.axios.post('http://localhost:1081/registroCategoriaDespesas/inserir', this.despesasCategory ).then(response => {
               if(response.status === 200) {
+                  this.centerDialog = false
+                  this.despesasCategory = {};
                   this.$notify({
-                    title: 'Sucesso!',
-                    message: 'Registro deletado!',
-                    type: 'success'
-              })
-
-                  this.teste = response.data;
-                  this.Loader();
-                  this.graphic();
-                }
-              }).catch(response => {
-                  if(response.status !== 200) {
-                    this.$notify.error({
+                          title: 'Sucesso!',
+                          message: 'Registro salvo!',
+                          type: 'success'
+                      })
+              }
+          }).catch(response => {
+              if(response.status !== 200) {
+                  this.$notify.error({
                       title: 'Erro!',
-                      message: 'Erro ao deletar registro!',
+                      message: 'Erro ao salvar registro!',
+                  })
+              }
+          })
+          await this.tipo();
+      },
+      async editar(data){
+          this.despesasCategoryEdit = {
+              id: '',
+              name: '',
+              tipo: {
+                  id:null
+              }
+          };
+          this.data = data.id;
+          const listaData = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listarFindById/${this.data}`);
+          this.listaDataById = listaData.data;
+          this.despesasCategoryEdit.id = this.data;
+          this.despesasCategoryEdit.name = this.listaDataById.name;
+          this.despesasCategoryEdit.tipo = this.listaDataById.tipo.id;
+          this.centerDialogVisible = true;
+          await this.tipo();
+      },
+      async despesasEdit(){
+          await this.axios.put('http://localhost:1081/registroCategoriaDespesas/edit', this.despesasCategoryEdit ).then(response => {
+              if(response.status === 200) {
+                  this.centerDialogVisible = false;
+                  this.despesasCategoryEdit = {
+                      id: '',
+                      name: '',
+                      tipo: {
+                          id:null
+                      }
+                  };
+                  this.$notify({
+                      title: 'Sucesso!',
+                      message: 'Registro Editado!',
+                      type: 'success'
+                  });
+              }
+          }).catch(response => {
+              if(response.status !== 200) {
+                  this.$notify.error({
+                      title: 'Erro!',
+                      message: 'Erro ao editar registro!',
+                  })
+              }
+          })
+          await this.tipo();
+      },
+      //Inserção das despesas
+      async despesasByCategory() {
+          this.usuario = 1;
+          console.log(this.usuario)
+          const lista = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/${this.usuario}`);
+          this.listaCategoria = lista.data;
+      },
+      mountedDespesas() {
+        this.listaCategoria.map(x => {
+          if (this.despesaId === x.id) {
+            var names = x.name;
+            var desp = {
+              despesasCategory: {
+                id: this.despesaId,
+                name: names
+              },
+              valor: this.valorDespesa
+            };
+            this.arrayDespesa.push(desp);
+            this.arrayDespesa.length;
+          }
+        });
+      },
+      excluir(val){
+        const index = this.arrayDespesa.indexOf(val)
+        this.arrayDespesa.splice(index,1);
+      },
+      async inserirDespesas() {
+        console.log(this.despesas.calendar)
+        this.despesas.usuario = 1;
+        await this.axios.post('http://localhost:1081/despesas/inserir', this.despesas ).then(response => {
+            if(response.status === 200) {
+                this.centerDialog = false
+                this.despesas = {};
+                this.$notify({
+                        title: 'Sucesso!',
+                        message: 'Despesa registrada!',
+                        type: 'success'
                     })
-                  }
-              })
-          }, 1000);
+            }
+        }).catch(response => {
+            if(response.status !== 200) {
+                this.$notify.error({
+                    title: 'Erro!',
+                    message: 'Erro ao salvar registro!',
+                })
+            }
+        })
       }
     }
   }
-  
-    
   </script>
-  
   <style scoped>
-
   .card1{
     margin-right: 10px;
     margin-bottom: 10px;
@@ -680,79 +506,5 @@ div
     justify-content: center;
     align-items: center;
     display: flex;
-  }
-  
-  h3 {
-    margin: 40px 0 0;
-  }
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  .bar {
-  display: flex;
-  }
-  
-  .justifyBottom {
-    justify-content:flex-end;
-  }
-  .justify {
-    justify-content: space-between;
-    display: flex;
-  }
-  .flexTable {
-  background: #fff;
-  margin: 5px;
-  }
-  .flex {
-  margin: 5px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-width: 1px;
-  border-image: linear-gradient(to right, rgb(0rgb(255, 255, 255) 0), rgb(10, 0, 0));
-  border-image-slice: 1;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-  border-radius: 10px;
-  }
-  .grap {
-    margin-left: 10px;
-  }
-  .select {
-    margin-bottom: 2px;
-    margin-left: 5px;
-  }
-  .font {
-    font-size: 14px;
-    display: inline-flex;
-    }
-  .span {
-    font-style: bolder;
-    font-size: 18px;
-    color: black;
-  }
-  .footer{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: -1.5rem;
-  }
-  .panelTable {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .row {
-  height: 100%;
-  }
-  
-  .colTable {
-    margin-top: 15px;
-  }
-  .marginRadar {
-    padding-top: 10px;
-    margin-bottom: 10px;
   }
   </style>

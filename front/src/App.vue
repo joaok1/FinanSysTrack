@@ -9,42 +9,42 @@ div
             div(@click='despesas()' :class="{ active: $route.path === '/' || $route.path ===  '/Relatorio' || $route.path ===  '/RegistroDespesas' || $route.path ===  '/Categorias' }").rotate
               el-button(type='text')
                 i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class='el-icon-s-data' )
-                span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Home.Expenses'}}
+                span(style="color:#fff; font-size:18px;") {{' ' + 'Home.Expenses'}}
           el-row
             div(@click='financiamento' :class="{ active: $route.path === '/financiamento' || $route.path === '/Quitacao' || $route.path === '/Registrofinanciamentos'}").rotate
               el-button(type='text')
                 i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class='el-icon-wallet')
-                span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Home.Financing '}}
-    el-col(:span="2")
+                span(style="color:#fff; font-size:18px;") {{' ' + 'Home.Financing '}}
+    //el-col(:span="2")
       div.navbartwo
         div(style="justify-content:center; position:relative; align-items:center; text-align:center;" v-show="$route.path === '/' || $route.path ===  '/Relatorio' || $route.path ===  '/RegistroDespesas'")
           div(style="padding:10px" :class="{ active: $route.path === '/'}")
             el-button(type='text' @click="despesas()")
                 i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class='el-icon-s-data' )
-                span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'DashBoard'}}
+                span(style=" color:#fff; font-size:18px;") {{' ' + 'DashBoard'}}
           div(style="padding:10px" :class="{ active: $route.path === '/Relatorio'}")
             el-button(type='text' @click="relatorio()")
               i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class="el-icon-edit" )
-              span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Relatorio'}}
+              span(style=" color:#fff; font-size:18px;") {{' ' + 'Relatorio'}}
           div(style="padding:10px" :class="{ active: $route.path === '/RegistroDespesas'}")
             el-button(type='text' @click="registroDespesas()")
               i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class="el-icon-document-add" )
-              span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Cadastro'}}
+              span(style=" color:#fff; font-size:18px;") {{' ' + 'Cadastro'}}
 
         div(style="justify-content:center; position:relative; align-items:center; text-align:center;" v-show="$route.path === '/financiamento' || $route.path ===  '/Quitacao' || $route.path ===  '/Registrofinanciamentos'")
           div(style="padding:10px" :class="{ active: $route.path === '/financiamento'}")
             el-button(type='text' @click="financiamento()")
                 i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class='el-icon-s-data' )
-                span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'DashBoard'}}
+                span(style="color:#fff; font-size:18px;") {{' ' + 'DashBoard'}}
           div(style="padding:10px" :class="{ active: $route.path === '/Quitacao'}")
             el-button(type='text' @click="quitacao()")
               i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class="el-icon-edit" )
-              span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Regist.Baixas'}}
+              span(style="color:#fff; font-size:18px;") {{' ' + 'Regist.Baixas'}}
           div(style="padding:10px" :class="{ active: $route.path === '/Registrofinanciamentos'}")
             el-button(type='text' @click="registrofinanciamentos()")
               i(style="font-weight:bold; color:#fff; font-size:18px; justify-content:center; position:relative; display:flex; margin-bottom:5px;",class="el-icon-document-add" )
-              span(style="font-weight:bold; color:#fff; font-size:18px;") {{' ' + 'Cadastro'}}
-    el-col(:span="20")
+              span(style=" color:#fff; font-size:18px;") {{' ' + 'Cadastro'}}
+    el-col(:span="22")
       div.dashboard
         <router-view />
 
@@ -195,12 +195,11 @@ div
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     justify-content: center;
     max-width: 100%;
-    height: auto;
+    min-height: 910px;
     background-color: rgba(0, 0, 0, 0.5);
     margin-top: 0.5rem;
     margin-left: 20px;
     margin-right: 20px;
-
     border-radius: 20px;
   }
   #app {
@@ -265,13 +264,12 @@ div
   .active{
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
-    font-weight: bolder;
+
     font-size: 16px;
     border-radius: 10px;
   }
   .activeRouter{
     color: #fff;
-    font-weight: bolder;
     font-size: 16px;
   }
 
