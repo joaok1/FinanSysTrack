@@ -31,7 +31,7 @@ div
                     label.labelCard {{this.listCard && this.listCard.mes ? this.listCard.mes : '-'}}
     el-col(:span="11")
       div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
-        el-button(type="primary" @click="centerDialogResgistroDespesas = true") Registrar despesas
+        el-button(type="primary" @click="abrirModalDespesa()") Registrar despesas
         el-button(type="primary" @click="centerDialog = true") Relatorio
         el-dropdown(style="margin-left:10px;")
           el-button(type="primary")
@@ -332,12 +332,13 @@ div
     async mounted() {
         this.despesasByCategory();
         this.tipo();
+        window.dispatchEvent(new Event('resize'));
     },
     methods: {
       handleClose(done) {
         this.$confirm('Deseja fechar o modal?')
           .then(confirm =>{
-            done(confirm);
+            window.dispatchEvent(new Event('resize'));
             this.despesas = {
               listagemDespesas:[
                 {
@@ -355,6 +356,7 @@ div
               saldo: 0,
               usuario: null
             }
+            done(confirm);
           })
           .catch(cancel =>{
             cancel
@@ -451,6 +453,27 @@ div
           await this.tipo();
       },
       //Inserção das despesas
+      abrirModalDespesa(){
+        this.despesas = {
+          listagemDespesas:[
+              {
+                despesasCategory:{
+                  id:null
+                },
+                valor:null,
+                despesas:null
+              }
+            ],
+          calendar: null,
+          mes: null,
+          total: 0,
+          entrada:0,
+          saldo: 0,
+          usuario: null
+        }
+        window.dispatchEvent(new Event('resize'));
+        this.centerDialogResgistroDespesas = true
+      },
       async despesasByCategory() {
           this.usuario = 1;
           const lista = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/${this.usuario}`);
