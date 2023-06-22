@@ -442,8 +442,13 @@ div
                       type: 'success'
                   });
               }
-          }).catch(response => {
-              if(response.status !== 200) {
+          }).catch(error => {
+              if(error.response.data.message === "Este objeto não pode ser editado, já esta sendo utilizado.") {
+                this.$notify.error({
+                      title: 'Erro!',
+                      message: 'Este objeto não pode ser editado, já esta sendo utilizado!',
+                  })
+              } else {
                   this.$notify.error({
                       title: 'Erro!',
                       message: 'Erro ao editar registro!',
