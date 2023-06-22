@@ -51,7 +51,6 @@ public class DespesasService {
             Optional<Usuario> usuario = usuarioRepository.findById(despesasDTO.getUsuario());
             despesas.setCalendar(despesasDTO.getCalendar());
             despesas.setUsuario(usuario.get());
-            despesas.setMes(despesasDTO.getMes());
             despesas.setEntrada(despesasDTO.getEntrada());
             Double soma  = 0.0;
             for(ListagemDespesas list : despesasDTO.getListagemDespesas()) {

@@ -35,7 +35,7 @@ div
         el-button(type="primary" @click="centerDialog = true") Relatorio
         el-dropdown(style="margin-left:10px;")
           el-button(type="primary")
-            Dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
+            dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
           el-dropdown-menu(style="width:200px; align-items:center; text-align:center;")
             el-button(type="text" @click="centerDialog = true") Cadastrar Despesa
             el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria

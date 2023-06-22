@@ -27,8 +27,6 @@ public class Despesas {
     private List<ListagemDespesas> listagemDespesas;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone="GMT-3")
     private Date calendar;
-    @Column(nullable = false)
-    private String mes;
     private Double total;
     @Column(nullable = false)
     private Double entrada;
