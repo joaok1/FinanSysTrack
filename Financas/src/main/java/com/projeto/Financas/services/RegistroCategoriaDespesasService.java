@@ -39,6 +39,10 @@ public class RegistroCategoriaDespesasService {
         if (Objects.isNull(categoriaDespesasDTO.getTipo()) && Objects.isNull(categoriaDespesasDTO.getUsuario())) {
             throw new DomainException("Não foi possivel inserir os dados, á dados com valor nulo.");
         }
+        List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByName(categoriaDespesasDTO.getName());
+        if (Objects.nonNull(categoriaDespesasList)) {
+            throw new DomainException("Categoria já registrada!");
+        }
             CategoriaDespesas categoriaDespesas = new CategoriaDespesas();
 
             Optional<TipoDespesas> registroTipoDespesas = tipoDespesasRepository.findById(categoriaDespesasDTO.getTipo());

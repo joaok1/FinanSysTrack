@@ -150,6 +150,7 @@ div
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
 
+
   export default {
     name: 'DashBoard',
     components: {
@@ -371,11 +372,16 @@ div
                           type: 'success'
                       })
               }
-          }).catch(response => {
-              if(response.status !== 200) {
-                  this.$notify.error({
+          }).catch(error => {
+              if(error.response.data.message === "Categoria já registrada!") {
+                this.$notify.error({
                       title: 'Erro!',
-                      message: 'Erro ao salvar registro!',
+                      message: 'Despesa já registrada!',
+                  })
+              } else {
+                this.$notify.error({
+                      title: 'Erro!',
+                      message: 'Erro ao salvar despesa',
                   })
               }
           })

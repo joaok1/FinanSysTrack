@@ -16,4 +16,7 @@ public interface CategoriaDespesasRepository extends JpaRepository<CategoriaDesp
     List<CategoriaDespesas> findAllByUsuario(Short id);
     @Query(nativeQuery = true, value = "select * from registro_categoria_despesas where usuario = :id")
     Page<CategoriaDespesas> findAllByUsuarioPage(Pageable pageable, Short id);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM registro_categoria_despesas rcd WHERE rcd.name = UPPER(:name) OR rcd.name = LOWER(:name)")
+    List<CategoriaDespesas> findByName(String name);
 }
