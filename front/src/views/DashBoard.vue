@@ -105,13 +105,22 @@ div
         div
           span Insira o valor recebido:
           el-input-number(v-model="despesas.entrada" :min="0" size="small" style="width:100%")
-      div(style="display:flex; padding:10px;")
-        div
-          span {{ despesas.entrada }}
-        div
-          span {{ saida }}
-        div
-          span {{ saldo }}
+      div(style="display:flex; position:relative; justify-content:center;")
+        div(style="padding:10px;")
+          div(style="display:flex; position:relative; justify-content:center;")
+            span Valor de entrada
+          div
+            el-input-number(v-model="this.despesas.entrada" disabled="true")
+        div(style="padding:10px;")
+          div(style="display:flex; position:relative; justify-content:center;")
+            span Valor total dos gastos
+          div
+            el-input-number(v-model="saida" disabled="true")
+        div(style="padding:10px")
+          div(style="display:flex; position:relative; justify-content:center;")
+            span Saldo
+          div
+            el-input-number(v-model="saldo" disabled="true")
       div(style="display:flex; align-items:center;")
         div(style="padding:10px")
           label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
@@ -165,7 +174,7 @@ div
             name: 'food2.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }],
-        series: [76],
+        series: [0],
         chartOptions: {
             chart: {
                 type: 'radialBar',
@@ -175,6 +184,7 @@ div
                 }
             },
             plotOptions: {
+                max:null,
                 radialBar: {
                     startAngle: -90,
                     endAngle: 90,
@@ -233,9 +243,9 @@ div
             ],
           calendar:null,
           mes:null,
-          total:null,
-          entrada:null,
-          saldo:null,
+          total:0,
+          entrada:0,
+          saldo:0,
           usuario:null
         },
         centerDialogVisibleTable:false,
@@ -249,6 +259,8 @@ div
           resource: '',
           desc: ''
         },
+        saida:null,
+        saldo:null,
         listaDataById:{
           name:null,
           tipo:{
@@ -421,7 +433,7 @@ div
           this.listaCategoria = lista.data;
       },
       mountedDespesas() {
-        this.listaCategoria.map(x => {
+        this.listaCategoria.forEach(x => {
           if (this.despesaId === x.id) {
             var names = x.name;
             var desp = {
@@ -432,20 +444,46 @@ div
               valor: this.valorDespesa
             };
             this.arrayDespesa.push(desp);
-            this.arrayDespesa.length;
+            console.log(this.arrayDespesa.length);
+            this.saida = 0;
+            this.saldo = 0;
+            this.arrayDespesa.forEach(item => {
+              this.saida += item.valor
+              this.saldo = this.despesas.entrada - this.saida
+              this.despesas.saldo = this.saldo;
+              this.despesas.total = this.saida;
+            });
           }
         });
+        this.series.splice(0,1);
+        let final = (this.saida * 100) / this.despesas.entrada
+        this.series.push(final);
       },
-      excluir(val){
-        const index = this.arrayDespesa.indexOf(val)
-        this.arrayDespesa.splice(index,1);
+      excluir(val) {
+        const index = this.arrayDespesa.indexOf(val);
+        this.arrayDespesa.splice(index, 1);
+        this.saida = 0;
+        for (let ind = 0; ind < this.arrayDespesa.length; ind++) {
+          this.saida += this.arrayDespesa[ind].valor;
+        }
+        this.saldo = this.despesas.entrada - this.saida;
+        this.despesas.saldo = this.saldo;
+        this.despesas.total = this.saida;
+        let final = (this.saida * 100) / this.despesas.entrada
+        this.series.splice(0,1);
+        this.series.push(final);
       },
       async inserirDespesas() {
         console.log(this.despesas.calendar)
+        this.arrayDespesa.map(objec => {
+          this.despesas.listagemDespesas.push(objec);
+        })
+        this.despesas.listagemDespesas.splice(0,1);
+
         this.despesas.usuario = 1;
-        await this.axios.post('http://localhost:1081/despesas/inserir', this.despesas ).then(response => {
+        await this.axios.post('http://localhost:1081/despesas/adicionar', this.despesas ).then(response => {
             if(response.status === 200) {
-                this.centerDialog = false
+                this.centerDialogResgistroDespesas = false
                 this.despesas = {};
                 this.$notify({
                         title: 'Sucesso!',
