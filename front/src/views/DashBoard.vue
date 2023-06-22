@@ -484,12 +484,28 @@ div
         await this.axios.post('http://localhost:1081/despesas/adicionar', this.despesas ).then(response => {
             if(response.status === 200) {
                 this.centerDialogResgistroDespesas = false
-                this.despesas = {};
+                this.despesas = {
+                    listagemDespesas:[
+                        {
+                          despesasCategory:{
+                            id:null
+                          },
+                          valor:null,
+                          despesas:null
+                        }
+                      ],
+                    calendar: null,
+                    mes: null,
+                    total: 0,
+                    entrada:0,
+                    saldo: 0,
+                    usuario: null
+                }
                 this.$notify({
-                        title: 'Sucesso!',
-                        message: 'Despesa registrada!',
-                        type: 'success'
-                    })
+                  title: 'Sucesso!',
+                  message: 'Despesa registrada!',
+                  type: 'success'
+                })
             }
         }).catch(response => {
             if(response.status !== 200) {
