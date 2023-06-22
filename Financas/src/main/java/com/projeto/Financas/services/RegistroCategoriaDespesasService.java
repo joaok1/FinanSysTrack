@@ -40,7 +40,7 @@ public class RegistroCategoriaDespesasService {
             throw new DomainException("Não foi possivel inserir os dados, á dados com valor nulo.");
         }
         List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByName(categoriaDespesasDTO.getName());
-        if (Objects.nonNull(categoriaDespesasList)) {
+        if (categoriaDespesasList.size() > 0) {
             throw new DomainException("Categoria já registrada!");
         }
             CategoriaDespesas categoriaDespesas = new CategoriaDespesas();
