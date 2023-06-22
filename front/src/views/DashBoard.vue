@@ -95,6 +95,7 @@ div
   //Registro de despesas
   el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Inserir despesa",:before-close="handleClose")
     el-card(style="margin-right:10px; padding:10px;")
+      el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
       div(style="display:flex; padding:10px;")
         div
           span Insira a data:
@@ -337,6 +338,23 @@ div
         this.$confirm('Deseja fechar o modal?')
           .then(confirm =>{
             done(confirm);
+            this.despesas = {
+              listagemDespesas:[
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
+              calendar: null,
+              mes: null,
+              total: 0,
+              entrada:0,
+              saldo: 0,
+              usuario: null
+            }
           })
           .catch(cancel =>{
             cancel
@@ -366,6 +384,7 @@ div
               if(response.status === 200) {
                   this.centerDialog = false
                   this.despesasCategory = {};
+                  this.despesasByCategory();
                   this.$notify({
                           title: 'Sucesso!',
                           message: 'Registro salvo!',
@@ -434,7 +453,6 @@ div
       //Inserção das despesas
       async despesasByCategory() {
           this.usuario = 1;
-          console.log(this.usuario)
           const lista = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/${this.usuario}`);
           this.listaCategoria = lista.data;
       },
