@@ -1,3 +1,5 @@
+Drop table listagem_despesas;
+
 CREATE TABLE listagem_despesas (
   id SMALLINT NOT NULL AUTO_INCREMENT,
   usuario_id SMALLINT NOT NULL,
@@ -9,8 +11,6 @@ CREATE TABLE listagem_despesas (
   FOREIGN KEY (registro_categoria_despesas_id) REFERENCES registro_categoria_despesas(id),
   FOREIGN KEY (despesas) REFERENCES despesas(id)
 );
-CREATE TABLE listagem_despesas_seq (
-  next_val BIGINT
-);
+
 
 

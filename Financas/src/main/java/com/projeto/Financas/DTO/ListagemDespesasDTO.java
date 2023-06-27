@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.projeto.Financas.model.CategoriaDespesas;
 import com.projeto.Financas.model.Despesas;
 import com.projeto.Financas.model.Usuario;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

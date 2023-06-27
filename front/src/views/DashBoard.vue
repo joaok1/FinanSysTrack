@@ -77,7 +77,7 @@ div
           <el-button type="primary" @click="despesasEdit()">Confirmar</el-button>
       </span>
   //Tabela de edição categoria
-  el-dialog(title="Editar depesa", :visible.sync="centerDialogVisibleTable", width="50%", center,:before-close="handleClose")
+  el-dialog(title="Editar depesa", :visible.sync="centerDialogVisibleTable", width="50%", center)
     el-card
       div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
           div

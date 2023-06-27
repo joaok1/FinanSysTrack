@@ -19,4 +19,6 @@ public interface CategoriaDespesasRepository extends JpaRepository<CategoriaDesp
 
     @Query(nativeQuery = true, value = "SELECT * FROM registro_categoria_despesas rcd WHERE rcd.name = UPPER(:name) OR rcd.name = LOWER(:name)")
     List<CategoriaDespesas> findByName(String name);
+    @Query(nativeQuery = true, value = "select * from registro_categoria_despesas where registro_categoria_despesas_id = :id")
+    List<CategoriaDespesas> findByCategoriaDespesa(Short id);
 }

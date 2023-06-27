@@ -6,6 +6,7 @@ import com.projeto.Financas.model.CategoriaDespesas;
 import com.projeto.Financas.model.TipoDespesas;
 import com.projeto.Financas.model.Usuario;
 import com.projeto.Financas.repository.CategoriaDespesasRepository;
+import com.projeto.Financas.repository.ListagemDespesasRepository;
 import com.projeto.Financas.repository.TipoDespesasRepository;
 import com.projeto.Financas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,19 @@ public class RegistroCategoriaDespesasService {
 
     private static CategoriaDespesasRepository categoriaDespesasRepository;
     @Autowired
+    private ListagemDespesasRepository listagemDespesasRepository;
+    @Autowired
     private TipoDespesasRepository tipoDespesasRepository;
     @Autowired
     private  UsuarioRepository usuarioRepository;
 
     @Autowired
     public RegistroCategoriaDespesasService(CategoriaDespesasRepository categoriaDespesasRepository,
-                                            UsuarioRepository usuarioRepository, TipoDespesasRepository tipoDespesasRepository) {
+        UsuarioRepository usuarioRepository, TipoDespesasRepository tipoDespesasRepository, ListagemDespesasRepository listagemDespesasRepository) {
             RegistroCategoriaDespesasService.categoriaDespesasRepository = categoriaDespesasRepository;
             this.usuarioRepository = usuarioRepository;
             this.tipoDespesasRepository = tipoDespesasRepository;
+            this.listagemDespesasRepository = listagemDespesasRepository;
     }
 
     public CategoriaDespesas inserirNovaCategoriaDespesas(RegistroCategoriaDespesasDTO categoriaDespesasDTO) throws DomainException {
@@ -100,7 +104,12 @@ public class RegistroCategoriaDespesasService {
         }
     }
 
-    public void deleteById(Short id) {
-        categoriaDespesasRepository.deleteById(id);
+    public void deleteById(Short id) throws DomainException {
+        List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByCategoriaDespesa(id);
+        if (categoriaDespesasList.size() > 0) {
+            throw new DomainException("Este registro ja esta sendo utilizado, não e possivel deletar.");
+        } else {
+            categoriaDespesasRepository.deleteById(id);
+        }
     }
 }

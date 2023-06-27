@@ -15,6 +15,7 @@ import java.util.Optional;
 public class PessoaService {
     @Autowired
     private static PessoaRepository pessoaRepository;
+
     @Autowired
     private static UsuarioRepository usuarioRepository;
 
@@ -55,6 +56,7 @@ public class PessoaService {
 
 
     public ResponseEntity<String> deleteById(Short id) {
+        pessoaRepository.deleteById(id);
         return ResponseEntity.ok("Deletado com sucesso");
     }
 }
