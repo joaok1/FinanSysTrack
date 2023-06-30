@@ -79,3 +79,4 @@ public class DespesasService {
 
     }
 }
+//dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez
