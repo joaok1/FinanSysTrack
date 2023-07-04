@@ -63,7 +63,7 @@ public class DespesasService {
             for (ListagemDespesas list :despesasDTO.getListagemDespesas()) {
                 ListagemDespesas listagemDespesas = new ListagemDespesas();
                 Optional<CategoriaDespesas> categoriaDespesasOptional = categoriaDespesasRepository.findById(list.getDespesasCategory().getId());
-                    if (categoriaDespesasOptional.isPresent()){
+                    if (!categoriaDespesasOptional.isPresent()){
                         throw new DomainException("Categoria de despesas invalido");
                     }
                     listagemDespesas.setDespesasCategory(categoriaDespesasOptional.get());

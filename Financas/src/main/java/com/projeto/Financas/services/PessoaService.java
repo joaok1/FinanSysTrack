@@ -41,10 +41,9 @@ public class PessoaService {
         pessoa.setEmail(pessoaDTO.getEmail());
 
         Usuario usuario = new Usuario();
-
+        usuario.setLogin(pessoaDTO.getCpf());
         usuario.setSenha(pessoaDTO.getUsuario().getSenha());
         usuarioRepository.save(usuario);
-
         pessoa.setUsuario(usuario);
         pessoaRepository.save(pessoa);
     }

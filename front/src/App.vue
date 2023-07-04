@@ -1,9 +1,7 @@
 <template lang="pug">
-div
-  div(style="display:flex;")
-    el-col(:span="24")
-      div.dashboard
-        <router-view />
+  v-app
+    v-main
+      <router-view />
 
 </template>
   
@@ -123,7 +121,7 @@ div
     }
   </script>
   
-  <style>
+<!-- <style> -->
   .navbartwo{
       background-color: rgba(0, 0, 0, 0.5);
       margin-top: 10px;

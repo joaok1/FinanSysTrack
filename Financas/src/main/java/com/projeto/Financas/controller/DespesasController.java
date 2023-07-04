@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @NoArgsConstructor
-@RequestMapping("despesas/")
+@RequestMapping("/api/despesas")
 @Slf4j
 public class DespesasController {
     @Autowired

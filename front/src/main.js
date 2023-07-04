@@ -12,6 +12,7 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import VueMask from 'v-mask';
 import 'vue-material/dist/theme/default.css'
+import vuetify from './plugins/vuetify'
 
 // import 'vue-material/dist/theme/default.css'
 Vue.use(VueApexCharts)
@@ -23,6 +24,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  vuetify,
   store,
   render: h => h(App)
 }).$mount('#app')
