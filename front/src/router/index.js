@@ -9,10 +9,9 @@ Vue.use(VueRouter)
 
 const requireAuth = (to, from, next) => {
   if (!store.state.authenticated) {
-    console.log("teste1")
     next('/login');
   } else {
-    console.log("ola")
+    console.log("entrou")
     next();
   }
 };

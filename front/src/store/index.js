@@ -4,11 +4,16 @@ import VueRouter from 'vue-router'
 import router from '@/router';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import createPersistedState from 'vuex-persistedstate';
+import Cookies from 'js-cookie';
 
 Vue.use(VueRouter)
 Vue.use(Vuex);
 
 const API_URL = 'http://localhost:1081/api/usuarios/auth';
+
+const TOKEN_COOKIE_KEY = 'token';
+const USER_COOKIE_KEY = 'user';
 
 export default new Vuex.Store({
   state: {
@@ -18,30 +23,56 @@ export default new Vuex.Store({
     setAuthenticated(state, authenticated) {
       state.authenticated = authenticated;
     },
+    restoreAuthentication(state) {
+      const token = Cookies.get(TOKEN_COOKIE_KEY);
+      const user = JSON.parse(Cookies.get(USER_COOKIE_KEY));
+
+      if (token && user) {
+        console.log("token");
+        state.authenticated = true;
+        // Faça qualquer manipulação adicional necessária com o token ou informações do usuário
+      }
+    },
+    clearAuthentication(state) {
+      Cookies.remove(TOKEN_COOKIE_KEY);
+      Cookies.remove(USER_COOKIE_KEY);
+      state.authenticated = false;
+    },
   },
   actions: {
     async login({ commit }, credentials) {
       try {
         const response = await axios.post(`${API_URL}`, credentials);
-        console.log(response)
         const token = response.data.token;
         const user = jwtDecode(token);
-        // Armazene o token e as informações do usuário no armazenamento local (local storage ou cookies)
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log("localStorege", localStorage);
+
+        // Armazene o token e as informações do usuário no cookie
+        Cookies.set(TOKEN_COOKIE_KEY, token, { expires: 7, secure: true });
+        Cookies.set(USER_COOKIE_KEY, JSON.stringify(user), { expires: 7, secure: true });
+
         commit('setAuthenticated', true);
-        router.push({
-          name:'Despesas'
-        })
+        router.push({ name: 'Despesas' });
       } catch (error) {
         console.log(error);
         // Lidar com erros de autenticação, exibir mensagens de erro etc.
       }
     },
     logout({ commit }) {
-      // Coloque aqui a lógica de logout e atualize o estado 'authenticated' para false em caso de sucesso
-      commit('setAuthenticated', false);
+      Cookies.remove(TOKEN_COOKIE_KEY);
+      Cookies.remove(USER_COOKIE_KEY);
+      commit('clearAuthentication');
     },
   },
+  plugins: [
+    createPersistedState({
+      storage: {
+        getItem: (key) => Cookies.get(key),
+        setItem: (key, value) => Cookies.set(key, value),
+        removeItem: (key) => Cookies.remove(key),
+      },
+      reducer: (state) => ({
+        authenticated: state.authenticated,
+      }),
+    })
+  ]
 });

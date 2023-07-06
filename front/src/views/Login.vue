@@ -170,12 +170,9 @@ import store from '../store/index.js';
       try {
         // Chame uma ação do Vuex para realizar o login
         await store.dispatch('login', this.formLogin);
-        this.$notify.success({
-          title: 'Sucesso!',
-          message: 'Seja bem-vindo',
-        })
         // Redirecione para a página de perfil ou qualquer outra página protegida
       } catch (error) {
+        console.error(error);
         // Lidar com erros de login, exibir mensagens de erro etc.
       }
     }
