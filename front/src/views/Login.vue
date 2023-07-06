@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-container>
       <v-row align="center" justify="center" >
@@ -151,7 +152,8 @@
 </template>
 
 <script>
-  import axios from "axios";
+import store from '../store/index.js';
+
   export default {
     data() {
       return {
@@ -165,11 +167,17 @@
   },
   methods:{
     async logar() {
-      const listaData = await axios.post('http://localhost:1081/api/usuarios/auth', this.formLogin).then(response => {
-        console.log(response, listaData);
-      }).catch(error => {
-        console.log(error)
-      })
+      try {
+        // Chame uma ação do Vuex para realizar o login
+        await store.dispatch('login', this.formLogin);
+        this.$notify.success({
+          title: 'Sucesso!',
+          message: 'Seja bem-vindo',
+        })
+        // Redirecione para a página de perfil ou qualquer outra página protegida
+      } catch (error) {
+        // Lidar com erros de login, exibir mensagens de erro etc.
+      }
     }
   } 
 }

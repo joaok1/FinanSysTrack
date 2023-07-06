@@ -1,7 +1,8 @@
 <template lang="pug">
+div
   v-app
     v-main
-      <router-view />
+        <router-view />
 
 </template>
   
@@ -121,74 +122,14 @@
     }
   </script>
   
-<!-- <style> -->
-  .navbartwo{
-      background-color: rgba(0, 0, 0, 0.5);
-      margin-top: 10px;
-      height: 98%; 
-      width: 10rem;
-      margin-left: 10px;
-      margin-right: 10px;
-      text-align:start;
-      border-radius: 10px;
-      position: fixed;
-  }
-
-    .navbar{
-      background-color: rgba(0, 0, 0, 0.5);
-      margin-top: 10px;
-      height: 98%; 
-      width: 10rem;
-      margin-left: 5px;
-      margin-right: 5px;
-      text-align:start;
-      border-radius: 10px;
-      position: fixed;
-    }
-
-    .dashboard {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    justify-content: center;
-    max-width: 100%;
-    min-height: 910px;
-    background-color: rgba(0, 0, 0, 0.5);
-    margin-top: 0.5rem;
-    margin-left: 20px;
-    margin-right: 20px;
-    border-radius: 20px;
-  }
+<style>
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    margin-top: 40px;
   }
-  header{
-    justify-content: flex-start;
-    display: flex;
-    height: 40px;
-    align-items: center;
-    text-align: center;
-    color: rgb(0, 0, 0);
-  }
-  header el-col{
-      color: rgb(0, 0, 0);
-      align-items: center;
-  }
-  .margin{
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    border-radius: 20px;
-    justify-content: space-between;
-  }
-  .card {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
+  
   
   .labelCard{
     font-weight: bolder;
@@ -203,30 +144,8 @@
     text-align: center;
     color: #fff;
   }
-  .justify {
-      justify-content: space-between;
-      display: flex;
-  }
 
 
-  .rotate{
-    margin-top: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 15px;
-    cursor: pointer;
-  }
-  .active{
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-
-    font-size: 16px;
-    border-radius: 10px;
-  }
-  .activeRouter{
-    color: #fff;
-    font-size: 16px;
-  }
 
   </style>
   

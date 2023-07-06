@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+div.dashBoard
   div(style="display:flex; align-items:center;")
     el-col(:span="11")
       div(style="position:relative; display:flex; padding-left:20px; padding-top:10px; flex-wrap:wrap;")
@@ -577,6 +577,18 @@ div
     margin-bottom: 10px;
     padding: 10px;
     background-image: linear-gradient(to right, #33001b, #ff0084); 
+  }
+
+  .dashboard {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    justify-content: center;
+    max-width: 100%;
+    min-height: 910px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-top: 0.5rem;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
   }
 
   .card2{
