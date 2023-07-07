@@ -11,7 +11,6 @@ const requireAuth = (to, from, next) => {
   if (!store.state.authenticated) {
     next('/login');
   } else {
-    console.log("entrou")
     next();
   }
 };

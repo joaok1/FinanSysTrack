@@ -167,14 +167,8 @@ import store from '../store/index.js';
   },
   methods:{
     async logar() {
-      try {
         // Chame uma ação do Vuex para realizar o login
-        await store.dispatch('login', this.formLogin);
-        // Redirecione para a página de perfil ou qualquer outra página protegida
-      } catch (error) {
-        console.error(error);
-        // Lidar com erros de login, exibir mensagens de erro etc.
-      }
+        await store.dispatch('login', this.formLogin)
     }
   } 
 }

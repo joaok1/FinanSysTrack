@@ -39,6 +39,13 @@ div.dashBoard
           el-dropdown-menu(style="width:200px; align-items:center; text-align:center;")
             el-button(type="text" @click="centerDialog = true") Cadastrar Despesa
             el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
+    el-col(:span="2")
+      div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
+          div(style="margin-right:2rem; position:relative; align-items:center; text-align:center;")
+            div
+              <el-avatar :size="80" :src="circleUrl"></el-avatar>
+            div
+              el-button(type="text" style="font-size:18px" @click="logout()") Sair
   //Inserção das categorias//
   el-dialog(title="Incluir depesa.", :visible.sync="centerDialog", width="30%", center,:before-close="handleClose")
         div(style="padding:10px")
@@ -150,7 +157,6 @@ div.dashBoard
 <script>
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
-
 
   export default {
     name: 'DashBoard',
@@ -365,6 +371,10 @@ div.dashBoard
       atualizarTabela(newPage) {
           this.page = this.listaData.pageable.pageNumber = newPage - 1;
           this.tipo();
+      },
+      async logout(){
+        await this.$store.dispatch('logout');
+        console.log(this.$store.dispatch('logout'))
       },
       async tipo() {
           const listaData = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/page/${1}?size=10&page=${this.page}&sort=data_cadastro,desc`);

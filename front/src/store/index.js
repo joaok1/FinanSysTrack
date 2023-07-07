@@ -6,6 +6,7 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import createPersistedState from 'vuex-persistedstate';
 import Cookies from 'js-cookie';
+import alert from '@/utils/alert';
 
 Vue.use(VueRouter)
 Vue.use(Vuex);
@@ -29,7 +30,6 @@ export default new Vuex.Store({
       const user = JSON.parse(Cookies.get(USER_COOKIE_KEY));
       
       if (token && user) {
-        console.log("ola");
         state.authenticated = true;
         // Faça qualquer manipulação adicional necessária com o token ou informações do usuário
       }
@@ -53,19 +53,21 @@ export default new Vuex.Store({
         commit('setAuthenticated', true);
         router.push({ name: 'Despesas' });
       } catch (error) {
+        console.log('ola')
         console.log(error);
         // Lidar com erros de autenticação, exibir mensagens de erro etc.
       }
     },
-    logout({ commit }) {
+    async logout({ commit }) {
       Cookies.remove(TOKEN_COOKIE_KEY);
       Cookies.remove(USER_COOKIE_KEY);
+      router.push({ name: 'Login' });
       commit('clearAuthentication');
     },
   },
   plugins: [
     createPersistedState({
-      key: 'your-key-name', // Defina um nome único para a chave de armazenamento
+      key: 'your-key-name',
       storage: {
         getItem: (key) => Cookies.get(key),
         setItem: (key, value) => Cookies.set(key, value),
@@ -76,12 +78,9 @@ export default new Vuex.Store({
       }),
     }),
     function verifyUser(to, from, next) {
-      // Certifique-se de definir a função como uma função assíncrona para usar o 'await'
-      // Certifique-se de usar uma função de middleware correta para o Vue Router
+
       return async function () {
-          // Faça a chamada para verificar o usuário
           const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
-          console.log(response);
           if(response.data === false) {
             Cookies.remove(TOKEN_COOKIE_KEY);
             Cookies.remove(USER_COOKIE_KEY);
