@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("registroCategoriaDespesas/")
+@RequestMapping("/api/despesas/registroCategoriaDespesas/")
 public class RegistroCategoriaDespesasController {
     @Autowired
     private RegistroCategoriaDespesasService registroCategoriaDespesasService;

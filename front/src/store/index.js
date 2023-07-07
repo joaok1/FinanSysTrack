@@ -11,6 +11,7 @@ Vue.use(VueRouter)
 Vue.use(Vuex);
 
 const API_URL = 'http://localhost:1081/api/usuarios/auth';
+const API_URL_VERIFY = 'http://localhost:1081/api/usuarios/validatorUser';
 
 const TOKEN_COOKIE_KEY = 'token';
 const USER_COOKIE_KEY = 'user';
@@ -26,9 +27,9 @@ export default new Vuex.Store({
     restoreAuthentication(state) {
       const token = Cookies.get(TOKEN_COOKIE_KEY);
       const user = JSON.parse(Cookies.get(USER_COOKIE_KEY));
-
+      
       if (token && user) {
-        console.log("token");
+        console.log("ola");
         state.authenticated = true;
         // Faça qualquer manipulação adicional necessária com o token ou informações do usuário
       }
@@ -47,9 +48,8 @@ export default new Vuex.Store({
         const user = jwtDecode(token);
 
         // Armazene o token e as informações do usuário no cookie
-        Cookies.set(TOKEN_COOKIE_KEY, token, { expires: 7, secure: true });
-        Cookies.set(USER_COOKIE_KEY, JSON.stringify(user), { expires: 7, secure: true });
-
+        Cookies.set(TOKEN_COOKIE_KEY, token, { expires: 1, secure: true });
+        Cookies.set(USER_COOKIE_KEY, JSON.stringify(user), { expires: 1, secure: true });
         commit('setAuthenticated', true);
         router.push({ name: 'Despesas' });
       } catch (error) {
@@ -65,6 +65,7 @@ export default new Vuex.Store({
   },
   plugins: [
     createPersistedState({
+      key: 'your-key-name', // Defina um nome único para a chave de armazenamento
       storage: {
         getItem: (key) => Cookies.get(key),
         setItem: (key, value) => Cookies.set(key, value),
@@ -73,6 +74,21 @@ export default new Vuex.Store({
       reducer: (state) => ({
         authenticated: state.authenticated,
       }),
-    })
-  ]
+    }),
+    function verifyUser(to, from, next) {
+      // Certifique-se de definir a função como uma função assíncrona para usar o 'await'
+      // Certifique-se de usar uma função de middleware correta para o Vue Router
+      return async function () {
+          // Faça a chamada para verificar o usuário
+          const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
+          console.log(response);
+          if(response.data === false) {
+            Cookies.remove(TOKEN_COOKIE_KEY);
+            Cookies.remove(USER_COOKIE_KEY);
+            next('/login');
+          }
+
+      };
+    }(),
+  ],
 });
