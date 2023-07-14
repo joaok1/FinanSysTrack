@@ -6,7 +6,6 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import createPersistedState from 'vuex-persistedstate';
 import Cookies from 'js-cookie';
-import alert from '@/utils/alert';
 
 Vue.use(VueRouter)
 Vue.use(Vuex);

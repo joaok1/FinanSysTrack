@@ -35,7 +35,7 @@ div.dashBoard
         el-button(type="primary" @click="centerDialog = true") Relatorio
         el-dropdown(style="margin-left:10px;")
           el-button(type="primary")
-            dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
+            el-dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
           el-dropdown-menu(style="width:200px; align-items:center; text-align:center;")
             el-button(type="text" @click="centerDialog = true") Cadastrar Despesa
             el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
@@ -43,7 +43,7 @@ div.dashBoard
       div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
           div(style="margin-right:2rem; position:relative; align-items:center; text-align:center;")
             div
-              <el-avatar :size="80" :src="circleUrl"></el-avatar>
+              <el-avatar :size="80"></el-avatar>
             div
               el-button(type="text" style="font-size:18px" @click="logout()") Sair
   //Inserção das categorias//
@@ -157,6 +157,7 @@ div.dashBoard
 <script>
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
+  import axios from 'axios'
 
   export default {
     name: 'DashBoard',
@@ -337,7 +338,9 @@ div.dashBoard
     },
     async mounted() {
         this.despesasByCategory();
+        console.log(await this.despesasByCategory())
         this.tipo();
+        console.log(this.tipo())
         window.dispatchEvent(new Event('resize'));
     },
     methods: {
@@ -371,28 +374,44 @@ div.dashBoard
       atualizarTabela(newPage) {
           this.page = this.listaData.pageable.pageNumber = newPage - 1;
           this.tipo();
+          console.log(this.tipo())
       },
       async logout(){
         await this.$store.dispatch('logout');
         console.log(this.$store.dispatch('logout'))
       },
-      async tipo() {
-          const listaData = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/page/${1}?size=10&page=${this.page}&sort=data_cadastro,desc`);
-          this.listaData = listaData.data;
-          const {empty, number,numberOfElements,pageable,totalElements} = this.listaData;
-          this.pageable = {
-              empty,
-              number,
-              numberOfElements,
-              pageable,
-              totalElements
-          }
-          const listaTipo = await this.axios.get(`http://localhost:1081/despesasTipo/listar`);
-          this.listaTipo = listaTipo.data;
-      },
+      async tipo({ commit }) {
+  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzIyNjcyNjYwOSIsImV4cCI6MTY4ODc2NDY1M30.md1xbEPL1JPUqgndQgWnRRykllUzz1V5uwUaRNQtXywrNywhptJ-UFlDRobSLOL9gaugpxNYktFmGYXq8x2qeA'; // Substitua pelo seu token JWT real
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
+  try {
+    const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/page/${1}?size=10&page=${this.page}&sort=data_cadastro,desc`, config);
+    commit('setAuthenticated', true);
+    console.log(listaData.data);
+    this.listaData = listaData.data;
+    const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
+    this.pageable = {
+      empty,
+      number,
+      numberOfElements,
+      pageable,
+      totalElements
+    };
+  
+    const listaTipo = await axios.get(`http://localhost:1081/api/despesasTipo/listar`);
+    this.listaTipo = listaTipo.data;
+  } catch (error) {
+    console.error(error);
+  }
+},
       async despesasCategoryByTipo() {
           this.despesasCategory.usuario = 1;
-          await this.axios.post('http://localhost:1081/registroCategoriaDespesas/inserir', this.despesasCategory ).then(response => {
+          await this.axios.post('http://localhost:1081/api/registroCategoriaDespesas/inserir', this.despesasCategory ).then(response => {
               if(response.status === 200) {
                   this.centerDialog = false
                   this.despesasCategory = {};
@@ -427,7 +446,7 @@ div.dashBoard
               }
           };
           this.data = data.id;
-          const listaData = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listarFindById/${this.data}`);
+          const listaData = await this.axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listarFindById/${this.data}`);
           this.listaDataById = listaData.data;
           this.despesasCategoryEdit.id = this.data;
           this.despesasCategoryEdit.name = this.listaDataById.name;
@@ -436,7 +455,7 @@ div.dashBoard
           await this.tipo();
       },
       async despesasEdit(){
-          await this.axios.put('http://localhost:1081/registroCategoriaDespesas/edit', this.despesasCategoryEdit ).then(response => {
+          await this.axios.put('http://localhost:1081/api/registroCategoriaDespesas/edit', this.despesasCategoryEdit ).then(response => {
               if(response.status === 200) {
                   this.centerDialogVisible = false;
                   this.despesasCategoryEdit = {
@@ -491,7 +510,7 @@ div.dashBoard
       },
       async despesasByCategory() {
           this.usuario = 1;
-          const lista = await this.axios.get(`http://localhost:1081/registroCategoriaDespesas/listar/${this.usuario}`);
+          const lista = await this.axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/${this.usuario}`);
           this.listaCategoria = lista.data;
       },
       mountedDespesas() {
@@ -543,7 +562,7 @@ div.dashBoard
         this.despesas.listagemDespesas.splice(0,1);
 
         this.despesas.usuario = 1;
-        await this.axios.post('http://localhost:1081/despesas/adicionar', this.despesas ).then(response => {
+        await this.axios.post('http://localhost:1081/api/despesas/adicionar', this.despesas ).then(response => {
             if(response.status === 200) {
                 this.centerDialogResgistroDespesas = false
                 this.despesas = {
