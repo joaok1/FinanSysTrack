@@ -16,7 +16,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/despesas/registroCategoriaDespesas/")
+@RequestMapping("/api/registroCategoriaDespesas")
+@CrossOrigin(origins = "http://localhost:8080/")
 public class RegistroCategoriaDespesasController {
     @Autowired
     private RegistroCategoriaDespesasService registroCategoriaDespesasService;
@@ -30,14 +31,14 @@ public class RegistroCategoriaDespesasController {
 
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @PostMapping("inserir")
+    @PostMapping("/inserir")
     public ResponseEntity<CategoriaDespesas> inserir(@RequestBody RegistroCategoriaDespesasDTO categoriaDespesasDTO) throws DomainException {
         CategoriaDespesas regi = registroCategoriaDespesasService.inserirNovaCategoriaDespesas(categoriaDespesasDTO);
         return ResponseEntity.ok().body(regi);
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @GetMapping("listar/{id}")
+    @GetMapping("/listar/{id}")
     public List<CategoriaDespesas> getList(@PathVariable Short id) throws DomainException {
         try {
             List<CategoriaDespesas> list = registroCategoriaDespesasService.findAllByUsuario(id);
@@ -48,7 +49,7 @@ public class RegistroCategoriaDespesasController {
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @GetMapping("listar/page/{id}")
+    @GetMapping("/listar/page/{id}")
     public Page<CategoriaDespesas> getListPage( Pageable pageable,@PathVariable Short id) throws DomainException {
         try {
             Page<CategoriaDespesas> list = registroCategoriaDespesasService.findAllByUsuarioPage(pageable,id);
@@ -59,7 +60,7 @@ public class RegistroCategoriaDespesasController {
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @GetMapping("listarFindById/{id}")
+    @GetMapping("/listarFindById/{id}")
     public Optional<CategoriaDespesas> getListById(@PathVariable Short id) throws DomainException {
         if (Objects.isNull(id)) {
             throw new DomainException("Id com valor nulo");
@@ -69,7 +70,7 @@ public class RegistroCategoriaDespesasController {
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable Short id) throws DomainException {
         if (Objects.isNull(id)) {
             throw new DomainException("Id com valor nulo");
@@ -78,7 +79,7 @@ public class RegistroCategoriaDespesasController {
     }
 
     @CrossOrigin(origins = "http://localhost:8080/")
-    @PutMapping("edit")
+    @PutMapping("/edit")
     public void editar(@RequestBody RegistroCategoriaDespesasDTO categoriaDespesasDTO) throws DomainException {
         try {
             registroCategoriaDespesasService.findByEdit(categoriaDespesasDTO);
