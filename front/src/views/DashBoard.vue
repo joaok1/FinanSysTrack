@@ -85,12 +85,13 @@ div.dashBoard
       </span>
   //Tabela de edição categoria
   el-dialog(title="Editar depesa", :visible.sync="centerDialogVisibleTable", width="50%", center)
+    div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
+        div
+            label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Listagem das despesas
+        div
+        el-button(type="primary" @click="centerDialog = true") Registrar despesas
+    <br>
     el-card
-      div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
-          div
-              label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Listagem das despesas
-          div
-          el-button(type="primary" @click="centerDialog = true") Registrar despesas
       data-table(
           :pageable='pageable'
           :data="listaData.content",
@@ -101,34 +102,34 @@ div.dashBoard
       )
   //Registro de despesas
   el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Inserir despesa",:before-close="handleClose")
-    el-card(style="margin-right:10px; padding:10px;")
+    div(style="margin-right:10px; padding:10px;")
       el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
-      div(style="display:flex; padding:10px;")
+      div(style="display:flex; position:relative; justify-content:space-between; align-items:center; padding:10px")
         div
           span Insira a data:
-          el-date-picker( type="date", placeholder="Insira a data da despesa", v-model="despesas.calendar",size="small", style="width: 100%;")
-        div
+          el-date-picker( type="date", placeholder="Insira a data da despesa", v-model="despesas.calendar", size="small", style="width: auto")
+        div(style="width:100%")
           div(id="chart")
             apexchart(type="radialBar" :options="chartOptions" :series="series")
         div
           span Insira o valor recebido:
-          el-input-number(v-model="despesas.entrada" :min="0" size="small" style="width:100%")
-      div(style="display:flex; position:relative; justify-content:center;")
-        div(style="padding:10px;")
+          el-input-number(v-model="despesas.entrada" :min="0" size="small" style="width: auto")
+      div(style="display:flex; position:relative; justify-content:space-around; align-items:center;")
+        div(style="padding:10px; text-align:center;")
           div(style="display:flex; position:relative; justify-content:center;")
-            span Valor de entrada
+            span(style="font-size:18px;") Valor de entrada
           div
-            el-input-number(v-model="this.despesas.entrada" disabled="true")
-        div(style="padding:10px;")
+            span(style="font-size:18px;") {{ this.despesas.entrada }}
+        div(style="padding:10px; text-align:center;")
           div(style="display:flex; position:relative; justify-content:center;")
-            span Valor total dos gastos
+            span(style="font-size:18px;") Valor total dos gastos
           div
-            el-input-number(v-model="saida" disabled="true")
-        div(style="padding:10px")
+            span(style="font-size:18px;") {{ saida ? saida : 0 }}
+        div(style="padding:10px; text-align:center;")
           div(style="display:flex; position:relative; justify-content:center;")
-            span Saldo
+            span(style="font-size:18px;") Saldo
           div
-            el-input-number(v-model="saldo" disabled="true")
+          span(style="font-size:18px;") {{ saldo ? saldo : 0 }}
       div(style="display:flex; align-items:center;")
         div(style="padding:10px")
           label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
@@ -158,7 +159,18 @@ div.dashBoard
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
   import axios from 'axios'
+  import Cookies from 'js-cookie';
 
+  //configuração do usuario
+  const user = JSON.parse(localStorage.getItem('user'));
+  //Configuração do Token
+  const token = Cookies.get('token');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+  
   export default {
     name: 'DashBoard',
     components: {
@@ -337,11 +349,12 @@ div.dashBoard
       }
     },
     async mounted() {
-        this.despesasByCategory();
-        console.log(await this.despesasByCategory())
-        this.tipo();
-        console.log(this.tipo())
-        window.dispatchEvent(new Event('resize'));
+      const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
+      this.usuario = userData.data.id;
+      console.log(this.usuario)
+      await this.despesasByCategory();
+      await this.tipo();
+      window.dispatchEvent(new Event('resize'));
     },
     methods: {
       handleClose(done) {
@@ -374,44 +387,32 @@ div.dashBoard
       atualizarTabela(newPage) {
           this.page = this.listaData.pageable.pageNumber = newPage - 1;
           this.tipo();
-          console.log(this.tipo())
       },
       async logout(){
         await this.$store.dispatch('logout');
-        console.log(this.$store.dispatch('logout'))
       },
-      async tipo({ commit }) {
-  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzIyNjcyNjYwOSIsImV4cCI6MTY4ODc2NDY1M30.md1xbEPL1JPUqgndQgWnRRykllUzz1V5uwUaRNQtXywrNywhptJ-UFlDRobSLOL9gaugpxNYktFmGYXq8x2qeA'; // Substitua pelo seu token JWT real
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
-
-  try {
-    const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/page/${1}?size=10&page=${this.page}&sort=data_cadastro,desc`, config);
-    commit('setAuthenticated', true);
-    console.log(listaData.data);
-    this.listaData = listaData.data;
-    const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
-    this.pageable = {
-      empty,
-      number,
-      numberOfElements,
-      pageable,
-      totalElements
-    };
-  
-    const listaTipo = await axios.get(`http://localhost:1081/api/despesasTipo/listar`);
-    this.listaTipo = listaTipo.data;
-  } catch (error) {
-    console.error(error);
+      async tipo() {
+        try {
+          const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/page/${this.usuario}?size=10&page=${this.page}&sort=data_cadastro,desc`, config);
+          this.listaData = listaData.data;
+          const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
+          this.pageable = {
+            empty,
+            number,
+            numberOfElements,
+            pageable,
+            totalElements
+          };
+          const listaTipo = await axios.get(`http://localhost:1081/api/despesasTipo/listar`,config);
+          this.listaTipo = listaTipo.data;
+          console.log(this.listaTipo)
+        } catch (error) {
+          console.error(error);
   }
 },
       async despesasCategoryByTipo() {
-          this.despesasCategory.usuario = 1;
-          await this.axios.post('http://localhost:1081/api/registroCategoriaDespesas/inserir', this.despesasCategory ).then(response => {
+          this.despesasCategory.usuario = this.usuario;
+          await axios.post('http://localhost:1081/api/registroCategoriaDespesas/inserir', this.despesasCategory, config ).then(response => {
               if(response.status === 200) {
                   this.centerDialog = false
                   this.despesasCategory = {};
@@ -446,7 +447,7 @@ div.dashBoard
               }
           };
           this.data = data.id;
-          const listaData = await this.axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listarFindById/${this.data}`);
+          const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listarFindById/${this.data}`,config);
           this.listaDataById = listaData.data;
           this.despesasCategoryEdit.id = this.data;
           this.despesasCategoryEdit.name = this.listaDataById.name;
@@ -455,7 +456,7 @@ div.dashBoard
           await this.tipo();
       },
       async despesasEdit(){
-          await this.axios.put('http://localhost:1081/api/registroCategoriaDespesas/edit', this.despesasCategoryEdit ).then(response => {
+          await axios.put('http://localhost:1081/api/registroCategoriaDespesas/edit', this.despesasCategoryEdit, config ).then(response => {
               if(response.status === 200) {
                   this.centerDialogVisible = false;
                   this.despesasCategoryEdit = {
@@ -509,8 +510,7 @@ div.dashBoard
         this.centerDialogResgistroDespesas = true
       },
       async despesasByCategory() {
-          this.usuario = 1;
-          const lista = await this.axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/${this.usuario}`);
+          const lista = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/${this.usuario}`, config);
           this.listaCategoria = lista.data;
       },
       mountedDespesas() {
@@ -525,7 +525,6 @@ div.dashBoard
               valor: this.valorDespesa
             };
             this.arrayDespesa.push(desp);
-            console.log(this.arrayDespesa.length);
             this.saida = 0;
             this.saldo = 0;
             this.arrayDespesa.forEach(item => {
@@ -555,14 +554,13 @@ div.dashBoard
         this.series.push(final);
       },
       async inserirDespesas() {
-        console.log(this.despesas.calendar)
         this.arrayDespesa.map(objec => {
           this.despesas.listagemDespesas.push(objec);
         })
         this.despesas.listagemDespesas.splice(0,1);
 
-        this.despesas.usuario = 1;
-        await this.axios.post('http://localhost:1081/api/despesas/adicionar', this.despesas ).then(response => {
+        this.despesas.usuario = this.usuario;
+        await axios.post('http://localhost:1081/api/despesas/adicionar', this.despesas, config ).then(response => {
             if(response.status === 200) {
                 this.centerDialogResgistroDespesas = false
                 this.despesas = {

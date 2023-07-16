@@ -38,6 +38,11 @@ public class UsuarioController {
         return usuarioService.findById(id);
     }
 
+    @GetMapping("/findByLogin/{login}")
+    public Usuario findByLogin(@PathVariable String login) {
+        return usuarioService.findByLogin(login);
+    }
+
     @PostMapping("/auth")
     public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais){
         try{

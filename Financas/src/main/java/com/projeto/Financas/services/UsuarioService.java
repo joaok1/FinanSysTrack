@@ -50,4 +50,8 @@ public class UsuarioService implements UserDetailsService {
     }
 
 
+    public Usuario findByLogin(String login) {
+        Optional<Usuario> user = usuarioRepository.findByLogin(login);
+        return user.get();
+    }
 }
