@@ -26,11 +26,16 @@ div
 </template>
 <script>
     import DataTable from '@/components/DataTable.vue'
+    import Cabecalho from './Cabecalho.vue';
+    import Cookies from 'js-cookie';
+    import axios from 'axios'
+
     export default{
         // eslint-disable-next-line vue/multi-word-component-names
         name: 'relatorio',
         components: {
-        DataTable
+        DataTable,
+        Cabecalho
         },
         data() {
             return{
@@ -54,107 +59,53 @@ div
                     {
                         label: 'Data',
                         prop: 'calendar',
-                        width: '120px',
                         formatter: ({ calendar }) => calendar || '-'
                     },
                     {
-                        label: 'Bc Digio',
-                        prop: 'bancoDigio',
-                        width: '120px',
-                        formatter: ({ bancoDigio }) => bancoDigio || '-'
-                    },
-                    {
-                        label: 'Bc Bradesco',
-                        prop: 'bancoBradesco',
-                        width: '120px',
-                        formatter: ({ bancoBradesco }) => bancoBradesco || '-'
-                    },
-                    {
-                        label: 'Bc Bv',
-                        width: '120px',
-                        prop: 'bancoBv',
-                        formatter: ({ bancoBv }) => bancoBv || '-'
-                    },
-                    {
-                        label: 'Padaria',
-                        width: '120px',
-                        prop: 'padaria',
-                        formatter: ({ padaria }) => padaria || '-'
-                    },
-                    {
-                        label: 'Água',
-                        prop: 'agua',
-                        width: '120px',
-                        formatter: ({ agua }) => agua || '-'
-                    },
-                    {
-                        label: 'Bc Brasil',
-                        width: '110px',
-                        prop: 'bancoBrasil',
-                        formatter: ({ bancoBrasil }) => bancoBrasil || '-'
-                    },
-                    {
-                        label: 'Mei',
-                        prop: 'mei',
-                        width: '120px',
-                        formatter: ({ mei }) => mei || '-'
-                    },
-                    {
-                        label: 'Faculdade',
-                        width: '100px',
-                        prop: 'faculdade',
-                        formatter: ({ faculdade }) => faculdade || '-'
-                    },
-                    {
-                        label: 'Vivo',
-                        prop: 'vivo',
-                        width: '100px',
-                        formatter: ({ vivo }) => vivo || '-'
-                    },
-                    {
-                        label: 'Carro',
-                        prop: 'carro',
-                        width: '100px',
-                        formatter: ({ carro }) => carro || '-'
-                    },
-                    {
-                        label: 'Internet',
-                        prop: 'internet',
-                        width: '100px',
-                        formatter: ({ internet }) => internet || '-'
-                    },
-                    {
-                        label: 'Entrada',
-                        width: '120px',
+                        label: 'Valor recebido',
                         prop: 'entrada',
-                        formatter: ({ entrada }) => entrada || '-'
+                        formatter: ({ entrada }) => entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
                     },
                     {
-                        label: 'Total/Saída',
-                        width: '120px',
+                        label: 'Total gastos',
                         prop: 'total',
-                        formatter: ({ total }) => total || '-'
+                        formatter: ({ total }) => total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
                     },
                     {
-                        label: 'Mês referência',
-                        prop: 'mes',
-                        width: '140px',
-                        formatter: ({ mes }) => mes || '-'
-                    }
+                        label: 'Saldo do mês',
+                        prop: 'saldo',
+                        formatter: ({ saldo }) => saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
+                    },
                 ],
             }
         },
         async mounted() {
-            this.Loader();
+            await this.dadosLogin();
+            await this.loader();
             window.dispatchEvent(new Event('resize'));
         },
         methods: {
+            async dadosLogin() {
+                //configuração do usuario
+                const user = JSON.parse(localStorage.getItem('user'));
+                //Configuração do Token
+                const token = Cookies.get('token');
+                this.config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                };
+                const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
+                this.usuario = userData.data.id;  
+                console.log(this.usuario)              
+            },
             atualizarTabela(newPage) {
                 this.page = this.listaData.pageable.pageNumber = newPage - 1;
-                this.Loader();
+                this.loader();
             },
-            async Loader() {
-                const listaData = await this.axios.get(`http://localhost:1081/financeiro/listarData/${1}?size=12&page=${this.page}&sort=calendar,desc`);
+            async loader() {
+                const listaData = await axios.get(`http://localhost:1081/api/despesas/pageLista/${this.usuario}?size=12&page=${this.page}&sort=calendar,desc`,this.config);
+                console.log(listaData)
                 this.listaData = listaData.data;
                 const {empty, number,numberOfElements,pageable,totalElements} = this.listaData;
                 this.pageable = {
@@ -226,7 +177,7 @@ div
                 setTimeout(() => {
                     loading.close();
                     this.axios.delete(`http://localhost:1081/financeiro/delete/${this.idDeleteAcoes}`).then(response => {
-                        this.Loader();
+                        this.loader();
                         if(response.status === 200) {
                             this.$notify({
                                 title: 'Sucesso!',

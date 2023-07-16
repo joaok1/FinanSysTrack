@@ -12,10 +12,13 @@ import com.projeto.Financas.services.PessoaService;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -40,5 +43,14 @@ public class DespesasController {
         } catch (DomainException e) {
             throw e;
         }
+    }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @GetMapping(value = "pageLista/{id}", produces = "application/json")
+    public Page<Despesas> inserirDespesas(@PathVariable Short id , Pageable pageable) throws DomainException {
+        if (Objects.isNull(id)) {
+            throw new DomainException("id Usuario invalido");
+        }
+        return despesasService.getPageDespesas(id, pageable);
     }
 }

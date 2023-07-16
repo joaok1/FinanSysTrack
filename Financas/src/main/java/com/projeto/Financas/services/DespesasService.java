@@ -12,6 +12,8 @@ import com.projeto.Financas.repository.DespesasRepository;
 import com.projeto.Financas.repository.ListagemDespesasRepository;
 import com.projeto.Financas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +79,14 @@ public class DespesasService {
             throw e;
         }
 
+    }
+
+    public Page<Despesas> getPageDespesas(Short id, Pageable pageable) throws DomainException {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (Objects.isNull(usuario.get())) {
+            throw new DomainException("Usuario não encontrado na base de dados!");
+        }
+        return despesasRepository.findByUsuario(id, pageable);
     }
 }
 //dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez
