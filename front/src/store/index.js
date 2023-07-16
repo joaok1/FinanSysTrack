@@ -78,18 +78,23 @@ export default new Vuex.Store({
       }),
     }),
 
-    function verifyUser(to, from, next) {
-      return async function () {
-          const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
-          if(response.data === false) {
-            Cookies.remove(TOKEN_COOKIE_KEY);
-            Cookies.remove(USER_COOKIE_KEY);
-            next('/login');
-          } else {
-            next();
-        }
+   async function verifyUser({ commit },to, from, next) {
+      console.log("ola")
+      console.log(Cookies.get(TOKEN_COOKIE_KEY))
+      console.log(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
+      const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
+      console.log(response)
+      if(response.data === false) {
+        console.log("ola")
+        Cookies.remove(TOKEN_COOKIE_KEY);
+        Cookies.remove(USER_COOKIE_KEY);
+        router.push({ name: 'Login' });
+        commit('clearAuthentication');
+        next('/login');
+      } else {
+        next();
+    }
 
-      };
     }
   ],
 });
