@@ -97,7 +97,7 @@ div
             div
             el-button(type="primary" @click="centerDialog = true") Registrar despesas
         <br>
-        el-card
+        div
           data-table(
               :pageable='pageable'
               :data="listaData.content",
