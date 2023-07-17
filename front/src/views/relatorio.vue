@@ -1,28 +1,27 @@
 <template lang="pug">
 div
-    el-dialog.border(title="" :visible.sync="dialogVisible" width="30%")
-            span.span Deseja excluir este registro ?
-            span(slot="footer" class="dialog-footer")
-                div.justify
-                    div
-                        el-button.bottomDialog(@click="closeModal") Cancelar
-                    div
-                        el-button.bottomDialog(type="primary" @click="deleteId"  style='color: #fff') Confirmar
-    el-card(style='margin: 10px 20px 0px 20px; border-radius: 10px; background-color: #fff;')
-        div(style='display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;')
+    div
+        el-card(style='margin: 10px 20px 0px 20px; border-radius: 10px; background-color: #fff;')
+            div(style='display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;')
+                div
+                    label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Registro de entrada
+                div
+                    el-button(type='primary' icon='el-icon-printer' size='small' @click='downloadPDF()', style='font-weight: bold; margin-right:20px') PDF
+            data-table(
+                :pageable='pageable'
+                :data="listaData.content",
+                :columns='columns',
+                @atualizarTabela='atualizarTabela',
+                :acoes='acoes',
+                @editar="editar"
+                @excluir="excluir",
+            )
+    el-dialog(style="z-index:10102;" title="Deseja deletar este registro ?", :visible.sync="centerDialogVisible", width="30%", center, :before-close="handleClose")
+        div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
             div
-                label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Registro de entrada
+                el-button.bottomDialog(@click="closeModal") Cancelar
             div
-                el-button(type='primary' icon='el-icon-printer' size='small' @click='downloadPDF()', style='font-weight: bold; margin-right:20px') PDF
-        data-table(
-            :pageable='pageable'
-            :data="listaData.content",
-            :columns='columns',
-            @atualizarTabela='atualizarTabela',
-            :acoes='acoes',
-            @editar="editar"
-            @excluir="excluir",
-        )
+                el-button.bottomDialog(type="primary" @click="deleteId"  style='color: #fff') Confirmar
 </template>
 <script>
     import DataTable from '@/components/DataTable.vue'
@@ -39,22 +38,27 @@ div
         },
         data() {
             return{
+                centerDialogVisible:false,
                 idDeleteAcoes: null,
-                dialogVisible: false,
                 listaData:{},
                 pageable: {},
                 acoes: [
-                        {
-                            text: 'Editar',
-                            codigo: 'EDITAR',
-                            icon: 'el-icon-edit'
-                        },
-                        {
-                            text: 'Excluir',
-                            codigo: 'EXCLUIR',
-                            icon: 'el-icon-delete'
-                        }
-                    ],
+                    {
+                        text: 'Visualizar',
+                        codigo: 'EDITAR',
+                        icon: 'el-icon-view'
+                    },
+                    {
+                        text: 'Editar',
+                        codigo: 'EDITAR',
+                        icon: 'el-icon-edit'
+                    },
+                    {
+                        text: 'Excluir',
+                        codigo: 'EXCLUIR',
+                        icon: 'el-icon-delete'
+                    }
+                ],
                 columns: [
                     {
                         label: 'Data',
@@ -85,6 +89,33 @@ div
             window.dispatchEvent(new Event('resize'));
         },
         methods: {
+            handleClose(done) {
+                this.$confirm('Deseja fechar o modal?')
+                .then(confirm =>{
+                    window.dispatchEvent(new Event('resize'));
+                    this.despesas = {
+                    listagemDespesas:[
+                        {
+                        despesasCategory:{
+                            id:null
+                        },
+                        valor:null,
+                        despesas:null
+                        }
+                    ],
+                    calendar: null,
+                    mes: null,
+                    total: 0,
+                    entrada:0,
+                    saldo: 0,
+                    usuario: null
+                    }
+                    done(confirm);
+                })
+                .catch(cancel =>{
+                    cancel
+                });
+            },
             async dadosLogin() {
                 //configuração do usuario
                 const user = JSON.parse(localStorage.getItem('user'));
@@ -104,43 +135,26 @@ div
                 this.loader();
             },
             async loader() {
-                const listaData = await axios.get(`http://localhost:1081/api/despesas/pageLista/${this.usuario}?size=12&page=${this.page}&sort=calendar,desc`,this.config);
+                console.log(this.page)
+                const listaData = await axios.get(`http://localhost:1081/api/despesas/pageLista/${this.usuario}?size=8&page=${this.page}&sort=calendar,desc`,this.config);
                 console.log(listaData)
                 this.listaData = listaData.data;
-                const {empty, number,numberOfElements,pageable,totalElements} = this.listaData;
+                const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
                 this.pageable = {
                     empty,
                     number,
                     numberOfElements,
                     pageable,
                     totalElements
-                }
-                this.listaData.content.map(row => {
-                    if (row) {
-                        row.agua =  row.agua.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.bancoBradesco =  row.bancoBradesco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.vivo =  row.vivo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.internet =  row.internet.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.carro =  row.carro.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.bancoBrasil =  row.bancoBrasil.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.bancoBv =  row.bancoBv.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.bancoDigio =  row.bancoDigio.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.faculdade =  row.faculdade.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.entrada =  row.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.mei =  row.mei.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.padaria =  row.padaria.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.total =  row.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                        row.saldo =  row.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
-                    }
-                })
+                };
                 window.dispatchEvent(new Event('resize'));
                 this.$emit('excluir')
             },
             closeModal() {
-                this.dialogVisible = false;
+                this.centerDialogVisible = false;
             },
             excluir(data) {
-                this.dialogVisible = true;
+                this.centerDialogVisible = true;
                 this.idDeleteAcoes = data.id;
             },
             editar(data) {
@@ -167,7 +181,7 @@ div
                 }
             },      
             async deleteId() {
-                this.dialogVisible = false;
+                this.centerDialogVisible = false;
                 const loading = this.$loading({
                     lock: true,
                     text: 'Deletando registro',
@@ -176,7 +190,7 @@ div
                 });
                 setTimeout(() => {
                     loading.close();
-                    this.axios.delete(`http://localhost:1081/financeiro/delete/${this.idDeleteAcoes}`).then(response => {
+                    axios.delete(`http://localhost:1081/api/despesas/delete/${this.idDeleteAcoes}`,this.config).then(response => {
                         this.loader();
                         if(response.status === 200) {
                             this.$notify({

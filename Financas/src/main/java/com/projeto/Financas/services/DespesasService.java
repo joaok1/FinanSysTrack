@@ -61,7 +61,8 @@ public class DespesasService {
             }
             despesas.setTotal(soma);
             despesas.setSaldo(despesas.getEntrada() - despesas.getTotal());
-            despesasRepository.save(despesas);
+
+            List<ListagemDespesas> listagemDespesasList = new ArrayList<>();
             for (ListagemDespesas list :despesasDTO.getListagemDespesas()) {
                 ListagemDespesas listagemDespesas = new ListagemDespesas();
                 Optional<CategoriaDespesas> categoriaDespesasOptional = categoriaDespesasRepository.findById(list.getDespesasCategory().getId());
@@ -72,9 +73,10 @@ public class DespesasService {
                     listagemDespesas.setUsuario(usuario.get());
                     listagemDespesas.setValor(list.getValor());
                     listagemDespesas.setDespesas(despesas);
-                    listagemDespesasRepository.save(listagemDespesas);
-
+                    listagemDespesasList.add(listagemDespesas);
             }
+            despesas.setListagemDespesas(listagemDespesasList);
+            despesasRepository.save(despesas);
         } catch (DomainException e){
             throw e;
         }
@@ -87,6 +89,19 @@ public class DespesasService {
             throw new DomainException("Usuario não encontrado na base de dados!");
         }
         return despesasRepository.findByUsuario(id, pageable);
+    }
+    @Transactional
+    public void deleteByDespesas(Short id) throws DomainException {
+        Optional<Despesas> despesas = despesasRepository.findById(id);
+        if (Objects.isNull(despesas)) {
+           throw new DomainException("Despesa nao encontrada");
+        }
+        deleteByCascade(despesas.get());
+        despesasRepository.deleteById(id);
+    }
+    @Transactional
+    private void deleteByCascade(Despesas despesas) {
+        listagemDespesasRepository.deleteByDespesas(despesas);
     }
 }
 //dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez

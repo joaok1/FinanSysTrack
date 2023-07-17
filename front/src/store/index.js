@@ -78,22 +78,14 @@ export default new Vuex.Store({
       }),
     }),
 
-   async function verifyUser({ commit },to, from, next) {
-      console.log("ola")
-      console.log(Cookies.get(TOKEN_COOKIE_KEY))
-      console.log(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
+   async function verifyUserExpired({ commit },to, from, next) {
       const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
-      console.log(response)
       if(response.data === false) {
-        console.log("ola")
         Cookies.remove(TOKEN_COOKIE_KEY);
         Cookies.remove(USER_COOKIE_KEY);
-        router.push({ name: 'Login' });
         commit('clearAuthentication');
-        next('/login');
-      } else {
-        next();
-    }
+        next({ name: 'Login' });
+      }
 
     }
   ],

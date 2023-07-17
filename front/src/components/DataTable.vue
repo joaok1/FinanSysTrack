@@ -44,7 +44,7 @@ div(class="fornecedores")
         fixed="right"
         v-if="acoes && acoes.length > 1",
         label="Ações",
-        width="140",
+        width="220",
         header-align="center",
         align="center"
       )

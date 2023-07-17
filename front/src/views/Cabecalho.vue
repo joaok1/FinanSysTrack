@@ -36,12 +36,15 @@ div
             div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; flex-wrap:wrap;")
               el-button(type="primary" @click="abrirModalDespesa()") Registrar despesas
               el-button(type="primary" @click="dialogRelatorio = true") Relatorio
-              el-dropdown(style="margin-left:10px;")
-                el-button(type="primary")
-                  el-dropdown Categoria<i class="el-icon-arrow-down el-icon--right"></i>
-                el-dropdown-menu(style="width:200px; align-items:center; text-align:center;")
-                  el-button(type="text" @click="centerDialog = true") Cadastrar Despesa
-                  el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
+              <el-dropdown style="margin-left:10px;">
+                <el-button type="primary">
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu style="width:200px; align-items:center; text-align:center;">
+                  <el-button type="text" @click="centerDialog = true">Cadastrar Despesa</el-button>
+                  <el-button type="text" @click="centerDialogVisibleTable = true">Visualizar tabela categoria</el-button>
+                </el-dropdown-menu>
+              </el-dropdown>
           el-col(:span="2")
             div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
                 div(style="margin-right:2rem; position:relative; align-items:center; text-align:center;")
@@ -50,7 +53,7 @@ div
                   div
                     el-button(type="text" style="font-size:18px" @click="logout()") Sair
       //Inserção das categorias//
-      el-dialog(title="Incluir depesa.", :visible.sync="centerDialog", width="30%", center,:before-close="handleClose")
+      el-dialog(title="Incluir despesa." :visible.sync="centerDialog" width="30%" center @before-close="handleClose")
             div(style="padding:10px")
                 label(style="font-size:14px; margin-right:10px; font-weight:bold;") Digite o nome da despesa:
                 el-input(v-model="despesasCategory.name", size="small" placeholder="Digite um nome" style="width:215px")
@@ -159,12 +162,13 @@ div
               el-button(type="primary", @click="inserirDespesas()") Salvar
       //Relatorio
       el-dialog(title="Editar depesa", :visible.sync="dialogRelatorio", width="50%", center)
-        relatorio
+        div
+          relatorio
 
     </template>
     <script>
       import DataTable from '@/components/DataTable.vue'
-      import Relatorio from '../views/relatorio.vue'
+      import Relatorio from '@/views/relatorio.vue'
       import panel from '@/components/Panel.vue'
       import axios from 'axios'
       import Cookies from 'js-cookie';
@@ -173,12 +177,13 @@ div
         // eslint-disable-next-line vue/multi-word-component-names
         name: 'cabecalho',
         components: {
-        DataTable,
         Relatorio,
+        DataTable,
         panel
-        },
-        data() {
-          return {
+      },
+      data() {
+        return {
+            dialogRelatorio:false,
             valorDespesa:null,
             arrayDespesa:[],
             despesaId:null,
@@ -269,7 +274,6 @@ div
               saldo:0,
               usuario:null
             },
-            dialogRelatorio:false,
             centerDialogVisibleTable:false,
             form: {
               name: '',
@@ -375,6 +379,7 @@ div
             this.$emit('dados-login', this.dadosUsuario);
           },
           handleClose(done) {
+            console.log('ola')
             this.$confirm('Deseja fechar o modal?')
               .then(confirm =>{
                 window.dispatchEvent(new Event('resize'));
@@ -422,7 +427,6 @@ div
               };
               const listaTipo = await axios.get(`http://localhost:1081/api/despesasTipo/listar`,this.config);
               this.listaTipo = listaTipo.data;
-              console.log(this.listaTipo)
             } catch (error) {
               console.error(error);
       }
@@ -579,29 +583,29 @@ div
             this.despesas.usuario = this.usuario;
             await axios.post('http://localhost:1081/api/despesas/adicionar', this.despesas, this.config ).then(response => {
                 if(response.status === 200) {
-                    this.centerDialogResgistroDespesas = false
-                    this.despesas = {
-                        listagemDespesas:[
-                            {
-                              despesasCategory:{
-                                id:null
-                              },
-                              valor:null,
-                              despesas:null
-                            }
-                          ],
-                        calendar: null,
-                        mes: null,
-                        total: 0,
-                        entrada:0,
-                        saldo: 0,
-                        usuario: null
-                    }
-                    this.$notify({
-                      title: 'Sucesso!',
-                      message: 'Despesa registrada!',
-                      type: 'success'
-                    })
+                  this.despesas = {
+                      listagemDespesas:[
+                          {
+                            despesasCategory:{
+                              id:null
+                            },
+                            valor:null,
+                            despesas:null
+                          }
+                        ],
+                      calendar: null,
+                      mes: null,
+                      total: 0,
+                      entrada:0,
+                      saldo: 0,
+                      usuario: null
+                  }
+                  this.$notify({
+                    title: 'Sucesso!',
+                    message: 'Despesa registrada!',
+                    type: 'success'
+                  })
+                  this.centerDialogResgistroDespesas = false
                 }
             }).catch(response => {
                 if(response.status !== 200) {

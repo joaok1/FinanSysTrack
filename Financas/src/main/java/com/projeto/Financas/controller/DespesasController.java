@@ -53,4 +53,13 @@ public class DespesasController {
         }
         return despesasService.getPageDespesas(id, pageable);
     }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @DeleteMapping(value = "delete/{id}", produces = "application/json")
+    public void deleteByDespesas(@PathVariable Short id) throws DomainException {
+        if (Objects.isNull(id)) {
+            throw new DomainException("id Despesa invalido");
+        }
+        despesasService.deleteByDespesas(id);
+    }
 }

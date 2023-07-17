@@ -21,9 +21,10 @@ public class Despesas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
+
     @Transient
-    @OneToMany
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+    @OneToMany(mappedBy = "despesas", cascade = CascadeType.ALL)
     private List<ListagemDespesas> listagemDespesas;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone="GMT-3")
     private Date calendar;

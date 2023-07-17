@@ -10,8 +10,6 @@ export default {
   components: {
     Cabecalho
   },
-  data(){
-    
-  }
+
 }
 </script>
