@@ -16,12 +16,7 @@ div
                 @editar="editar"
                 @excluir="excluir",
             )
-    el-dialog(style="z-index:10102;" title="Deseja deletar este registro ?", :visible.sync="centerDialogVisible", width="30%", center, :before-close="handleClose")
-        div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
-            div
-                el-button.bottomDialog(@click="closeModal") Cancelar
-            div
-                el-button.bottomDialog(type="primary" @click="deleteId"  style='color: #fff') Confirmar
+
 </template>
 <script>
     import DataTable from '@/components/DataTable.vue'
@@ -89,6 +84,18 @@ div
             window.dispatchEvent(new Event('resize'));
         },
         methods: {
+            excluir(data) {
+                this.$confirm("Deseja deletar este registro?")
+                .then(confirm => {
+                    window.dispatchEvent(new Event('resize'));
+                    this.idDeleteAcoes = data.id;
+                    this.deleteId(this.idDeleteAcoes)
+                    data(confirm);
+                })
+                .catch(cancel =>{
+                    cancel
+                });
+            },
             handleClose(done) {
                 this.$confirm('Deseja fechar o modal?')
                 .then(confirm =>{
@@ -153,10 +160,7 @@ div
             closeModal() {
                 this.centerDialogVisible = false;
             },
-            excluir(data) {
-                this.centerDialogVisible = true;
-                this.idDeleteAcoes = data.id;
-            },
+            
             editar(data) {
                 this.data = data.id;
                 this.$router.push({
@@ -180,7 +184,7 @@ div
                 console.log(error);
                 }
             },      
-            async deleteId() {
+            async deleteId(idDeleteAcoes) {
                 this.centerDialogVisible = false;
                 const loading = this.$loading({
                     lock: true,
@@ -190,7 +194,7 @@ div
                 });
                 setTimeout(() => {
                     loading.close();
-                    axios.delete(`http://localhost:1081/api/despesas/delete/${this.idDeleteAcoes}`,this.config).then(response => {
+                    axios.delete(`http://localhost:1081/api/despesas/delete/${idDeleteAcoes}`,this.config).then(response => {
                         this.loader();
                         if(response.status === 200) {
                             this.$notify({
