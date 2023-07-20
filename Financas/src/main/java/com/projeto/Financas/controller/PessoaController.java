@@ -1,6 +1,7 @@
 package com.projeto.Financas.controller;
 
 import com.projeto.Financas.DTO.PessoaDTO;
+import com.projeto.Financas.Exception.DomainException;
 import com.projeto.Financas.model.Pessoa;
 import com.projeto.Financas.repository.PessoaRepository;
 import com.projeto.Financas.services.PessoaService;
@@ -28,7 +29,7 @@ public class PessoaController {
 
     @CrossOrigin(origins = "http://localhost:8080/")
     @PostMapping(value = "adicionar", produces = "application/json")
-    public ResponseEntity<String> salvarPessoa(@RequestBody PessoaDTO pessoaDTO) {
+    public ResponseEntity<String> salvarPessoa(@RequestBody PessoaDTO pessoaDTO) throws DomainException {
         String senhaCripto = passwordEncoder.encode(pessoaDTO.getUsuario().getSenha());
         pessoaDTO.getUsuario().setSenha(senhaCripto);
         pessoaService.adicionarPessoa(pessoaDTO);

@@ -90,10 +90,10 @@ div
               <el-button type="primary" @click="despesasEdit()">Confirmar</el-button>
           </span>
       //Tabela de edição categoria
-      el-dialog(title="Editar depesa", :visible.sync="centerDialogVisibleTable", width="50%", center)
+      el-dialog(title="Despesas cadastradas", :visible.sync="centerDialogVisibleTable", width="50%", center)
         div(style="display:flex; justify-content: space-between; position:relative; align-items:center;")
             div
-                label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Listagem das despesas
+                label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Listagem
             div
             el-button(type="primary" @click="centerDialog = true") Registrar despesas
         <br>
@@ -161,9 +161,23 @@ div
           div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px;")
               el-button(type="primary", @click="inserirDespesas()") Salvar
       //Relatorio
-      el-dialog(title="Editar depesa", :visible.sync="dialogRelatorio", width="50%", center)
+      el-dialog(title="Listagem", :visible.sync="dialogRelatorio", width="50%", center)
         div
-          relatorio
+            div(style='margin: 10px 20px 0px 20px; border-radius: 10px; background-color: #fff;')
+                div(style='display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;')
+                    div
+                        label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Registro de entrada
+                    div
+                        el-button(type='primary' icon='el-icon-printer' size='small' @click='downloadPDF()', style='font-weight: bold; margin-right:20px') PDF
+                data-table(
+                    :pageable='pageableListagemDespesa'
+                    :data="listaDataListagemDespesas.content",
+                    :columns='columnsListagemDespesas',
+                    @atualizarTabela='atualizarTabelaListagemDespesa',
+                    :acoes='acoesListagemDespesas',
+                    @editar="editarListagemDespesas"
+                    @excluir="excluirListagemDespesa",
+                )
 
     </template>
     <script>
@@ -172,6 +186,7 @@ div
       import panel from '@/components/Panel.vue'
       import axios from 'axios'
       import Cookies from 'js-cookie';
+      import {inserirDespesas, getListagemDespesas} from '@/methods/funções'
           
       export default {
         // eslint-disable-next-line vue/multi-word-component-names
@@ -183,187 +198,232 @@ div
       },
       data() {
         return {
-            dialogRelatorio:false,
-            valorDespesa:null,
-            arrayDespesa:[],
-            despesaId:null,
-            listCard:{
-              entrada:null,
-              total:null,
-              saldo:null,
-              mes:null
+          acoesListagemDespesas: [
+            {
+                text: 'Visualizar',
+                codigo: 'EDITAR',
+                icon: 'el-icon-view'
             },
-            fileList: [{
-                    name: 'food.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-            }, {
-                name: 'food2.jpeg',
-                url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-            }],
-            series: [0],
-            chartOptions: {
-                chart: {
-                    type: 'radialBar',
-                    offsetY: -20,
-                    sparkline: {
-                        enabled: true
-                    }
-                },
-                plotOptions: {
-                    max:null,
-                    radialBar: {
-                        startAngle: -90,
-                        endAngle: 90,
-                        track: {
-                            background: "#e7e7e7",
-                            strokeWidth: '97%',
-                            margin: 5, // margin is in pixels
-                            dropShadow: {
-                                enabled: true,
-                                top: 2,
-                                left: 0,
-                                color: '#999',
-                                opacity: 1,
-                                blur: 2
-                            }
-                        },
-                        dataLabels: {
-                            name: {
-                                show: false
-                            },
-                            value: {
-                                offsetY: -2,
-                                fontSize: '22px'
-                            }
-                        }
-                    }
-                },
-                grid: {
-                    padding: {
-                        top: -10
-                    }
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'light',
-                        shadeIntensity: 0.4,
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 1,
-                        stops: [0, 50, 53, 91]
-                    },
-                },
-                labels: ['Average Results'],
-            },
-            centerDialogResgistroDespesas:false,
-            despesas:{
-              listagemDespesas:[
-                  {
-                    despesasCategory:{
-                      id:null
-                    },
-                    valor:null,
-                    despesas:null
-                  }
-                ],
-              calendar:null,
-              mes:null,
-              total:0,
-              entrada:0,
-              saldo:0,
-              usuario:null
-            },
-            centerDialogVisibleTable:false,
-            form: {
-              name: '',
-              region: '',
-              date1: '',
-              date2: '',
-              delivery: false,
-              type: [],
-              resource: '',
-              desc: ''
-            },
-            saida:null,
-            saldo:null,
-            listaDataById:{
-              name:null,
-              tipo:{
-                  id:null,
-                  name:null
-              }
-            },
-            centerDialog:false,
-            data:null,
-            despesasCategoryEdit:{
-              id:null,
-              name:null,
-              tipo:null
-            },
-            centerDialogVisible:false,
-            bootbox:null,
-            despesasCategory:{
-              name:null,
-              tipo:{},
-              usuario:null
-            },
-            listaData:{},
-            pageable: {},
-            listaTipo:{},
-            page:null,
-            acoesDespesas: [
-              {
-                text: 'Excluir',
-                codigo: 'EXCLUIR',
-                icon: 'el-icon-trash'
-              },
-              {
-              }
-            ],
-            acoes: [
-              {
+            {
                 text: 'Editar',
                 codigo: 'EDITAR',
                 icon: 'el-icon-edit'
+            },
+            {
+                text: 'Excluir',
+                codigo: 'EXCLUIR',
+                icon: 'el-icon-delete'
+            }
+          ],
+          columnsListagemDespesas: [
+            {
+                label: 'Data',
+                prop: 'calendar',
+                formatter: ({ calendar }) => calendar || '-'
+            },
+            {
+                label: 'Valor recebido',
+                prop: 'entrada',
+                formatter: ({ entrada }) => entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
+            },
+            {
+                label: 'Total gastos',
+                prop: 'total',
+                formatter: ({ total }) => total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
+            },
+            {
+                label: 'Saldo do mês',
+                prop: 'saldo',
+                formatter: ({ saldo }) => saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) || '-'
+            },
+          ],
+          dialogRelatorio:false,
+          valorDespesa:null,
+          arrayDespesa:[],
+          despesaId:null,
+          listCard:{
+            entrada:null,
+            total:null,
+            saldo:null,
+            mes:null
+          },
+          fileList: [{
+                  name: 'food.jpeg',
+                  url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+          }, {
+              name: 'food2.jpeg',
+              url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+          }],
+          series: [0],
+          chartOptions: {
+              chart: {
+                  type: 'radialBar',
+                  offsetY: -20,
+                  sparkline: {
+                      enabled: true
+                  }
               },
-              {
-              }
-            ],
-            listaCategoria:null,
-            columns: [
-              {
-                label:'Nome',
-                prop: 'name',
+              plotOptions: {
+                  max:null,
+                  radialBar: {
+                      startAngle: -90,
+                      endAngle: 90,
+                      track: {
+                          background: "#e7e7e7",
+                          strokeWidth: '97%',
+                          margin: 5, // margin is in pixels
+                          dropShadow: {
+                              enabled: true,
+                              top: 2,
+                              left: 0,
+                              color: '#999',
+                              opacity: 1,
+                              blur: 2
+                          }
+                      },
+                      dataLabels: {
+                          name: {
+                              show: false
+                          },
+                          value: {
+                              offsetY: -2,
+                              fontSize: '22px'
+                          }
+                      }
+                  }
               },
-              {
-                label:'Tipo',
-                prop: 'tipo.name',
-              }
-            ],
-            columnsDesp: [
-              {
-                label:'Nome',
-                prop: 'despesasCategory.name',
+              grid: {
+                  padding: {
+                      top: -10
+                  }
               },
-              {
-                label:'Valor',
-                prop: 'valor',
-              }
-            ]
-          }
-        },
+              fill: {
+                  type: 'gradient',
+                  gradient: {
+                      shade: 'light',
+                      shadeIntensity: 0.4,
+                      inverseColors: false,
+                      opacityFrom: 1,
+                      opacityTo: 1,
+                      stops: [0, 50, 53, 91]
+                  },
+              },
+              labels: ['Average Results'],
+          },
+          centerDialogResgistroDespesas:false,
+          despesas:{
+            listagemDespesas:[
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
+            calendar:null,
+            mes:null,
+            total:0,
+            entrada:0,
+            saldo:0,
+            usuario:null
+          },
+          centerDialogVisibleTable:false,
+          form: {
+            name: '',
+            region: '',
+            date1: '',
+            date2: '',
+            delivery: false,
+            type: [],
+            resource: '',
+            desc: ''
+          },
+          saida:null,
+          saldo:null,
+          listaDataById:{
+            name:null,
+            tipo:{
+                id:null,
+                name:null
+            }
+          },
+          centerDialog:false,
+          data:null,
+          pageListagemDespesas:null,
+          listaDataListagemDespesas:{
+            content:[]
+          },
+          despesasCategoryEdit:{
+            id:null,
+            name:null,
+            tipo:null
+          },
+          centerDialogVisible:false,
+          bootbox:null,
+          despesasCategory:{
+            name:null,
+            tipo:{},
+            usuario:null
+          },
+          listaData:{},
+          pageable: {},
+          pageableListagemDespesa:{},
+          listaTipo:{},
+          page:null,
+          acoesDespesas: [
+            {
+              text: 'Excluir',
+              codigo: 'EXCLUIR',
+              icon: 'el-icon-trash'
+            },
+            {
+            }
+          ],
+          acoes: [
+            {
+              text: 'Editar',
+              codigo: 'EDITAR',
+              icon: 'el-icon-edit'
+            },
+            {
+            }
+          ],
+          listaCategoria:null,
+          columns: [
+            {
+              label:'Nome',
+              prop: 'name',
+            },
+            {
+              label:'Tipo',
+              prop: 'tipo.name',
+            }
+          ],
+          columnsDesp: [
+            {
+              label:'Nome',
+              prop: 'despesasCategory.name',
+            },
+            {
+              label:'Valor',
+              prop: 'valor',
+            }
+          ]
+        }
+    },
         async mounted() {
           await this.dadosLogin();
           console.log(this.usuario)
           await this.despesasByCategory();
           await this.tipo();
+          await this.loader();
           window.dispatchEvent(new Event('resize'));
         },
         methods: {
           async dadosLogin() {
             //configuração do usuario
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(Cookies.get('user'));
             //Configuração do Token
             const token = Cookies.get('token');
             this.config = {
@@ -579,9 +639,9 @@ div
               this.despesas.listagemDespesas.push(objec);
             })
             this.despesas.listagemDespesas.splice(0,1);
-    
             this.despesas.usuario = this.usuario;
-            await axios.post('http://localhost:1081/api/despesas/adicionar', this.despesas, this.config ).then(response => {
+            await inserirDespesas(this.despesas).then(response => {
+                console.log(response)
                 if(response.status === 200) {
                   this.despesas = {
                       listagemDespesas:[
@@ -606,8 +666,10 @@ div
                     type: 'success'
                   })
                   this.centerDialogResgistroDespesas = false
+                  this.loader()
                 }
             }).catch(response => {
+                console.log(response)
                 if(response.status !== 200) {
                     this.$notify.error({
                         title: 'Erro!',
@@ -615,7 +677,75 @@ div
                     })
                 }
             })
-          }
+          },
+          //Listagem das despesas
+          async loader() {
+            const listaData = await getListagemDespesas(this.pageListagemDespesas);
+            this.listaDataListagemDespesas = listaData.data;
+            console.log( this.listaDataListagemDespesas)
+            const { empty, number, numberOfElements, pageable, totalElements } = this.listaDataListagemDespesas;
+            this.pageableListagemDespesa = {
+                empty,
+                number,
+                numberOfElements,
+                pageable,
+                totalElements
+            };
+            window.dispatchEvent(new Event('resize'));
+            this.$emit('excluir')
+          },
+          atualizarTabelaListagemDespesa(newPage) {
+              this.pageListagemDespesas = this.listaDataListagemDespesas.pageable.pageNumber = newPage - 1;
+              this.loader();
+              this.tipo();
+          },
+          editarListagemDespesas(data) {
+                this.data = data.id;
+                this.$router.push({
+                    name: 'despesas',
+                    params: {data}
+                })
+            },
+            excluirListagemDespesa(data) {
+                this.$confirm("Deseja deletar este registro?")
+                .then(confirm => {
+                    window.dispatchEvent(new Event('resize'));
+                    this.idDeleteAcoes = data.id;
+                    this.deleteId(this.idDeleteAcoes)
+                    data(confirm);
+                })
+                .catch(cancel =>{
+                    cancel
+                });
+            },
+            async deleteId(idDeleteAcoes) {
+                this.centerDialogVisible = false;
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Deletando registro',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 1.7)'
+                });
+                setTimeout(() => {
+                    loading.close();
+                    axios.delete(`http://localhost:1081/api/despesas/delete/${idDeleteAcoes}`,this.config).then(response => {
+                        this.loader();
+                        if(response.status === 200) {
+                            this.$notify({
+                                title: 'Sucesso!',
+                                message: 'Registro deletado!',
+                                type: 'success'
+                            })
+                        }
+                    }).catch(response => {
+                            console.log(response)
+                            this.$notify.error({
+                            title: 'Erro!',
+                            message: response,
+                            })
+                    })
+                }, 1000);
+            }
         }
       }
       </script>

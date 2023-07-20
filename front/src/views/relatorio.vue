@@ -22,7 +22,8 @@ div
     import DataTable from '@/components/DataTable.vue'
     import Cabecalho from './Cabecalho.vue';
     import Cookies from 'js-cookie';
-    import axios from 'axios'
+    import axios from 'axios';
+    import {getListagemDespesas} from '@/methods/funções'
 
     export default{
         // eslint-disable-next-line vue/multi-word-component-names
@@ -125,7 +126,7 @@ div
             },
             async dadosLogin() {
                 //configuração do usuario
-                const user = JSON.parse(localStorage.getItem('user'));
+                const user = JSON.parse(Cookies.get('user'));
                 //Configuração do Token
                 const token = Cookies.get('token');
                 this.config = {
@@ -134,17 +135,14 @@ div
                     }
                 };
                 const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
-                this.usuario = userData.data.id;  
-                console.log(this.usuario)              
+                this.usuario = userData.data.id;              
             },
             atualizarTabela(newPage) {
                 this.page = this.listaData.pageable.pageNumber = newPage - 1;
                 this.loader();
             },
             async loader() {
-                console.log(this.page)
-                const listaData = await axios.get(`http://localhost:1081/api/despesas/pageLista/${this.usuario}?size=8&page=${this.page}&sort=calendar,desc`,this.config);
-                console.log(listaData)
+                const listaData = await getListagemDespesas(this.page);
                 this.listaData = listaData.data;
                 const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
                 this.pageable = {
