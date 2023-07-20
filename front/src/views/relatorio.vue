@@ -179,7 +179,7 @@ div
                 link.download = 'Relatorio Despesas.pdf';
                 link.click();
                 } catch (error) {
-                console.log(error);
+                console.error(error);
                 }
             },      
             async deleteId(idDeleteAcoes) {
@@ -202,7 +202,6 @@ div
                             })
                         }
                     }).catch(response => {
-                            console.log(response)
                             this.$notify.error({
                             title: 'Erro!',
                             message: response,

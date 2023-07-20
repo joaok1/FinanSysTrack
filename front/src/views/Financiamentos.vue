@@ -260,7 +260,6 @@ export default{
             },
         async calcularPrestacao() {
             if (!this.financiamento.nome || !this.calculoFinanciamento.bancos || !this.calculoFinanciamento.date ) {
-                console.log(this.financiamento.nome , this.calculoFinanciamento.bancos,this.calculoFinanciamento.date  )
                 this.$notify.error({
                         title: 'Erro!',
                         message: 'Preencha todos os campos!',

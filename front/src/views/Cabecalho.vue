@@ -414,7 +414,6 @@ div
     },
         async mounted() {
           await this.dadosLogin();
-          console.log(this.usuario)
           await this.despesasByCategory();
           await this.tipo();
           await this.loader();
@@ -439,7 +438,6 @@ div
             this.$emit('dados-login', this.dadosUsuario);
           },
           handleClose(done) {
-            console.log('ola')
             this.$confirm('Deseja fechar o modal?')
               .then(confirm =>{
                 window.dispatchEvent(new Event('resize'));
@@ -641,7 +639,6 @@ div
             this.despesas.listagemDespesas.splice(0,1);
             this.despesas.usuario = this.usuario;
             await inserirDespesas(this.despesas).then(response => {
-                console.log(response)
                 if(response.status === 200) {
                   this.despesas = {
                       listagemDespesas:[
@@ -669,7 +666,6 @@ div
                   this.loader()
                 }
             }).catch(response => {
-                console.log(response)
                 if(response.status !== 200) {
                     this.$notify.error({
                         title: 'Erro!',
@@ -682,7 +678,6 @@ div
           async loader() {
             const listaData = await getListagemDespesas(this.pageListagemDespesas);
             this.listaDataListagemDespesas = listaData.data;
-            console.log( this.listaDataListagemDespesas)
             const { empty, number, numberOfElements, pageable, totalElements } = this.listaDataListagemDespesas;
             this.pageableListagemDespesa = {
                 empty,
@@ -731,18 +726,17 @@ div
                     axios.delete(`http://localhost:1081/api/despesas/delete/${idDeleteAcoes}`,this.config).then(response => {
                         this.loader();
                         if(response.status === 200) {
-                            this.$notify({
-                                title: 'Sucesso!',
-                                message: 'Registro deletado!',
-                                type: 'success'
-                            })
+                          this.$notify({
+                            title: 'Sucesso!',
+                            message: 'Registro deletado!',
+                            type: 'success'
+                          })
                         }
                     }).catch(response => {
-                            console.log(response)
-                            this.$notify.error({
-                            title: 'Erro!',
-                            message: response,
-                            })
+                        this.$notify.error({
+                        title: 'Erro!',
+                        message: response,
+                        })
                     })
                 }, 1000);
             }

@@ -5,7 +5,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 Vue.use(VueRouter)
 Vue.use(Vuex);
-Vue.use(axios)
+
 
 //Configurações globais do usuario
 

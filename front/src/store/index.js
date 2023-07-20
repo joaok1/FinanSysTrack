@@ -45,7 +45,6 @@ export default new Vuex.Store({
         const response = await axios.post(`${API_URL}`, credentials);
         const token = response.data.token;
         const user = jwtDecode(token);
-        console.log("", user);
         // Armazene o token e as informações do usuário no cookie
         Cookies.set(TOKEN_COOKIE_KEY, token, { expires: 1, secure: true });
         Cookies.set(USER_COOKIE_KEY, JSON.stringify(user), { expires: 1, secure: true });
@@ -53,9 +52,7 @@ export default new Vuex.Store({
         router.push({ name: 'Despesas' });
         return user;
       } catch (error) {
-        console.log('ola')
-        console.log(error);
-        // Lidar com erros de autenticação, exibir mensagens de erro etc.
+        console.error(error);
       }
     },
     async logout({ commit }) {
@@ -78,7 +75,7 @@ export default new Vuex.Store({
       }),
     }),
 
-   async function verifyUserExpired({ commit },to, from, next) {
+  async function verifyUserExpired({ commit },to, from, next) {
       const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
       if(response.data === false) {
         Cookies.remove(TOKEN_COOKIE_KEY);
