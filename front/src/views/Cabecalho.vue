@@ -186,7 +186,8 @@ div
       import panel from '@/components/Panel.vue'
       import axios from 'axios'
       import Cookies from 'js-cookie';
-      import {inserirDespesas, getListagemDespesas} from '@/methods/funções'
+      import {inserirDespesas,getListagemDespesas,getTipo,getCategoria,
+        despesasCategoryByTipo,editarByCategoria,getByCategoria,getByCategoriaTable,deleteDespesas} from '@/methods/funções'
           
       export default {
         // eslint-disable-next-line vue/multi-word-component-names
@@ -419,165 +420,38 @@ div
           await this.loader();
           window.dispatchEvent(new Event('resize'));
         },
-        methods: {
-          async dadosLogin() {
-            //configuração do usuario
-            const user = JSON.parse(Cookies.get('user'));
-            //Configuração do Token
-            const token = Cookies.get('token');
-            this.config = {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            };
-            const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
-            this.usuario = userData.data.id;
-            this.dadosUsuario ={}
-            this.dadosUsuario = this.config;
-            this.dadosUsuario = this.usuario
-            this.$emit('dados-login', this.dadosUsuario);
-          },
-          handleClose(done) {
-            this.$confirm('Deseja fechar o modal?')
-              .then(confirm =>{
-                window.dispatchEvent(new Event('resize'));
-                this.despesas = {
-                  listagemDespesas:[
-                    {
-                      despesasCategory:{
-                        id:null
-                      },
-                      valor:null,
-                      despesas:null
-                    }
-                  ],
-                  calendar: null,
-                  mes: null,
-                  total: 0,
-                  entrada:0,
-                  saldo: 0,
-                  usuario: null
-                }
-                done(confirm);
-              })
-              .catch(cancel =>{
-                cancel
-              });
-          },
-          atualizarTabela(newPage) {
-              this.page = this.listaData.pageable.pageNumber = newPage - 1;
-              this.tipo();
-          },
-          async logout(){
-            await this.$store.dispatch('logout');
-          },
-          async tipo() {
-            try {
-              const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/page/${this.usuario}?size=10&page=${this.page}&sort=data_cadastro,desc`, this.config);
-              this.listaData = listaData.data;
-              const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
-              this.pageable = {
-                empty,
-                number,
-                numberOfElements,
-                pageable,
-                totalElements
-              };
-              const listaTipo = await axios.get(`http://localhost:1081/api/despesasTipo/listar`,this.config);
-              this.listaTipo = listaTipo.data;
-            } catch (error) {
-              console.error(error);
-      }
-    },
-          async despesasCategoryByTipo() {
-              this.despesasCategory.usuario = this.usuario;
-              await axios.post('http://localhost:1081/api/registroCategoriaDespesas/inserir', this.despesasCategory, this.config ).then(response => {
-                  if(response.status === 200) {
-                      this.centerDialog = false
-                      this.despesasCategory = {};
-                      this.despesasByCategory();
-                      this.$notify({
-                              title: 'Sucesso!',
-                              message: 'Registro salvo!',
-                              type: 'success'
-                          })
-                  }
-              }).catch(error => {
-                  if(error.response.data.message === "Categoria já registrada!") {
-                    this.$notify.error({
-                          title: 'Erro!',
-                          message: 'Despesa já registrada!',
-                      })
-                  } else {
-                    this.$notify.error({
-                          title: 'Erro!',
-                          message: 'Erro ao salvar despesa',
-                      })
-                  }
-              })
-              await this.tipo();
-          },
-          async editar(data){
-              this.despesasCategoryEdit = {
-                  id: '',
-                  name: '',
-                  tipo: {
-                      id:null
-                  }
-              };
-              this.data = data.id;
-              const listaData = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listarFindById/${this.data}`,this.config);
-              this.listaDataById = listaData.data;
-              this.despesasCategoryEdit.id = this.data;
-              this.despesasCategoryEdit.name = this.listaDataById.name;
-              this.despesasCategoryEdit.tipo = this.listaDataById.tipo.id;
-              this.centerDialogVisible = true;
-              await this.tipo();
-          },
-          async despesasEdit(){
-              await axios.put('http://localhost:1081/api/registroCategoriaDespesas/edit', this.despesasCategoryEdit, this.config ).then(response => {
-                  if(response.status === 200) {
-                      this.centerDialogVisible = false;
-                      this.despesasCategoryEdit = {
-                          id: '',
-                          name: '',
-                          tipo: {
-                              id:null
-                          }
-                      };
-                      this.$notify({
-                          title: 'Sucesso!',
-                          message: 'Registro Editado!',
-                          type: 'success'
-                      });
-                  }
-              }).catch(error => {
-                  if(error.response.data.message === "Este objeto não pode ser editado, já esta sendo utilizado.") {
-                    this.$notify.error({
-                          title: 'Erro!',
-                          message: 'Este objeto não pode ser editado, já esta sendo utilizado!',
-                      })
-                  } else {
-                      this.$notify.error({
-                          title: 'Erro!',
-                          message: 'Erro ao editar registro!',
-                      })
-                  }
-              })
-              await this.tipo();
-          },
-          //Inserção das despesas
-          abrirModalDespesa(){
+    methods: {
+      async dadosLogin() {
+        //configuração do usuario
+        const user = JSON.parse(Cookies.get('user'));
+        //Configuração do Token
+        const token = Cookies.get('token');
+        this.config = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+        const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
+        this.usuario = userData.data.id;
+        this.dadosUsuario ={}
+        this.dadosUsuario = this.config;
+        this.dadosUsuario = this.usuario
+        this.$emit('dados-login', this.dadosUsuario);
+      },
+      handleClose(done) {
+        this.$confirm('Deseja fechar o modal?')
+          .then(confirm =>{
+            window.dispatchEvent(new Event('resize'));
             this.despesas = {
               listagemDespesas:[
-                  {
-                    despesasCategory:{
-                      id:null
-                    },
-                    valor:null,
-                    despesas:null
-                  }
-                ],
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
               calendar: null,
               mes: null,
               total: 0,
@@ -585,163 +459,290 @@ div
               saldo: 0,
               usuario: null
             }
-            window.dispatchEvent(new Event('resize'));
-            this.centerDialogResgistroDespesas = true
-          },
-          async despesasByCategory() {
-              const lista = await axios.get(`http://localhost:1081/api/registroCategoriaDespesas/listar/${this.usuario}`, this.config);
-              this.listaCategoria = lista.data;
-          },
-          mountedDespesas() {
-            this.listaCategoria.forEach(x => {
-              if (this.despesaId === x.id) {
-                var names = x.name;
-                var desp = {
-                  despesasCategory: {
-                    id: this.despesaId,
-                    name: names
-                  },
-                  valor: this.valorDespesa
-                };
-                this.arrayDespesa.push(desp);
-                this.saida = 0;
-                this.saldo = 0;
-                this.arrayDespesa.forEach(item => {
-                  this.saida += item.valor
-                  this.saldo = this.despesas.entrada - this.saida
-                  this.despesas.saldo = this.saldo;
-                  this.despesas.total = this.saida;
-                });
+            done(confirm);
+          })
+          .catch(cancel =>{
+            cancel
+          });
+      },
+      atualizarTabela(newPage) {
+          this.page = this.listaData.pageable.pageNumber = newPage - 1;
+          this.tipo();
+      },
+      async logout(){
+        await this.$store.dispatch('logout');
+      },
+      async tipo() {
+        try {
+          const listaData = await getCategoria(this.page);
+          this.listaData = listaData.data;
+          const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
+          this.pageable = {
+            empty,
+            number,
+            numberOfElements,
+            pageable,
+            totalElements
+          };
+          const listaTipo = await getTipo();
+          this.listaTipo = listaTipo.data;
+        } catch (error) {
+          console.error(error);
+  }
+},
+      async despesasCategoryByTipo() {
+          this.despesasCategory.usuario = this.usuario;
+          await despesasCategoryByTipo(this.despesasCategory).then(response => {
+            if(response.status === 200) {
+                this.centerDialog = false
+                this.despesasCategory = {};
+                this.despesasByCategory();
+                this.$notify({
+                  title: 'Sucesso!',
+                  message: 'Registro salvo!',
+                  type: 'success'
+                })
+            }
+          }).catch(error => {
+              if(error.response.data.message === "Categoria já registrada!") {
+                this.$notify.error({
+                  title: 'Erro!',
+                  message: 'Despesa já registrada!',
+                })
+              } else {
+                this.$notify.error({
+                  title: 'Erro!',
+                  message: 'Erro ao salvar despesa',
+                })
               }
-            });
-            this.series.splice(0,1);
-            let final = (this.saida * 100) / this.despesas.entrada
-            this.series.push(final);
-          },
-          excluir(val) {
-            const index = this.arrayDespesa.indexOf(val);
-            this.arrayDespesa.splice(index, 1);
-            this.saida = 0;
-            for (let ind = 0; ind < this.arrayDespesa.length; ind++) {
-              this.saida += this.arrayDespesa[ind].valor;
-            }
-            this.saldo = this.despesas.entrada - this.saida;
-            this.despesas.saldo = this.saldo;
-            this.despesas.total = this.saida;
-            let final = (this.saida * 100) / this.despesas.entrada
-            this.series.splice(0,1);
-            this.series.push(final);
-          },
-          async inserirDespesas() {
-            this.arrayDespesa.map(objec => {
-              this.despesas.listagemDespesas.push(objec);
-            })
-            this.despesas.listagemDespesas.splice(0,1);
-            this.despesas.usuario = this.usuario;
-            await inserirDespesas(this.despesas).then(response => {
-                if(response.status === 200) {
-                  this.despesas = {
-                      listagemDespesas:[
-                          {
-                            despesasCategory:{
-                              id:null
-                            },
-                            valor:null,
-                            despesas:null
-                          }
-                        ],
-                      calendar: null,
-                      mes: null,
-                      total: 0,
-                      entrada:0,
-                      saldo: 0,
-                      usuario: null
+          })
+          await this.tipo();
+      },
+      async editar(data){
+        this.despesasCategoryEdit = {
+          id: '',
+          name: '',
+          tipo: {
+            id:null
+          }
+        };
+        this.data = data.id;
+        const listaData = await getByCategoria(this.data);
+        this.listaDataById = listaData.data;
+        this.despesasCategoryEdit.id = this.data;
+        this.despesasCategoryEdit.name = this.listaDataById.name;
+        this.despesasCategoryEdit.tipo = this.listaDataById.tipo.id;
+        this.centerDialogVisible = true;
+        await this.tipo();
+      },
+      async despesasEdit(){
+        await editarByCategoria(this.despesasCategoryEdit).then(response => {
+          if(response.status === 200) {
+              this.centerDialogVisible = false;
+              this.despesasCategoryEdit = {
+                  id: '',
+                  name: '',
+                  tipo: {
+                      id:null
                   }
-                  this.$notify({
-                    title: 'Sucesso!',
-                    message: 'Despesa registrada!',
-                    type: 'success'
-                  })
-                  this.centerDialogResgistroDespesas = false
-                  this.loader()
-                }
-            }).catch(response => {
-                if(response.status !== 200) {
-                    this.$notify.error({
-                        title: 'Erro!',
-                        message: 'Erro ao salvar registro!',
-                    })
-                }
-            })
-          },
-          //Listagem das despesas
-          async loader() {
-            const listaData = await getListagemDespesas(this.pageListagemDespesas);
-            this.listaDataListagemDespesas = listaData.data;
-            const { empty, number, numberOfElements, pageable, totalElements } = this.listaDataListagemDespesas;
-            this.pageableListagemDespesa = {
-                empty,
-                number,
-                numberOfElements,
-                pageable,
-                totalElements
-            };
-            window.dispatchEvent(new Event('resize'));
-            this.$emit('excluir')
-          },
-          atualizarTabelaListagemDespesa(newPage) {
-              this.pageListagemDespesas = this.listaDataListagemDespesas.pageable.pageNumber = newPage - 1;
-              this.loader();
-              this.tipo();
-          },
-          editarListagemDespesas(data) {
-                this.data = data.id;
-                this.$router.push({
-                    name: 'despesas',
-                    params: {data}
-                })
-            },
-            excluirListagemDespesa(data) {
-                this.$confirm("Deseja deletar este registro?")
-                .then(confirm => {
-                    window.dispatchEvent(new Event('resize'));
-                    this.idDeleteAcoes = data.id;
-                    this.deleteId(this.idDeleteAcoes)
-                    data(confirm);
-                })
-                .catch(cancel =>{
-                    cancel
-                });
-            },
-            async deleteId(idDeleteAcoes) {
-                this.centerDialogVisible = false;
-                const loading = this.$loading({
-                    lock: true,
-                    text: 'Deletando registro',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 1.7)'
-                });
-                setTimeout(() => {
-                    loading.close();
-                    axios.delete(`http://localhost:1081/api/despesas/delete/${idDeleteAcoes}`,this.config).then(response => {
-                        this.loader();
-                        if(response.status === 200) {
-                          this.$notify({
-                            title: 'Sucesso!',
-                            message: 'Registro deletado!',
-                            type: 'success'
-                          })
-                        }
-                    }).catch(response => {
-                        this.$notify.error({
-                        title: 'Erro!',
-                        message: response,
-                        })
-                    })
-                }, 1000);
+              };
+              this.$notify({
+                  title: 'Sucesso!',
+                  message: 'Registro Editado!',
+                  type: 'success'
+              });
             }
+        }).catch(error => {
+          if(error.response.data.message === "Este objeto não pode ser editado, já esta sendo utilizado.") {
+            this.$notify.error({
+                  title: 'Erro!',
+                  message: 'Este objeto não pode ser editado, já esta sendo utilizado!',
+              })
+          } else {
+              this.$notify.error({
+                  title: 'Erro!',
+                  message: 'Erro ao editar registro!',
+              })
+          }
+        })
+          await this.tipo();
+      },
+      //Inserção das despesas
+      abrirModalDespesa(){
+        this.despesas = {
+          listagemDespesas:[
+            {
+              despesasCategory:{
+                id:null
+              },
+              valor:null,
+              despesas:null
+            }
+          ],
+          calendar: null,
+          mes: null,
+          total: 0,
+          entrada:0,
+          saldo: 0,
+          usuario: null
         }
+        window.dispatchEvent(new Event('resize'));
+        this.centerDialogResgistroDespesas = true
+      },
+      async despesasByCategory() {
+          const lista = await getByCategoriaTable()
+          this.listaCategoria = lista.data;
+      },
+      mountedDespesas() {
+        this.listaCategoria.forEach(x => {
+          if (this.despesaId === x.id) {
+            var names = x.name;
+            var desp = {
+              despesasCategory: {
+                id: this.despesaId,
+                name: names
+              },
+              valor: this.valorDespesa
+            };
+            this.arrayDespesa.push(desp);
+            this.saida = 0;
+            this.saldo = 0;
+            this.arrayDespesa.forEach(item => {
+              this.saida += item.valor
+              this.saldo = this.despesas.entrada - this.saida
+              this.despesas.saldo = this.saldo;
+              this.despesas.total = this.saida;
+            });
+          }
+        });
+        this.series.splice(0,1);
+        let final = (this.saida * 100) / this.despesas.entrada
+        this.series.push(final);
+      },
+      excluir(val) {
+        const index = this.arrayDespesa.indexOf(val);
+        this.arrayDespesa.splice(index, 1);
+        this.saida = 0;
+        for (let ind = 0; ind < this.arrayDespesa.length; ind++) {
+          this.saida += this.arrayDespesa[ind].valor;
+        }
+        this.saldo = this.despesas.entrada - this.saida;
+        this.despesas.saldo = this.saldo;
+        this.despesas.total = this.saida;
+        let final = (this.saida * 100) / this.despesas.entrada
+        this.series.splice(0,1);
+        this.series.push(final);
+      },
+      async inserirDespesas() {
+        this.arrayDespesa.map(objec => {
+          this.despesas.listagemDespesas.push(objec);
+        })
+        this.despesas.listagemDespesas.splice(0,1);
+        this.despesas.usuario = this.usuario;
+        await inserirDespesas(this.despesas).then(response => {
+          if(response.status === 200) {
+            this.despesas = {
+              listagemDespesas:[
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
+              calendar: null,
+              mes: null,
+              total: 0,
+              entrada:0,
+              saldo: 0,
+              usuario: null
+            }
+            this.$notify({
+              title: 'Sucesso!',
+              message: 'Despesa registrada!',
+              type: 'success'
+            })
+            this.centerDialogResgistroDespesas = false
+            this.loader()
+          }
+        }).catch(response => {
+          if(response.status !== 200) {
+            this.$notify.error({
+                title: 'Erro!',
+                message: 'Erro ao salvar registro!',
+            })
+          }
+        })
+      },
+      //Listagem das despesas
+      async loader() {
+        const listaData = await getListagemDespesas(this.pageListagemDespesas);
+        this.listaDataListagemDespesas = listaData.data;
+        const { empty, number, numberOfElements, pageable, totalElements } = this.listaDataListagemDespesas;
+        this.pageableListagemDespesa = {
+            empty,
+            number,
+            numberOfElements,
+            pageable,
+            totalElements
+        };
+        window.dispatchEvent(new Event('resize'));
+        this.$emit('excluir')
+      },
+      atualizarTabelaListagemDespesa(newPage) {
+        this.pageListagemDespesas = this.listaDataListagemDespesas.pageable.pageNumber = newPage - 1;
+        this.loader();
+        this.tipo();
+      },
+      editarListagemDespesas(data) {
+        this.data = data.id;
+        this.$router.push({
+            name: 'despesas',
+            params: {data}
+        })
+      },
+        excluirListagemDespesa(data) {
+            this.$confirm("Deseja deletar este registro?")
+            .then(confirm => {
+              window.dispatchEvent(new Event('resize'));
+              this.idDeleteAcoes = data.id;
+              this.deleteId(this.idDeleteAcoes)
+              data(confirm);
+            })
+            .catch(cancel =>{
+                cancel
+            });
+        },
+        async deleteId(idDeleteAcoes) {
+          this.centerDialogVisible = false;
+          const loading = this.$loading({
+            lock: true,
+            text: 'Deletando registro',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 1.7)'
+          });
+          setTimeout(() => {
+            loading.close();
+            deleteDespesas(idDeleteAcoes).then(response => {
+              this.loader();
+              if(response.status === 200) {
+                this.$notify({
+                  title: 'Sucesso!',
+                  message: 'Registro deletado!',
+                  type: 'success'
+                })
+              }
+          }).catch(response => {
+            this.$notify.error({
+            title: 'Erro!',
+            message: response,
+              })
+          })
+        }, 1000);
       }
+    }
+  }
       </script>
       <style scoped>
       .card1{
