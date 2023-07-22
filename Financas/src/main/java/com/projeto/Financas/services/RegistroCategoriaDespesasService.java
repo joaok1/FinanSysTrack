@@ -111,8 +111,9 @@ public class RegistroCategoriaDespesasService {
     }
 
     public void deleteById(Short id) throws DomainException {
-        List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByCategoriaDespesa(id);
-        if (categoriaDespesasList.size() > 0) {
+        Optional<CategoriaDespesas> categoriaDespesas = categoriaDespesasRepository.findById(id);
+        List<ListagemDespesas> listagemDespesas = listagemDespesasRepository.findBydespesasCategory(categoriaDespesas.get());
+        if (listagemDespesas.size() > 0) {
             throw new DomainException("Este registro ja esta sendo utilizado, não e possivel deletar.");
         } else {
             categoriaDespesasRepository.deleteById(id);

@@ -129,3 +129,12 @@ export async function getByCategoriaTable(){
     }
     return axios(data);
 }
+
+export async function excluirDespesasCategoria(id){
+        const data = {
+        method: "delete",
+        url: `http://localhost:1081/api/registroCategoriaDespesas/delete/${id}`,
+        ...config
+    }
+    return axios(data);
+}

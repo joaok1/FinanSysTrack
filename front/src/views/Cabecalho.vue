@@ -104,7 +104,8 @@ div
               :columns='columns',
               @atualizarTabela='atualizarTabela',
               :acoes='acoes',
-              @editar="editar"
+              @editar="editar",
+              @excluir="excluirDespesasCategoria"
           )
       //Registro de despesas
       el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Inserir despesa",:before-close="handleClose")
@@ -187,7 +188,7 @@ div
   import axios from 'axios'
   import Cookies from 'js-cookie';
   import {inserirDespesas,getListagemDespesas,getTipo,getCategoria,
-    despesasCategoryByTipo,editarByCategoria,getByCategoria,getByCategoriaTable,deleteDespesas} from '@/methods/funções'
+    despesasCategoryByTipo,editarByCategoria,getByCategoria,getByCategoriaTable,deleteDespesas,excluirDespesasCategoria} from '@/methods/funções'
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
@@ -389,6 +390,9 @@ div
             icon: 'el-icon-edit'
           },
           {
+            text: 'Excluir',
+            codigo: 'EXCLUIR',
+            icon: 'el-icon-delete'
           }
         ],
         listaCategoria:null,
@@ -518,6 +522,23 @@ div
             }
         })
         await this.tipo();
+    },
+    async excluirDespesasCategoria(data){
+      console.log(data);
+       await excluirDespesasCategoria(data.id).then(async () => {
+        this.$notify({
+          title: 'Sucesso!',
+          message: 'Registro Deletado!',
+          type: 'success'
+        });
+        await this.tipo();
+        }).catch(data => {
+          console.log(data)
+          this.$notify.error({
+            title: 'Erro!',
+            message: data.response.data.message
+          })
+        })
     },
     async editar(data){
       this.despesasCategoryEdit = {
