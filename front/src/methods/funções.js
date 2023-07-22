@@ -9,8 +9,7 @@ Vue.use(Vuex);
 
 //Configurações globais do usuario
 
-//Resgata o usuario logado
-const user = getUserCookie();
+
 //Resgata o Token do usuario
 const token = Cookies.get('token');
 //Cria a Authorization do usuario
@@ -25,9 +24,11 @@ function getUserCookie() {
         const user = JSON.parse(userCookie);
         return user.sub
     } else {
-        return null; // ou qualquer valor padrão que faça sentido para o seu caso
+        return null;
     }
 }
+//Resgata o usuario logado
+const user = getUserCookie();
 
 // Busca o id do usuario
 export async function dadosLogin() {

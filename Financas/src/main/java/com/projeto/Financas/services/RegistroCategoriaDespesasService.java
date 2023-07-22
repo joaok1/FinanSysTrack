@@ -3,6 +3,7 @@ package com.projeto.Financas.services;
 import com.projeto.Financas.DTO.RegistroCategoriaDespesasDTO;
 import com.projeto.Financas.Exception.DomainException;
 import com.projeto.Financas.model.CategoriaDespesas;
+import com.projeto.Financas.model.ListagemDespesas;
 import com.projeto.Financas.model.TipoDespesas;
 import com.projeto.Financas.model.Usuario;
 import com.projeto.Financas.repository.CategoriaDespesasRepository;
@@ -79,6 +80,11 @@ public class RegistroCategoriaDespesasService {
                 throw  new DomainException("Id com valor nulo");
             } else if (Objects.isNull(categoriaDespesasDTO.getId()) || Objects.isNull(categoriaDespesasDTO.getTipo())) {
                 throw  new DomainException("Id com valor nulo");
+            }
+            Optional<CategoriaDespesas> categoriaDespesas = categoriaDespesasRepository.findById(categoriaDespesasDTO.getId());
+            List<ListagemDespesas> listagemDespesas = listagemDespesasRepository.findBydespesasCategory(categoriaDespesas.get());
+            if (listagemDespesas.size() > 0) {
+                throw new DomainException("Este registro não pode ser editado pois já esta sendo utilizado.");
             }
             Optional<CategoriaDespesas> registroCategoriaDespesas = categoriaDespesasRepository.findById(categoriaDespesasDTO.getId());
             CategoriaDespesas registro = registroCategoriaDespesas.get();

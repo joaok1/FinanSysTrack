@@ -12,20 +12,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ListagemDespesas {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
+
     @OneToOne
     @JoinColumn(name = "registro_categoria_despesas_id", referencedColumnName = "id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private CategoriaDespesas despesasCategory;
+
     @OneToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Usuario usuario;
+
     @ManyToOne
-    @JoinColumn(name = "despesas", referencedColumnName = "id")
+    @JoinColumn(name = "despesas_id", referencedColumnName = "id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Despesas despesas;
+
     private Double valor;
 }

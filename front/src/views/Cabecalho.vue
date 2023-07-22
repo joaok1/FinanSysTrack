@@ -493,11 +493,11 @@ div
 },
     async despesasCategoryByTipo() {
         this.despesasCategory.usuario = this.usuario;
-        await despesasCategoryByTipo(this.despesasCategory).then(response => {
+        await despesasCategoryByTipo(this.despesasCategory).then(async response => {
           if(response.status === 200) {
               this.centerDialog = false
               this.despesasCategory = {};
-              this.despesasByCategory();
+              await this.despesasByCategory();
               this.$notify({
                 title: 'Sucesso!',
                 message: 'Registro salvo!',
@@ -554,10 +554,10 @@ div
             });
           }
       }).catch(error => {
-        if(error.response.data.message === "Este objeto não pode ser editado, já esta sendo utilizado.") {
+        if(error.response.data.message === "Este registro não pode ser editado pois já esta sendo utilizado.") {
           this.$notify.error({
                 title: 'Erro!',
-                message: 'Este objeto não pode ser editado, já esta sendo utilizado!',
+                message: error.response.data.message
             })
         } else {
             this.$notify.error({
@@ -725,8 +725,8 @@ div
         });
         setTimeout(() => {
           loading.close();
-          deleteDespesas(idDeleteAcoes).then(response => {
-            this.loader();
+          deleteDespesas(idDeleteAcoes).then(async response => {
+            await this.loader();
             if(response.status === 200) {
               this.$notify({
                 title: 'Sucesso!',

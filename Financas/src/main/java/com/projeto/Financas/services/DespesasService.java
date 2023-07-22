@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,10 @@ public class DespesasService {
         if (Objects.isNull(usuario.get())) {
             throw new DomainException("Usuario não encontrado na base de dados!");
         }
-        return despesasRepository.findByUsuario(id, pageable);
+
+        Page<Despesas> despesasPage = despesasRepository.findAllByUsuario(pageable, usuario.get());
+
+        return despesasPage;
     }
     @Transactional
     public void deleteByDespesas(Short id) throws DomainException {

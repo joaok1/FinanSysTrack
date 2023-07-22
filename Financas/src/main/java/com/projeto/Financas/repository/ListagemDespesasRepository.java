@@ -8,8 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ListagemDespesasRepository extends JpaRepository<ListagemDespesas,Short> {
     void deleteByDespesas(Despesas despesas);
+
+    List<ListagemDespesas> findBydespesasCategory(CategoriaDespesas categoriaDespesas);
 }
