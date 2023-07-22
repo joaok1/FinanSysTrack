@@ -26,8 +26,8 @@ public class Despesas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
 
-    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    @OneToMany(mappedBy = "despesas")
+    @JsonIgnoreProperties(value = {"despesas", "hibernateLazyInitializer"})
+    @OneToMany(mappedBy = "despesas", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ListagemDespesas> listagemDespesas;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone="GMT-3")

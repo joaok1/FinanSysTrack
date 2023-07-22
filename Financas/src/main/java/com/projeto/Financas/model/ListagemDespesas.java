@@ -29,7 +29,7 @@ public class ListagemDespesas {
 
     @ManyToOne
     @JoinColumn(name = "despesas_id", referencedColumnName = "id")
-    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+    @JsonIgnoreProperties(value = {"listagemDespesas", "hibernateLazyInitializer"})
     private Despesas despesas;
 
     private Double valor;
