@@ -18,17 +18,20 @@ const config = {
         Authorization: `Bearer ${token}`
     }
 };
-function getUserCookie() {
-    const userCookie = Cookies.get('user');
-    if (userCookie) {
-        const user = JSON.parse(userCookie);
-        return user.sub
-    } else {
-        return null;
-    }
-}
+// function getUserCookie() {
+//     const userCookie = Cookies.get('user');
+//     if (userCookie) {
+//         const user = JSON.parse(userCookie);
+//         return user.sub
+//     } else {
+//         return null;
+//     }
+// }
 //Resgata o usuario logado
-const user = getUserCookie();
+
+const user = Cookies.get('dados_usuario');
+console.log("user", user);
+
 
 // Busca o id do usuario
 export async function dadosLogin() {

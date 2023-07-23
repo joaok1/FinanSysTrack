@@ -2,7 +2,7 @@
 <template lang="pug">
 div
     div.dashBoard
-      el-card(style="margin: 10px 10px; border-radius:10px")
+      el-card(style="margin: 10px 10px; border-radius:10px; background-color:#696969;")
         div(style="display:flex; align-items:center;")
           el-col(:span="11")
             div(style="position:relative; display:flex; flex-wrap:wrap;")
@@ -51,7 +51,7 @@ div
                   div
                     <el-avatar :size="80"></el-avatar>
                   div
-                    el-button(type="text" style="font-size:18px" @click="logout()") Sair
+                    el-button(type="text" style="font-size:18px; color:#fff" @click="logout()") Sair
       //Inserção das categorias//
       el-dialog(title="Incluir despesa." :visible.sync="centerDialog" width="30%" center @before-close="handleClose")
             div(style="padding:10px")
