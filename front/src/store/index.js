@@ -21,7 +21,6 @@ const TOKEN_COOKIE_KEY = 'token';
 const USER_COOKIE_KEY = 'user';
 const DADOS_USUARIO = 'dados_usuario';
 
-
   function showLoading() {
     const loadingInstance = Element.Loading.service({
       lock:true,
@@ -47,6 +46,13 @@ const DADOS_USUARIO = 'dados_usuario';
       message: "Seja bem-vindo!",
     })
   }
+  // Função para remover todos os cookies
+  function removeAllCookies() {
+    const cookies = Object.keys(Cookies.get());
+    cookies.forEach(cookie => {
+      Cookies.remove(cookie);
+    });
+  }
   
 
 export default new Vuex.Store({
@@ -67,8 +73,7 @@ export default new Vuex.Store({
       }
     },
     clearAuthentication(state) {
-      Cookies.remove(TOKEN_COOKIE_KEY);
-      Cookies.remove(USER_COOKIE_KEY);
+      removeAllCookies();
       state.authenticated = false;
     },
   },
@@ -82,8 +87,7 @@ export default new Vuex.Store({
         Cookies.set(TOKEN_COOKIE_KEY, token, { expires: 1, secure: true });
         Cookies.set(USER_COOKIE_KEY, JSON.stringify(user), { expires: 1, secure: true });
         commit('setAuthenticated', true);
-        const getUserCookie = Cookies.get('user');
-        console.log(getUserCookie);
+        const getUserCookie = Cookies.get('user'); 
         const userCookie = JSON.parse(getUserCookie);
         const usuario = userCookie.sub;
         Cookies.set(DADOS_USUARIO, usuario, { expires: 1, secure: true });
@@ -102,8 +106,8 @@ export default new Vuex.Store({
       }
     },
     async logout({ commit }) {
-      Cookies.remove(TOKEN_COOKIE_KEY);
-      Cookies.remove(USER_COOKIE_KEY);
+      removeAllCookies();
+
       router.push({ name: 'Login' });
       commit('clearAuthentication');
     }
@@ -124,9 +128,7 @@ export default new Vuex.Store({
   async function verifyUserExpired({ commit }) {
       const response = await axios.get(`${API_URL_VERIFY}/${Cookies.get(TOKEN_COOKIE_KEY)}`)
       if(response.data === false) {
-        Cookies.remove(TOKEN_COOKIE_KEY);
-        Cookies.remove(USER_COOKIE_KEY);
-        Cookies.remove(DADOS_USUARIO);
+        removeAllCookies();
         commit('clearAuthentication');
       }
     }

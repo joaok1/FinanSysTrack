@@ -183,18 +183,15 @@ div
     </template>
 <script>
   import DataTable from '@/components/DataTable.vue'
-  import Relatorio from '@/views/relatorio.vue'
   import panel from '@/components/Panel.vue'
-  import axios from 'axios'
   import Cookies from 'js-cookie';
-  import {inserirDespesas,getListagemDespesas,getTipo,getCategoria,
+  import {inserirDespesas,getListagemDespesas,getTipo,getCategoria,dadosLogin,
     despesasCategoryByTipo,editarByCategoria,getByCategoria,getByCategoriaTable,deleteDespesas,excluirDespesasCategoria} from '@/methods/funções'
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
     name: 'cabecalho',
     components: {
-    Relatorio,
     DataTable,
     panel
   },
@@ -427,8 +424,6 @@ div
       },
   methods: {
     async dadosLogin() {
-      //configuração do usuario
-      const user = JSON.parse(Cookies.get('user'));
       //Configuração do Token
       const token = Cookies.get('token');
       this.config = {
@@ -436,9 +431,9 @@ div
           Authorization: `Bearer ${token}`
         }
       };
-      const userData = await axios.get(`http://localhost:1081/api/usuarios/findByLogin/${user.sub}`)
-      this.usuario = userData.data.id;
-      this.dadosUsuario ={}
+      const userData = await dadosLogin();
+      this.usuario = userData;
+      this.dadosUsuario ={};
       this.dadosUsuario = this.config;
       this.dadosUsuario = this.usuario
       this.$emit('dados-login', this.dadosUsuario);

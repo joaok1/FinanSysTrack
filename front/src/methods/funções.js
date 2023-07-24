@@ -18,15 +18,7 @@ const config = {
         Authorization: `Bearer ${token}`
     }
 };
-// function getUserCookie() {
-//     const userCookie = Cookies.get('user');
-//     if (userCookie) {
-//         const user = JSON.parse(userCookie);
-//         return user.sub
-//     } else {
-//         return null;
-//     }
-// }
+
 //Resgata o usuario logado
 
 const user = Cookies.get('dados_usuario');
@@ -47,7 +39,13 @@ const USER_ID = dadosLogin();
 
 //Metodo para Adicionar as depesas do mes
 export async function inserirDespesas(despesas) {
-    return axios.post('http://localhost:1081/api/despesas/adicionar', despesas, config )
+    const data = {
+        method: "post",
+        url: "http://localhost:1081/api/despesas/adicionar",
+        data: despesas,
+        ...config
+    }
+    return axios(data)
 }
 
 //Metodo para deletar as depesas do mes
