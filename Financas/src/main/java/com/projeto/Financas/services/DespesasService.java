@@ -107,5 +107,34 @@ public class DespesasService {
     private void deleteByCascade(Despesas despesas) {
         listagemDespesasRepository.deleteByDespesas(despesas);
     }
+
+    public void edititionFindById(Despesas despesas) throws DomainException {
+        if (Objects.isNull(despesas)) {
+            throw new DomainException("Despesas sem valor");
+        }
+        Optional<Despesas> despesasOptional = despesasRepository.findById(despesas.getId());
+        Despesas despesasEdit = despesasOptional.get();
+        despesasEdit.setEntrada(despesas.getEntrada());
+        Double soma  = 0.0;
+        for(ListagemDespesas list : despesas.getListagemDespesas()) {
+            double valor = list.getValor();
+            soma+=valor;
+        }
+        despesasEdit.setTotal(soma);
+        despesasEdit.setSaldo(despesas.getEntrada() - despesasEdit.getTotal());
+        List<ListagemDespesas> listagemDespesasList = despesasEdit.getListagemDespesas();
+        listagemDespesasList.removeAll(despesasEdit.getListagemDespesas());
+        for (ListagemDespesas listagemDespesas:despesas.getListagemDespesas()) {
+            ListagemDespesas listagem = new ListagemDespesas();
+            listagem.setDespesasCategory(listagemDespesas.getDespesasCategory());
+            listagem.setValor(listagemDespesas.getValor());
+            listagem.setUsuario(despesasEdit.getUsuario());
+            listagem.setDespesas(despesas);
+            listagemDespesasList.add(listagem);
+        }
+        despesasEdit.setListagemDespesas(listagemDespesasList);
+        despesasRepository.save(despesasEdit);
+    }
+
 }
 //dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez

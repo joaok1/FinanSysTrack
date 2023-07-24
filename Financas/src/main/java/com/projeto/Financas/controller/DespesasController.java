@@ -62,4 +62,12 @@ public class DespesasController {
         }
         despesasService.deleteByDespesas(id);
     }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @PutMapping("edititionFindById")
+    public ResponseEntity<String> edititionFindById(@RequestBody Despesas despesas) throws DomainException {
+        despesasService.edititionFindById(despesas);
+        return ResponseEntity.ok("Registro alterado com sucesso");
+    }
+
 }

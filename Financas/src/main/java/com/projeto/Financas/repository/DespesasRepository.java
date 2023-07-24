@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
 
     Page<Despesas> findAllByUsuario(Pageable pageable, Usuario usuario);
+
 }
