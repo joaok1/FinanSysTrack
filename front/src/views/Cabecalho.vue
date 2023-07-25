@@ -178,8 +178,45 @@ div
                     :acoes='acoesListagemDespesas',
                     @editar="editarListagemDespesas"
                     @excluir="excluirListagemDespesa",
+                    @visualizar='visualizar',
                 )
-
+      el-dialog(title="Visualização das despesas", :visible.sync="visualizarDialogRelatorio", width="60%", center)
+        div(style="display:flex;flex-wrap:wrap; flex-direction:row; align-content:center; justify-content:center;")
+          div(style="display:flex; flex-wrap:wrap; flex-direction:row; align-content:center; justify-content:start;")
+            div
+                el-card(style='border-radius:20px').card1
+                  el-row
+                    label.labelCard Entrada
+                  el-row
+                    label.labelCard {{this.listCardDespesa && this.listCardDespesa.entrada ? this.listCardDespesa.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0' }}
+            div
+                el-card(style='border-radius:20px').card2
+                  el-row
+                    label.labelCard Gastos
+                  el-row
+                    label.labelCard {{this.listCardDespesa && this.listCardDespesa.total ? this.listCardDespesa.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
+            div
+              el-card(style='border-radius:20px').card3
+                el-row
+                  label.labelCard Saldo
+                el-row
+                  label.labelCard {{this.listCardDespesa && this.listCardDespesa.saldo ? this.listCardDespesa.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
+          div(style="display:flex; flex-wrap:wrap; flex-direction:row; align-content:center; justify-content:end;")
+              <el-progress type="circle" :percentage="0"></el-progress>
+              <el-progress type="circle" :percentage="25"></el-progress>
+              <el-progress type="circle" :percentage="100" status="success"></el-progress>
+              <el-progress type="circle" :percentage="70" status="warning"></el-progress>
+              <el-progress type="circle" :percentage="50" status="exception"></el-progress>
+        data-table(
+          :pageable='pageableListagemDespesa'
+          :data="listaDataListagemDespesas.content",
+          :columns='columnsListagemDespesas',
+          @atualizarTabela='atualizarTabelaListagemDespesa',
+          :acoes='acoesListagemDespesas',
+          @editar="editarListagemDespesas"
+          @excluir="excluirListagemDespesa",
+          @visualizar='visualizar',
+        )
     </template>
 <script>
   import DataTable from '@/components/DataTable.vue'
@@ -196,12 +233,17 @@ div
   },
     data() {
       return {
+        listCardDespesa:{
+          total:null,
+          saldo:null,
+          entrada:null
+        },
         token:Cookies.get('token'),
         user:Cookies.get('dados_usuario'),
         acoesListagemDespesas: [
           {
               text: 'Visualizar',
-              codigo: 'EDITAR',
+              codigo: 'VISUALIZAR',
               icon: 'el-icon-view'
           },
           {
@@ -238,6 +280,7 @@ div
           },
         ],
         dialogRelatorio:false,
+        visualizarDialogRelatorio:true,
         valorDespesa:null,
         arrayDespesa:[],
         despesaId:null,
@@ -723,6 +766,15 @@ div
           name: 'despesas',
           params: {data}
       })
+    },
+    async visualizar(data){
+      this.visualizarDialogRelatorio = true;
+      console.log(data)
+      const dataDespesa = await actions.visualizarDespesas(data.id)
+      this.listCardDespesa.entrada = dataDespesa.data.entrada;
+      this.listCardDespesa.total = dataDespesa.data.total;
+      this.listCardDespesa.saldo = dataDespesa.data.saldo;
+      console.log(dataDespesa)
     },
       excluirListagemDespesa(data) {
           this.$confirm("Deseja deletar este registro?")

@@ -136,5 +136,12 @@ public class DespesasService {
         despesasRepository.save(despesasEdit);
     }
 
+    public Despesas findDespesasById(Short id) throws DomainException {
+        if (Objects.isNull(id)) {
+            throw new DomainException("Id invalido");
+        }
+        Optional<Despesas> despesas = despesasRepository.findById(id);
+        return despesas.get();
+    }
 }
 //dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez

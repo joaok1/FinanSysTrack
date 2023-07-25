@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.util.List;
 import java.util.Objects;
@@ -69,5 +70,12 @@ public class DespesasController {
         despesasService.edititionFindById(despesas);
         return ResponseEntity.ok("Registro alterado com sucesso");
     }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @GetMapping(value = "visualizarDespesas/{id}")
+    public Despesas findDespesasById(@PathVariable Short id) throws DomainException {
+        return despesasService.findDespesasById(id);
+    }
+
 
 }

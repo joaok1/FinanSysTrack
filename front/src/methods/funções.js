@@ -142,7 +142,7 @@ const actions = {
         }
         return axios(data);
     },
-
+    //Metodo para excluir
     async  excluirDespesasCategoria(id){
             const data = {
             method: "delete",
@@ -152,7 +152,18 @@ const actions = {
             }
         }
         return axios(data);
+    },
+    //Metodo para visualizar as despesas
+    async  visualizarDespesas(id){
+        const data = {
+        method: "get",
+        url: `http://localhost:1081/api/despesas/visualizarDespesas/${id}`,
+        headers: {
+            Authorization: `Bearer ${Cookies.get('token')}`
+        }
     }
+    return axios(data);
+}
 
 }
 export default actions;
