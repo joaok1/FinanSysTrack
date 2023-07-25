@@ -47,7 +47,7 @@ public class DespesasController {
 
     @CrossOrigin(origins = "http://localhost:8080/")
     @GetMapping(value = "pageLista/{id}", produces = "application/json")
-    public Page<Despesas> inserirDespesas(@PathVariable Short id , Pageable pageable) throws DomainException {
+    public Page<Despesas> inserirDespesas(@PathVariable String id , Pageable pageable) throws DomainException {
         if (Objects.isNull(id)) {
             throw new DomainException("id Usuario invalido");
         }

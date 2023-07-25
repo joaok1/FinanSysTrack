@@ -52,7 +52,7 @@ public class RegistroCategoriaDespesasService {
 
             Optional<TipoDespesas> registroTipoDespesas = tipoDespesasRepository.findById(categoriaDespesasDTO.getTipo());
             categoriaDespesas.setTipo(registroTipoDespesas.get());
-            Optional<Usuario> usuario = usuarioRepository.findById(categoriaDespesasDTO.getUsuario());
+            Optional<Usuario> usuario = usuarioRepository.findByLogin(categoriaDespesasDTO.getUsuario());
             categoriaDespesas.setUsuario(usuario.get());
             categoriaDespesas.setData(new Date());
             categoriaDespesas.setName(categoriaDespesasDTO.getName());
@@ -62,12 +62,13 @@ public class RegistroCategoriaDespesasService {
             return categoriaDespesas1;
     }
 
-    public List<CategoriaDespesas> findAllByUsuario(Short id) throws DomainException {
+    public List<CategoriaDespesas> findAllByUsuario(String id) throws DomainException {
         try {
             if (Objects.isNull(id)) {
                 throw new DomainException("Id com valor nulo");
             }
-            List<CategoriaDespesas> list = categoriaDespesasRepository.findAllByUsuario(id);
+            Optional<Usuario> usuario = usuarioRepository.findByLogin(id);
+            List<CategoriaDespesas> list = categoriaDespesasRepository.findAllByUsuario(usuario.get().getId());
             return list;
         } catch (DomainException e) {
             throw e;
@@ -98,12 +99,13 @@ public class RegistroCategoriaDespesasService {
         }
     }
 
-    public Page<CategoriaDespesas> findAllByUsuarioPage(Pageable pageable, Short id) throws DomainException {
+    public Page<CategoriaDespesas> findAllByUsuarioPage(Pageable pageable, String id) throws DomainException {
         try {
             if (Objects.isNull(id)) {
                 throw new DomainException("Id com valor nulo");
             }
-            Page<CategoriaDespesas> list = categoriaDespesasRepository.findAllByUsuarioPage(pageable,id);
+            Optional<Usuario> usuario = usuarioRepository.findByLogin(id);
+            Page<CategoriaDespesas> list = categoriaDespesasRepository.findAllByUsuarioPage(pageable,usuario.get().getId());
             return list;
         } catch (DomainException e) {
             throw e;

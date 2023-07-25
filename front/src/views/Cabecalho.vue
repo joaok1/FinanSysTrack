@@ -185,8 +185,7 @@ div
   import DataTable from '@/components/DataTable.vue'
   import panel from '@/components/Panel.vue'
   import Cookies from 'js-cookie';
-  import {inserirDespesas,getListagemDespesas,getTipo,getCategoria,dadosLogin,
-    despesasCategoryByTipo,editarByCategoria,getByCategoria,getByCategoriaTable,deleteDespesas,excluirDespesasCategoria} from '@/methods/funções'
+  import actions from '@/methods/funções'
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
@@ -197,6 +196,8 @@ div
   },
     data() {
       return {
+        token:Cookies.get('token'),
+        user:Cookies.get('dados_usuario'),
         acoesListagemDespesas: [
           {
               text: 'Visualizar',
@@ -324,6 +325,7 @@ div
           calendar:null,
           mes:null,
           total:0,
+          login:null,
           entrada:0,
           saldo:0,
           usuario:null
@@ -415,29 +417,32 @@ div
         ]
       }
   },
-      async mounted() {
-        await this.dadosLogin();
-        await this.despesasByCategory();
-        await this.tipo();
-        await this.loader();
+    async mounted() {
         window.dispatchEvent(new Event('resize'));
-      },
-  methods: {
-    async dadosLogin() {
-      //Configuração do Token
-      const token = Cookies.get('token');
-      this.config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      const userData = await dadosLogin();
-      this.usuario = userData;
-      this.dadosUsuario ={};
-      this.dadosUsuario = this.config;
-      this.dadosUsuario = this.usuario
-      this.$emit('dados-login', this.dadosUsuario);
     },
+    watch: {
+      propriedadeObservada: {
+        immediate: true,
+        async handler() {
+          if (this.user) {
+            await actions.dadosLogin();
+          }
+        },
+      },
+      propriedades: {
+        immediate: true,
+        async handler() {
+          if (this.token) {
+            await this.despesasByCategory();
+            await this.tipo();
+            await this.loader();
+            window.dispatchEvent(new Event('resize'));
+          }
+          
+        },
+      },
+    },
+    methods: {
     handleClose(done) {
       this.$confirm('Deseja fechar o modal?')
         .then(confirm =>{
@@ -474,7 +479,7 @@ div
     },
     async tipo() {
       try {
-        const listaData = await getCategoria(this.page);
+        const listaData = await actions.getCategoria(this.page);
         this.listaData = listaData.data;
         const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
         this.pageable = {
@@ -484,15 +489,15 @@ div
           pageable,
           totalElements
         };
-        const listaTipo = await getTipo();
+        const listaTipo = await actions.getTipo();
         this.listaTipo = listaTipo.data;
       } catch (error) {
         console.error(error);
 }
 },
     async despesasCategoryByTipo() {
-        this.despesasCategory.usuario = this.usuario;
-        await despesasCategoryByTipo(this.despesasCategory).then(async response => {
+        this.despesasCategory.usuario = this.user;
+        await actions.despesasCategoryByTipo(this.despesasCategory).then(async response => {
           if(response.status === 200) {
               this.centerDialog = false
               this.despesasCategory = {};
@@ -520,7 +525,7 @@ div
     },
     async excluirDespesasCategoria(data){
       console.log(data);
-       await excluirDespesasCategoria(data.id).then(async () => {
+      await actions.excluirDespesasCategoria(data.id).then(async () => {
         this.$notify({
           title: 'Sucesso!',
           message: 'Registro Deletado!',
@@ -544,7 +549,7 @@ div
         }
       };
       this.data = data.id;
-      const listaData = await getByCategoria(this.data);
+      const listaData = await actions.getByCategoria(this.data);
       this.listaDataById = listaData.data;
       this.despesasCategoryEdit.id = this.data;
       this.despesasCategoryEdit.name = this.listaDataById.name;
@@ -553,7 +558,7 @@ div
       await this.tipo();
     },
     async despesasEdit(){
-      await editarByCategoria(this.despesasCategoryEdit).then(response => {
+      await actions.editarByCategoria(this.despesasCategoryEdit).then(response => {
         if(response.status === 200) {
             this.centerDialogVisible = false;
             this.despesasCategoryEdit = {
@@ -607,7 +612,7 @@ div
       this.centerDialogResgistroDespesas = true
     },
     async despesasByCategory() {
-        const lista = await getByCategoriaTable()
+        const lista = await actions.getByCategoriaTable()
         this.listaCategoria = lista.data;
     },
     mountedDespesas() {
@@ -655,8 +660,8 @@ div
         this.despesas.listagemDespesas.push(objec);
       })
       this.despesas.listagemDespesas.splice(0,1);
-      this.despesas.usuario = this.usuario;
-      await inserirDespesas(this.despesas).then(response => {
+      this.despesas.usuario = this.user;
+      await actions.inserirDespesas(this.despesas).then(response => {
         if(response.status === 200) {
           this.despesas = {
             listagemDespesas:[
@@ -694,7 +699,7 @@ div
     },
     //Listagem das despesas
     async loader() {
-      const listaData = await getListagemDespesas(this.pageListagemDespesas);
+      const listaData = await actions.getListagemDespesas(this.pageListagemDespesas);
       this.listaDataListagemDespesas = listaData.data;
       const { empty, number, numberOfElements, pageable, totalElements } = this.listaDataListagemDespesas;
       this.pageableListagemDespesa = {
@@ -741,7 +746,7 @@ div
         });
         setTimeout(() => {
           loading.close();
-          deleteDespesas(idDeleteAcoes).then(async response => {
+          actions.deleteDespesas(idDeleteAcoes).then(async response => {
             await this.loader();
             if(response.status === 200) {
               this.$notify({

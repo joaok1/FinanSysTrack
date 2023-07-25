@@ -39,7 +39,7 @@ public class RegistroCategoriaDespesasController {
 
     @CrossOrigin(origins = "http://localhost:8080/")
     @GetMapping("/listar/{id}")
-    public List<CategoriaDespesas> getList(@PathVariable Short id) throws DomainException {
+    public List<CategoriaDespesas> getList(@PathVariable String id) throws DomainException {
         try {
             List<CategoriaDespesas> list = registroCategoriaDespesasService.findAllByUsuario(id);
             return list;
@@ -50,7 +50,7 @@ public class RegistroCategoriaDespesasController {
 
     @CrossOrigin(origins = "http://localhost:8080/")
     @GetMapping("/listar/page/{id}")
-    public Page<CategoriaDespesas> getListPage( Pageable pageable,@PathVariable Short id) throws DomainException {
+    public Page<CategoriaDespesas> getListPage( Pageable pageable,@PathVariable String id) throws DomainException {
         try {
             Page<CategoriaDespesas> list = registroCategoriaDespesasService.findAllByUsuarioPage(pageable,id);
             return list;

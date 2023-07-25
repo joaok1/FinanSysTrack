@@ -46,12 +46,12 @@ public class DespesasService {
     }
     @Transactional(rollbackFor = DomainException.class)
     public void addDespesas(DespesasDTO despesasDTO) throws DomainException {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(despesasDTO.getUsuario());
         try{
             if (Objects.isNull(despesasDTO.getUsuario())) {
-                throw new DomainException("ID do usuario invalido");
+                throw new DomainException("usuario invalido");
             }
             Despesas despesas = new Despesas();
-            Optional<Usuario> usuario = usuarioRepository.findById(despesasDTO.getUsuario());
             despesas.setCalendar(despesasDTO.getCalendar());
             despesas.setUsuario(usuario.get());
             despesas.setEntrada(despesasDTO.getEntrada());
@@ -84,8 +84,8 @@ public class DespesasService {
 
     }
 
-    public Page<Despesas> getPageDespesas(Short id, Pageable pageable) throws DomainException {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
+    public Page<Despesas> getPageDespesas(String id, Pageable pageable) throws DomainException {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(id);
         if (Objects.isNull(usuario.get())) {
             throw new DomainException("Usuario não encontrado na base de dados!");
         }
@@ -123,7 +123,7 @@ public class DespesasService {
         despesasEdit.setTotal(soma);
         despesasEdit.setSaldo(despesas.getEntrada() - despesasEdit.getTotal());
         List<ListagemDespesas> listagemDespesasList = despesasEdit.getListagemDespesas();
-        listagemDespesasList.removeAll(despesasEdit.getListagemDespesas());
+        listagemDespesasList.clear();
         for (ListagemDespesas listagemDespesas:despesas.getListagemDespesas()) {
             ListagemDespesas listagem = new ListagemDespesas();
             listagem.setDespesasCategory(listagemDespesas.getDespesasCategory());

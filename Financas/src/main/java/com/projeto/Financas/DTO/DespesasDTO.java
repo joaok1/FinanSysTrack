@@ -26,5 +26,5 @@ public class DespesasDTO {
     private Double total;
     private Double entrada;
     private Double saldo;
-    private Short usuario;
+    private String usuario;
 }

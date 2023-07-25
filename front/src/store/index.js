@@ -69,7 +69,6 @@ export default new Vuex.Store({
       
       if (token && user) {
         state.authenticated = true;
-        // Faça qualquer manipulação adicional necessária com o token ou informações do usuário
       }
     },
     clearAuthentication(state) {
@@ -94,12 +93,11 @@ export default new Vuex.Store({
         // eslint-disable-next-line no-undef
         showLoading(),
         setTimeout(() => {
-          // eslint-disable-next-line no-undef
           hideLoading(),
           messageSucess()
           router.push({ name: 'Despesas' });
+          return user;
         },2000)
-        return user;
       } catch (error) {
         messageError()
         console.error(error);
@@ -107,7 +105,6 @@ export default new Vuex.Store({
     },
     async logout({ commit }) {
       removeAllCookies();
-
       router.push({ name: 'Login' });
       commit('clearAuthentication');
     }
@@ -116,6 +113,7 @@ export default new Vuex.Store({
     createPersistedState({
       key: 'your-key-name',
       storage: {
+        
         getItem: (key) => Cookies.get(key),
         setItem: (key, value) => Cookies.set(key, value),
         removeItem: (key) => Cookies.remove(key),

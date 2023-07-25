@@ -14,6 +14,6 @@ public class RegistroCategoriaDespesasDTO {
     private Short id;
     private String name;
     private Short tipo;
-    private Short usuario;
+    private String usuario;
     private Date data;
 }
