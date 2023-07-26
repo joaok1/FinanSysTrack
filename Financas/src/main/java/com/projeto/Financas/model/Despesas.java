@@ -40,6 +40,21 @@ public class Despesas {
 
     private Double saldo;
 
+    @Transient
+    private Double valorAlimentacao;
+
+    @Transient
+    private Double valorRefeicao;
+
+    @Transient
+    private Double valorDiversos;
+
+    @Transient
+    private Double valorMobilidade;
+
+    @Transient
+    private Double valorFarmacia;
+
     @OneToOne
     @JoinColumn(name = "usuario", referencedColumnName = "id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})

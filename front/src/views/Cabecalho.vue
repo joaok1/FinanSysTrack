@@ -179,38 +179,42 @@ div
                     @excluir="excluirListagemDespesa",
                     @visualizar='visualizar',
                 )
-      el-dialog(title="Visualização das despesas", :visible.sync="visualizarDialogRelatorio", width="50%", center)
-        div
-          div(style="display:flex; flex-wrap:wrap; flex-direction:row; align-content:center; justify-content:end; margin-bottom:1.5em")
-            el-button(type='primary' icon='el-icon-printer' size='small' @click='downloadPDF()', style='font-weight: bold; margin-right:20px') PDF
-          div(style="display:flex; flex-wrap:wrap; flex-direction:row; align-content:center; justify-content:center;")
-            div.widthCard
-                el-card(style='border-radius:20px').card1
-                  el-row
-                    label.labelCard Entrada
-                  el-row
-                    label.labelCard {{this.listCardDespesa && this.listCardDespesa.entrada ? this.listCardDespesa.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0' }}
-            div.widthCard
-                el-card(style='border-radius:20px').card2
-                  el-row
-                    label.labelCard Gastos
-                  el-row
-                    label.labelCard {{this.listCardDespesa && this.listCardDespesa.total ? this.listCardDespesa.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
-            div.widthCard
-              el-card(style='border-radius:20px').card3
-                el-row
-                  label.labelCard Saldo
-                el-row
-                  label.labelCard {{this.listCardDespesa && this.listCardDespesa.saldo ? this.listCardDespesa.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
+      el-dialog(title="Visualização das despesas", :visible.sync="visualizarDialogRelatorio", width="30%", center)
+          div(style="display:flex; margin-bottom:1.5em align-items:center;")
+            el-col(:span="14")
+              el-switch(
+                v-model="graphic"
+                active-text="Modo avançado"
+                style="margin-bottom:1em;")
+
+            el-col(:span="12")
+              div(style="margin-right:2em; margin-left:2em; display:flex; justify-content:end;" )
+                el-button(type='primary' icon='el-icon-printer' size='small' @click='downloadPDF()', style='font-weight: bold; margin-right:20px') PDF
+          div(style="margin-right:2em; margin-left:2em; margin-top:2em;" v-if="graphic")
+            div(style="display:flex; align-items:center; margin-bottom:1em;")
+              el-tooltip(content="Alimentação" placement="left")
+                i(style="font-size:2em;").el-icon-refrigerator  
+              el-progress(:text-inside="true" :stroke-width="26" :percentage="this.alimentacao ? this.alimentacao.toFixed(2) : 0"  style="width:100%;" text-color="#000" color="#005353") 
+            div(style="display:flex;  align-items:center; margin-bottom:1em;")
+              el-tooltip(content="Refeição" placement="left")
+                i(style="font-size:2em").el-icon-burger
+              el-progress(:text-inside="true" :stroke-width="26" :percentage="this.refeicao ? this.refeicao.toFixed(2) : 0"  style="width:100%" color="#140091")
+            div(style="display:flex; align-items:center; margin-bottom:1em;")
+              el-tooltip(content="Mobilidade" placement="left")
+                i(style="font-size:2em").el-icon-truck
+              el-progress(:text-inside="true" :stroke-width="26" :percentage="this.mobilidade ? this.mobilidade.toFixed(2) : 0" style="width:100%" color="#947302")
+            div(style="display:flex; align-items:center; margin-bottom:1em;")
+              el-tooltip(content="Farmácia" placement="left" )
+                i(style="font-size:2em").el-icon-first-aid-kit
+              el-progress(:text-inside="true" :stroke-width="26" :percentage="this.farmacia ? this.farmacia.toFixed(2) : 0" style="width:100%" color="#BA0C0C")
+            div(style="display:flex; align-items:center; margin-bottom:1em;")
+              el-tooltip(content="Diversos" placement="left")
+                i(style="font-size:2em").el-icon-shopping-cart-1
+              el-progress(:text-inside="true" :stroke-width="26" :percentage="this.diversos ? this.diversos.toFixed(2) : 0"  style="width:100%" color="#404280")
           data-table(
-            :pageable='pageableListagemDespesa'
-            :data="listaDataListagemDespesas.content",
-            :columns='columnsListagemDespesas',
-            @atualizarTabela='atualizarTabelaListagemDespesa',
-            :acoes='acoesListagemDespesas',
-            @editar="editarListagemDespesas"
-            @excluir="excluirListagemDespesa",
-            @visualizar='visualizar',
+            v-if="!graphic",
+            :data="visualizarRegistroDespesa.listagemDespesas",
+            :columns='columnsVisualizarListagemDespesas',
           )
     </template>
 <script>
@@ -228,6 +232,12 @@ div
   },
     data() {
       return {
+        graphic:false,
+        alimentacao:null,
+        refeicao:null,
+        mobilidade:null,
+        farmacia:null,
+        diversos:null,
         listCardDespesa:{
           total:null,
           saldo:null,
@@ -250,6 +260,21 @@ div
               text: 'Excluir',
               codigo: 'EXCLUIR',
               icon: 'el-icon-delete'
+          }
+        ],
+        columnsVisualizarListagemDespesas:[
+          {
+            label: 'Categoria despesa',
+            prop: 'despesasCategory.name'
+          },
+          {
+            label: 'Tipo',
+            prop: 'despesasCategory.tipo.name'
+          },
+          {
+            label: 'Valor',
+            prop: 'valor',
+            formatter: ({ valor }) => valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
           }
         ],
         columnsListagemDespesas: [
@@ -275,7 +300,7 @@ div
           },
         ],
         dialogRelatorio:false,
-        visualizarDialogRelatorio:true,
+        visualizarDialogRelatorio:false,
         valorDespesa:null,
         arrayDespesa:[],
         despesaId:null,
@@ -399,6 +424,7 @@ div
           name:null,
           tipo:null
         },
+        visualizarRegistroDespesa:{},
         centerDialogVisible:false,
         bootbox:null,
         despesasCategory:{
@@ -562,7 +588,6 @@ div
         await this.tipo();
     },
     async excluirDespesasCategoria(data){
-      console.log(data);
       await actions.excluirDespesasCategoria(data.id).then(async () => {
         this.$notify({
           title: 'Sucesso!',
@@ -571,7 +596,6 @@ div
         });
         await this.tipo();
         }).catch(data => {
-          console.log(data)
           this.$notify.error({
             title: 'Erro!',
             message: data.response.data.message
@@ -764,26 +788,35 @@ div
     },
     async visualizar(data){
       this.visualizarDialogRelatorio = true;
-      console.log(data)
       const dataDespesa = await actions.visualizarDespesas(data.id)
+      this.visualizarRegistroDespesa = dataDespesa.data
+      this.mobilidade = this.calcularPorcentagem(this.visualizarRegistroDespesa.valorMobilidade, this.visualizarRegistroDespesa.entrada)
+      this.alimentacao = this.calcularPorcentagem(this.visualizarRegistroDespesa.valorAlimentacao, this.visualizarRegistroDespesa.entrada)
+      this.refeicao = this.calcularPorcentagem(this.visualizarRegistroDespesa.valorRefeicao, this.visualizarRegistroDespesa.entrada)
+      this.farmacia = this.calcularPorcentagem(this.visualizarRegistroDespesa.valorFarmacia, this.visualizarRegistroDespesa.entrada)
+      this.diversos = this.calcularPorcentagem(this.visualizarRegistroDespesa.valorDiversos, this.visualizarRegistroDespesa.entrada)
+
+      this.listCardDespesa = dataDespesa.data
       this.listCardDespesa.entrada = dataDespesa.data.entrada;
       this.listCardDespesa.total = dataDespesa.data.total;
       this.listCardDespesa.saldo = dataDespesa.data.saldo;
-      console.log(dataDespesa)
     },
-      excluirListagemDespesa(data) {
-          this.$confirm("Deseja deletar este registro?")
-          .then(confirm => {
-            window.dispatchEvent(new Event('resize'));
-            this.idDeleteAcoes = data.id;
-            this.deleteId(this.idDeleteAcoes)
-            data(confirm);
-          })
-          .catch(cancel =>{
-              cancel
-          });
-      },
-      async deleteId(idDeleteAcoes) {
+    calcularPorcentagem(valor, total) {
+      return (valor / total) * 100;
+    },
+    excluirListagemDespesa(data) {
+        this.$confirm("Deseja deletar este registro?")
+        .then(confirm => {
+          window.dispatchEvent(new Event('resize'));
+          this.idDeleteAcoes = data.id;
+          this.deleteId(this.idDeleteAcoes)
+          data(confirm);
+        })
+        .catch(cancel =>{
+            cancel
+        });
+    },
+    async deleteId(idDeleteAcoes) {
         this.centerDialogVisible = false;
         const loading = this.$loading({
           lock: true,

@@ -140,7 +140,30 @@ public class DespesasService {
         if (Objects.isNull(id)) {
             throw new DomainException("Id invalido");
         }
+        List<Object> groupDados = listagemDespesasRepository.findAllTipoDespesas(id);
         Optional<Despesas> despesas = despesasRepository.findById(id);
+        for (Object object:groupDados) {
+            Object[] objArray = (Object[]) object;
+            Double valor = (Double) objArray[0];
+            String tipoDespesa = (String) objArray[1];
+            switch (tipoDespesa){
+                case "Alimentação":
+                    despesas.get().setValorAlimentacao(valor);
+                    break;
+                case "Refeição":
+                    despesas.get().setValorRefeicao(valor);
+                    break;
+                case "Mobilidade":
+                    despesas.get().setValorMobilidade(valor);
+                    break;
+                case "Farmácia":
+                    despesas.get().setValorFarmacia(valor);
+                    break;
+                case "Diversos":
+                    despesas.get().setValorDiversos(valor);
+                    break;
+            }
+        }
         return despesas.get();
     }
 }
