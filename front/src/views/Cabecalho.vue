@@ -222,6 +222,7 @@ div
   import panel from '@/components/Panel.vue'
   import Cookies from 'js-cookie';
   import actions from '@/methods/funções'
+  import axios from 'axios';
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
@@ -787,6 +788,7 @@ div
       })
     },
     async visualizar(data){
+      this.idDespesa = data.id;
       this.visualizarDialogRelatorio = true;
       const dataDespesa = await actions.visualizarDespesas(data.id)
       this.visualizarRegistroDespesa = dataDespesa.data
@@ -804,6 +806,27 @@ div
     calcularPorcentagem(valor, total) {
       return (valor / total) * 100;
     },
+    async downloadPDF() {
+  console.log(this.idDespesa);
+  try {
+    const response = await axios({
+      url: `http://localhost:1081/api/despesas/relatorioDownload/${this.idDespesa}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${Cookies.get('token')}`
+      },
+      responseType: 'blob',
+    });
+
+    // Cria uma URL válida para o arquivo blob
+    const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+
+    // Abre o arquivo em uma nova guia
+    window.open(url, '_blank');
+  } catch (error) {
+    console.log(error);
+  }
+},   
     excluirListagemDespesa(data) {
         this.$confirm("Deseja deletar este registro?")
         .then(confirm => {

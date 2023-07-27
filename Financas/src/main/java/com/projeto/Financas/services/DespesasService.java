@@ -1,12 +1,12 @@
 package com.projeto.Financas.services;
 
 import com.projeto.Financas.DTO.DespesasDTO;
-import com.projeto.Financas.DTO.ListagemDespesasDTO;
 import com.projeto.Financas.Exception.DomainException;
 import com.projeto.Financas.model.CategoriaDespesas;
 import com.projeto.Financas.model.Despesas;
 import com.projeto.Financas.model.ListagemDespesas;
 import com.projeto.Financas.model.Usuario;
+import com.projeto.Financas.pdf.PdfGenerator;
 import com.projeto.Financas.repository.CategoriaDespesasRepository;
 import com.projeto.Financas.repository.DespesasRepository;
 import com.projeto.Financas.repository.ListagemDespesasRepository;
@@ -16,12 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.security.krb5.internal.crypto.Des;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.File;
+import java.sql.Connection;
+import java.util.*;
 
 @Service
 public class DespesasService {
@@ -166,5 +164,13 @@ public class DespesasService {
         }
         return despesas.get();
     }
+
+    public byte[] getRelatorio(Short id) throws Exception {
+            Optional<Despesas> despesas = despesasRepository.findById(id);
+            Despesas despesasObj = despesas.orElseThrow(() -> new NoSuchElementException("Despesas não encontradas"));
+            List<Object> data = listagemDespesasRepository.findAllByDespesas(despesasObj.getId());
+        return PdfGenerator.pdf(data);
+            
+    }
 }
-//dentro do for poderia ir adicionando um lista e fora do laço salvar a lista de uma vez
+

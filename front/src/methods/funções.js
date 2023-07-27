@@ -156,14 +156,14 @@ const actions = {
     //Metodo para visualizar as despesas
     async  visualizarDespesas(id){
         const data = {
-        method: "get",
-        url: `http://localhost:1081/api/despesas/visualizarDespesas/${id}`,
-        headers: {
-            Authorization: `Bearer ${Cookies.get('token')}`
+            method: "get",
+            url: `http://localhost:1081/api/despesas/visualizarDespesas/${id}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
+            }
         }
-    }
-    return axios(data);
-}
+        return axios(data);
+    },
 
 }
 export default actions;

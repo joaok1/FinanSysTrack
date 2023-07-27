@@ -1,14 +1,10 @@
 package com.projeto.Financas.controller;
 
 import com.projeto.Financas.DTO.DespesasDTO;
-import com.projeto.Financas.DTO.PessoaDTO;
 import com.projeto.Financas.Exception.DomainException;
 import com.projeto.Financas.model.Despesas;
-import com.projeto.Financas.model.Pessoa;
 import com.projeto.Financas.repository.DespesasRepository;
-import com.projeto.Financas.repository.PessoaRepository;
 import com.projeto.Financas.services.DespesasService;
-import com.projeto.Financas.services.PessoaService;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.krb5.internal.crypto.Des;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @NoArgsConstructor
@@ -78,4 +71,10 @@ public class DespesasController {
     }
 
 
+    // Serviço de LISTAGEM RELATORIO ou Gerar Relatorio PDF
+    @CrossOrigin(origins ="http://localhost:8080/")
+    @GetMapping("/relatorioDownload/{id}")
+    public byte[] relatorio(@PathVariable Short id) throws Exception {
+            return despesasService.getRelatorio(id);
+        }
 }

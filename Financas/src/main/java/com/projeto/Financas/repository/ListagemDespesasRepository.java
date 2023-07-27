@@ -26,4 +26,12 @@ public interface ListagemDespesasRepository extends JpaRepository<ListagemDespes
             "WHERE ld.despesas_id = :id " +
             "GROUP BY rtd.name;")
     List<Object> findAllTipoDespesas(Short id);
+    @Query(nativeQuery = true, value ="SELECT rcd.name as categoria, rtd.name as tipo, ld.valor " +
+            "from listagem_despesas ld " +
+            "inner join registro_categoria_despesas rcd " +
+            "on ld.registro_categoria_despesas_id = rcd.id " +
+            "inner join registro_tipo_despesas rtd " +
+            "on rcd.tipo = rtd.id " +
+            "where ld.despesas_id = :id")
+    List<Object> findAllByDespesas(Short id);
 }

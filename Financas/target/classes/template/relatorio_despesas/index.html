@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório despesas</title>
+    </meta>
+    <style>
+        body {
+            margin:0;
+        }
+        .header {
+            display:flex;
+            align-items:end;
+            justify-content:center;
+            font-weight:bolder;
+            font-size:36px;
+            color:#000;
+            height: 2em;
+            margin:0;
+        }
+
+        .table {
+            width: 100%;
+        }
+        table, th, td {
+            border:black;
+        }
+            .customers {
+          column-width:120px;
+          padding-left:20px;
+          font-family: Arial, Helvetica, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        .customers td, .customers th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+            .margin{
+            padding-left:10px;
+        }
+
+            .columnTr{
+            width:35%;
+        }
+
+        body, span, h3, strong {
+            font-family: "Helvetica", Arial, sans-serif;
+            font-size:14px;
+        }
+
+        .customers tr:nth-child(even){background-color: #f2f2f2;}
+
+        .customers tr:hover {background-color: #ddd;}
+
+        .customers th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #04AA6D;
+          color: white;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <label>Relatório despesas</label>
+</header>
+
+<table class="customers">
+    <tr>
+        <th class="columnTr">Categoria</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+    </tr>
+
+    <tr th:each="obj : ${object}">
+        <td th:text="${obj[0]}"></td>
+        <td th:text="${obj[1]}"></td>
+        <td th:text="${obj[2]}"></td>
+    </tr>
+</table>
+</body>
+
+</html>
