@@ -1,10 +1,11 @@
 <template lang="pug">
 div
-  v-app
-    v-main
-      <router-view />
-
-      Footer(style="position:fixed; bottom:0; width:100%;")
+  aside
+    v-app
+      v-main
+        <router-view />
+  footer
+    Footer(style="position:fixed; bottom:0; width:100%;")
 </template>
   
   <script>
