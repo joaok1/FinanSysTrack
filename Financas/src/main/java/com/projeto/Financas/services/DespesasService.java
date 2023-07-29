@@ -61,8 +61,6 @@ public class DespesasService {
             despesas.setTotal(soma);
             despesas.setSaldo(despesas.getEntrada() - despesas.getTotal());
 
-
-
             List<ListagemDespesas> listagemDespesasList = new ArrayList<>();
             for (ListagemDespesas list :despesasDTO.getListagemDespesas()) {
                 ListagemDespesas listagemDespesas = new ListagemDespesas();

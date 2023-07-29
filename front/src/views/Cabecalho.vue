@@ -2,47 +2,19 @@
 <template lang="pug">
 div
     div.dashBoard
-      el-card(style="margin: 10px 10px; border-radius:10px; background-color:#696969;")
+      el-card(style="margin: 10px 10px; border-radius:10px; background-color:#409EFF;")
         div(style="display:flex; align-items:center;")
-          el-col(:span="11")
-            div(style="position:relative; display:flex; flex-wrap:wrap;")
-              el-row
-                div.card
-                  div.widthCard
-                      el-card(style='border-radius:20px').card1
-                        el-row
-                          label.labelCard Entrada
-                        el-row
-                          label.labelCard {{this.listCard && this.listCard.entrada ? this.listCard.entrada.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0' }}
-                  div.widthCard
-                      el-card(style='border-radius:20px').card2
-                        el-row
-                          label.labelCard Gastos
-                        el-row
-                          label.labelCard {{this.listCard && this.listCard.total ? this.listCard.total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
-                  div.widthCard
-                    el-card(style='border-radius:20px').card3
-                      el-row
-                        label.labelCard Saldo
-                      el-row
-                        label.labelCard {{this.listCard && this.listCard.saldo ? this.listCard.saldo.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) : '0'}}
-                  div.widthCard
-                      el-card(style='border-radius:20px').card4
-                        el-row
-                          label.labelCard Mês referência
-                        el-row
-                          label.labelCard {{this.listCard && this.listCard.mes ? this.listCard.mes : '-'}}
-          el-col(:span="11")
+          el-col(:span="24")
             div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; flex-wrap:wrap;")
-              el-button(type="primary" @click="abrirModalDespesa()") Registrar despesas
-              el-button(type="primary" @click="dialogRelatorio = true") Relatorio
+              el-button( plain @click="abrirModalDespesa()" icon="el-icon-s-finance" style="color:#000;") Registrar despesas
+              el-button( plain icon="el-icon-tickets"  @click="dialogRelatorio = true"  style="color:#000;") Relatorio
               <el-dropdown style="margin-left:10px;">
-                <el-button type="primary">
+                <el-button  plain >
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu style="width:200px; align-items:center; text-align:center;">
-                  <el-button type="text" @click="centerDialog = true">Cadastrar Despesa</el-button>
-                  <el-button type="text" @click="centerDialogVisibleTable = true">Visualizar tabela categoria</el-button>
+                  <el-button type="text" @click="centerDialog = true"  style="color:#000;">Cadastrar Despesa</el-button>
+                  <el-button type="text" @click="centerDialogVisibleTable = true"  style="color:#000;">Visualizar tabela categoria</el-button>
                 </el-dropdown-menu>
               </el-dropdown>
           el-col(:span="2")
@@ -51,7 +23,7 @@ div
                   div
                     <el-avatar :size="80"></el-avatar>
                   div
-                    el-button(type="text" style="font-size:18px; color:#fff" @click="logout()") Sair
+                    el-button(type="text" style="font-size:18px; color:#fff; font-weight:900;" @click="logout()") Sair
       //Inserção das categorias//
       el-dialog(title="Incluir despesa." :visible.sync="centerDialog" width="30%" center @before-close="handleClose")
             div(style="padding:10px")
