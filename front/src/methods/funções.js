@@ -19,14 +19,6 @@ const actions = {
         return (await usuario).data.id
     },
 
-    //Resgata o Token do usuario
-    // eslint-disable-next-line no-unused-vars
-
-
-
-    //Resgata o id do usuario
-
-
     //
     //Inicio dos Metodos
     //
@@ -61,7 +53,7 @@ const actions = {
     async  getListagemDespesas(page) {
         const data ={
             method: "get",
-            url: `http://localhost:1081/api/despesas/pageLista/${Cookies.get('dados_usuario')}?size=8&page=${page}&sort=calendar,desc`,
+            url: `http://localhost:1081/api/despesas/pageLista/${Cookies.get('dados_usuario')}?size=5&page=${page}&sort=calendar,desc`,
             headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`
             }
@@ -73,7 +65,7 @@ const actions = {
     async  getCategoria(page){
         const data = {
             method: "get",
-            url: `http://localhost:1081/api/registroCategoriaDespesas/listar/page/${Cookies.get('dados_usuario')}?size=10&page=${page}&sort=data_cadastro,desc`,
+            url: `http://localhost:1081/api/registroCategoriaDespesas/listar/page/${Cookies.get('dados_usuario')}?size=5&page=${page}&sort=data_cadastro,desc`,
             headers: {
                 Authorization: `Bearer ${Cookies.get('token')}`
             }

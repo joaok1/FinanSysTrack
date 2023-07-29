@@ -2,7 +2,7 @@
 <template lang="pug">
 div
   <v-footer class="d-flex flex-column" style="background-color:#409EFF; color:#fff; font-weight:bold; font-size:16px;">
-    <div class="bg-teal d-flex w-100 align-center px-4">
+    <div class="bg-teal d-flex w-100 align-center px-2">
         <strong>Connect to my social networks!</strong>
         div(style="margin-left:10px;")
             a(href="https://contate.me/mirandadev")
@@ -14,7 +14,7 @@ div
     <v-spacer></v-spacer>
     </div>
 
-    <div class="px-4 py-2 bg-black text-center w-100">
+    <div class="px-2 py-2 bg-black text-center w-100">
         span {{ new Date().getFullYear() }} — <strong>MirandaDev</strong>
     </div>
   </v-footer>
