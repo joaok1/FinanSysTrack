@@ -61,6 +61,8 @@ public class DespesasService {
             despesas.setTotal(soma);
             despesas.setSaldo(despesas.getEntrada() - despesas.getTotal());
 
+
+
             List<ListagemDespesas> listagemDespesasList = new ArrayList<>();
             for (ListagemDespesas list :despesasDTO.getListagemDespesas()) {
                 ListagemDespesas listagemDespesas = new ListagemDespesas();
@@ -68,6 +70,11 @@ public class DespesasService {
                     if (!categoriaDespesasOptional.isPresent()){
                         throw new DomainException("Categoria de despesas invalido");
                     }
+                // Valor 0 quer dizer que nao esta sendo utilizado
+                if (categoriaDespesasOptional.get().getUsage() == 0) {
+                    categoriaDespesasOptional.get().setUsage(1);
+                    categoriaDespesasRepository.save(categoriaDespesasOptional.get());
+                }
                     listagemDespesas.setDespesasCategory(categoriaDespesasOptional.get());
                     listagemDespesas.setUsuario(usuario.get());
                     listagemDespesas.setValor(list.getValor());

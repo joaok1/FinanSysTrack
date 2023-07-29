@@ -21,4 +21,5 @@ public class CategoriaDespesasDTO {
     private TipoDespesas tipo;
     private Short usuario;
     private Date data;
+    private Integer usage;
 }

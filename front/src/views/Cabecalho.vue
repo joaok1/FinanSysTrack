@@ -451,7 +451,7 @@ div
           {
             text: 'Editar',
             codigo: 'EDITAR',
-            icon: 'el-icon-edit'
+            icon: 'el-icon-edit',
           },
           {
             text: 'Excluir',
@@ -468,6 +468,12 @@ div
           {
             label:'Tipo',
             prop: 'tipo.name',
+          },
+          {
+            label:'Utilizado',
+            prop: 'usage',
+            // o 0 quer dizer que nao esta sendo utilizado
+            formatter: ({ usage }) => usage === 1 ? <i class={'el-icon-check'}></i> : <i class={'el-icon-close'}></i>
           }
         ],
         columnsDesp: [
@@ -546,6 +552,7 @@ div
       try {
         const listaData = await actions.getCategoria(this.page);
         this.listaData = listaData.data;
+        console.log(this.listaData)
         const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
         this.pageable = {
           empty,

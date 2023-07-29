@@ -56,6 +56,7 @@ public class RegistroCategoriaDespesasService {
             categoriaDespesas.setUsuario(usuario.get());
             categoriaDespesas.setData(new Date());
             categoriaDespesas.setName(categoriaDespesasDTO.getName());
+            categoriaDespesas.setUsage(0);
             categoriaDespesasRepository.save(categoriaDespesas);
             //Criou um novo construtor para retornar somente 2 dados posso resgatar somente esses dados ou setalos e etc....
             CategoriaDespesas categoriaDespesas1 = new CategoriaDespesas(categoriaDespesas.getId(), categoriaDespesas.getName());

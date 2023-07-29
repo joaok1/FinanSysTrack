@@ -32,6 +32,9 @@ public class CategoriaDespesas {
     @Column(name = "data_cadastro")
     private Date data;
 
+    @Column(name = "active")
+    private Integer usage;
+
     public CategoriaDespesas(Short id, String name) {
         this.id = id;
         this.name = name;
