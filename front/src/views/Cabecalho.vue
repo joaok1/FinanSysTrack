@@ -3,9 +3,9 @@ eslint-disable vue/multi-word-component-names
 div
     div.dashBoard
       el-card(style="margin: 10px 10px; border-radius:10px; background-color:#409EFF;")
-        div(style="display:flex; align-items:center;")
-          el-col(:span="24")
-            div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; flex-wrap:wrap;")
+        div(style="display:flex; position:relative; flex-wrap:wrap; align-items:center;")
+          el-col(:span="22")
+            div(style="display:flex;  justify-content:flex-end;")
               el-button( plain @click="abrirModalDespesa()" icon="el-icon-s-finance" style="color:#000;") Registrar despesas
               el-button( plain icon="el-icon-tickets"  @click="dialogRelatorio = true"  style="color:#000;") Relatorio
               <el-dropdown style="margin-left:10px;">
@@ -17,11 +17,11 @@ div
                   <el-button type="text" @click="centerDialogVisibleTable = true"  style="color:#000;">Visualizar tabela categoria</el-button>
                 </el-dropdown-menu>
               </el-dropdown>
-          el-col(:span="2")
-            div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px; flex-wrap:wrap;")
-                div(style="margin-right:2rem; position:relative; align-items:center; text-align:center;")
+          el-col(:span="2" style="padding-left:10px")
+            div(style="justify-content:flex-end; padding:10px;")
+                div(style="position:relative; align-items:center; text-align:center; justify-content:center;")
                   div
-                    <el-avatar :size="80"></el-avatar>
+                    <el-avatar :size="75"></el-avatar>
                   div
                     el-button(type="text" style="font-size:18px; color:#fff; font-weight:900;" @click="logout()") Sair
       //Inserção das categorias//
@@ -188,6 +188,24 @@ div
             :data="visualizarRegistroDespesa.listagemDespesas",
             :columns='columnsVisualizarListagemDespesas',
           )
+      el-row
+        el-col(:span="19")
+          <div id="chart">
+            <apexchart type="bar" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
+          </div>
+        el-col(:span="5")
+          <div id="chart">
+            <apexchart type="pie" width="350" :options="chartOptionsPie" :series="seriesPie"></apexchart>
+          </div>
+      el-row
+        el-col(:span="4")
+          <div id="chart">
+            <apexchart type="radar" height="300" :options="chartOptionsRadar" :series="seriesRadar"></apexchart>
+          </div>
+        el-col(:span="20")
+          <div id="chart">
+            <apexchart type="line" height="300" :options="chartOptionsLine" :series="seriesLine"></apexchart>
+          </div>
     </template>
 <script>
   import DataTable from '@/components/DataTable.vue'
@@ -195,6 +213,7 @@ div
   import Cookies from 'js-cookie';
   import actions from '@/methods/funções'
   import axios from 'axios';
+
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
@@ -205,6 +224,167 @@ div
   },
     data() {
       return {
+        seriesLine: [{
+            name: 'TEAM A',
+            type: 'area',
+            data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33]
+          }, {
+            name: 'TEAM B',
+            type: 'line',
+            data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43]
+          }],
+          chartOptionsLine: {
+            chart: {
+              height: 350,
+              type: 'line',
+            },
+            stroke: {
+              curve: 'smooth'
+            },
+            fill: {
+              type:'solid',
+              opacity: [0.35, 1],
+            },
+            labels: ['Dec 01', 'Dec 02','Dec 03','Dec 04','Dec 05','Dec 06','Dec 07','Dec 08','Dec 09 ','Dec 10','Dec 11'],
+            markers: {
+              size: 0
+            },
+            yaxis: [
+              {
+                title: {
+                  text: 'Series A',
+                },
+              },
+              {
+                opposite: true,
+                title: {
+                  text: 'Series B',
+                },
+              },
+            ],
+            tooltip: {
+              shared: true,
+              intersect: false,
+              y: {
+                formatter: function (y) {
+                  if(typeof y !== "undefined") {
+                    return  y.toFixed(0) + " points";
+                  }
+                  return y;
+                }
+              }
+            }
+          },
+        seriesRadar: [{
+            name: 'Series 1',
+            data: [80, 50, 30, 40, 100, 20],
+          }],
+          chartOptionsRadar: {
+            chart: {
+              height: 350,
+              type: 'radar',
+            },
+            title: {
+              text: 'Basic Radar Chart'
+            },
+            xaxis: {
+              categories: ['January', 'February', 'March', 'April', 'May', 'June']
+            }
+          },
+        seriesPie: [44, 55, 13, 43, 22],
+        chartOptionsPie: {
+            chart: {
+              width: 380,
+              type: 'pie',
+            },
+            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            responsive: [{
+              breakpoint: 480,
+              options: {
+                chart: {
+                  width: 200
+                },
+                legend: {
+                  position: 'bottom'
+                }
+              }
+            }]
+          },
+        seriesDashBoard: [{
+            name: 'Servings',
+            data: [44, 55, 41, 67, 22, 43, 21, 33, 45, 31, 87, 65, 35],
+            
+          },{
+            name: 'Servings',
+            data: [44, 55, 41, 67, 22, 43, 21, 33, 45, 31, 87, 65, 35],
+            
+          }],
+          chartOptionsDashBoard: {
+            annotations: {
+              points: [{
+                x: 'Bananas',
+                seriesIndex: 0,
+                label: {
+                  borderColor: '#775DD0',
+                  offsetY: 0,
+                  style: {
+                    color: '#fff',
+                    background: '#775DD0',
+                  },
+                  text: 'Bananas are good',
+                }
+              }]
+            },
+            chart: {
+              height: 350,
+              type: 'bar',
+            },
+            plotOptions: {
+              bar: {
+                borderRadius: 10,
+                columnWidth: '50%',
+              }
+            },
+            dataLabels: {
+              enabled: false
+            },
+            stroke: {
+              width: 2
+            },
+            
+            grid: {
+              row: {
+                colors: ['#fff', '#f2f2f2']
+              }
+            },
+            xaxis: {
+              labels: {
+                rotate: -45
+              },
+              categories: ['Apples', 'Oranges', 'Strawberries', 'Pineapples', 'Mangoes', 'Bananas',
+                'Blackberries', 'Pears', 'Watermelons', 'Cherries', 'Pomegranates', 'Tangerines', 'Papayas'
+              ],
+              tickPlacement: 'on'
+            },
+            yaxis: {
+              title: {
+                text: 'Servings',
+              },
+            },
+            fill: {
+              type: 'gradient',
+              gradient: {
+                shade: 'light',
+                type: "horizontal",
+                shadeIntensity: 0.25,
+                gradientToColors: undefined,
+                inverseColors: true,
+                opacityFrom: 0.85,
+                opacityTo: 0.85,
+                stops: [50, 0, 100]
+              },
+            }
+          },
         graphic:false,
         alimentacao:null,
         refeicao:null,
@@ -489,7 +669,6 @@ div
     handleClose(done) {
       this.$confirm('Deseja fechar o modal?')
         .then(confirm =>{
-          window.dispatchEvent(new Event('resize'));
           this.despesas = {
             listagemDespesas:[
               {
@@ -569,6 +748,9 @@ div
     },
     async excluirDespesasCategoria(data){
       await actions.excluirDespesasCategoria(data.id).then(async () => {
+        this.loader();
+        this.despesasByCategory();
+
         this.$notify({
           title: 'Sucesso!',
           message: 'Registro Deletado!',
@@ -881,6 +1063,21 @@ div
     padding: 10px;
     background-image: radial-gradient( circle farthest-corner at 22.4% 21.7%, rgba(4,189,228,1) 0%, rgba(2,83,185,1) 100.2% );
   }
+
+  .elCard{
+    width: 99%;
+    margin: 10px 10px;
+  }
+
+  @media (max-width: 1200px)
+  {
+      .elCard{
+        max-height: 70%;
+        position: fixed;
+        width: 100%;
+      }
+
+    }
 
   .card4{
     margin-right: 10px;
