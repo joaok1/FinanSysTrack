@@ -317,7 +317,7 @@ div
             },
             yaxis: {
               title: {
-                text: 'Servings',
+                text: 'valores',
               },
             },
             fill: {

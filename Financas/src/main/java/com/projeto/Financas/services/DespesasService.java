@@ -192,101 +192,57 @@ public class DespesasService {
             Double entrada = (Double) objArray[2];
             Double saida = (Double) objArray[3];
             DadosDespesa dadosDespesa = new DadosDespesa();
+            dadosDespesa.setAno(ano);
+            dadosDespesa.setEntrada(entrada);
+            dadosDespesa.setSaida(saida);
             switch (mes) {
                 case Meses.JANEIRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("JANEIRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[0] = dadosDespesa;
                     break;
                 case Meses.FEVEREIRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("FEVEREIRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[1] = dadosDespesa;
-
                     break;
                 case Meses.MARCO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("MARCO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[2] = dadosDespesa;
-
                     break;
                 case Meses.ABRIL:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("ABRIL");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[3] = dadosDespesa;
-
                     break;
                 case Meses.MAIO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("MAIO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[4] = dadosDespesa;
-
                     break;
                 case Meses.JUNHO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("JUNHO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[5] = dadosDespesa;
-
                     break;
                 case Meses.JULHO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("JULHO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[6] = dadosDespesa;
-
                     break;
                 case Meses.AGOSTO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("AGOSTO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[7] = dadosDespesa;
-
                     break;
                 case Meses.SETEMBRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("SETEMBRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[8] = dadosDespesa;
-
                     break;
                 case Meses.OUTUBRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("OUTUBRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[9] = dadosDespesa;
-
                     break;
                 case Meses.NOVEMBRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("NOVEMBRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[10] = dadosDespesa;
-
                     break;
                 case Meses.DEZEMBRO:
-                    dadosDespesa.setAno(ano);
                     dadosDespesa.setMes("DEZEMBRO");
-                    dadosDespesa.setEntrada(entrada);
-                    dadosDespesa.setSaida(saida);
                     despesasMes[11] = dadosDespesa;
-
                     break;
             }
         }
