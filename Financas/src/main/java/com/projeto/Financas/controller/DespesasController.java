@@ -2,6 +2,7 @@ package com.projeto.Financas.controller;
 
 import com.projeto.Financas.DTO.DespesasDTO;
 import com.projeto.Financas.Exception.DomainException;
+import com.projeto.Financas.model.DashBoard.DadosDespesa;
 import com.projeto.Financas.model.Despesas;
 import com.projeto.Financas.repository.DespesasRepository;
 import com.projeto.Financas.services.DespesasService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -77,4 +79,11 @@ public class DespesasController {
     public byte[] relatorio(@PathVariable Short id) throws Exception {
             return despesasService.getRelatorio(id);
         }
+
+    // Serviço de LISTAGEM RELATORIO ou Gerar Relatorio PDF
+    @CrossOrigin(origins ="http://localhost:8080/")
+    @GetMapping("grafico/{user}/{ano}")
+    public DadosDespesa[] grafico(@PathVariable String user, @PathVariable Integer ano) throws Exception {
+        return despesasService.getDadosGrafico(user, ano);
+    }
 }

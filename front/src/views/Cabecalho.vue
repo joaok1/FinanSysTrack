@@ -204,7 +204,7 @@ div
           </div>
         el-col(:span="20")
           <div id="chart">
-            <apexchart type="line" height="300" :options="chartOptionsLine" :series="seriesLine"></apexchart>
+            <apexchart type="line" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
           </div>
     </template>
 <script>
@@ -224,57 +224,7 @@ div
   },
     data() {
       return {
-        seriesLine: [{
-            name: 'TEAM A',
-            type: 'area',
-            data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33]
-          }, {
-            name: 'TEAM B',
-            type: 'line',
-            data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43]
-          }],
-          chartOptionsLine: {
-            chart: {
-              height: 350,
-              type: 'line',
-            },
-            stroke: {
-              curve: 'smooth'
-            },
-            fill: {
-              type:'solid',
-              opacity: [0.35, 1],
-            },
-            labels: ['Dec 01', 'Dec 02','Dec 03','Dec 04','Dec 05','Dec 06','Dec 07','Dec 08','Dec 09 ','Dec 10','Dec 11'],
-            markers: {
-              size: 0
-            },
-            yaxis: [
-              {
-                title: {
-                  text: 'Series A',
-                },
-              },
-              {
-                opposite: true,
-                title: {
-                  text: 'Series B',
-                },
-              },
-            ],
-            tooltip: {
-              shared: true,
-              intersect: false,
-              y: {
-                formatter: function (y) {
-                  if(typeof y !== "undefined") {
-                    return  y.toFixed(0) + " points";
-                  }
-                  return y;
-                }
-              }
-            }
-          },
+        ano:null,
         seriesRadar: [{
             name: 'Series 1',
             data: [80, 50, 30, 40, 100, 20],
@@ -311,12 +261,12 @@ div
             }]
           },
         seriesDashBoard: [{
-            name: 'Servings',
-            data: [44, 55, 41, 67, 22, 43, 21, 33, 45, 31, 87, 65, 35],
+            name: 'Entrada',
+            data: []
             
           },{
-            name: 'Servings',
-            data: [44, 55, 41, 67, 22, 43, 21, 33, 45, 31, 87, 65, 35],
+            name: 'Saida',
+            data: [0],
             
           }],
           chartOptionsDashBoard: {
@@ -342,7 +292,7 @@ div
             plotOptions: {
               bar: {
                 borderRadius: 10,
-                columnWidth: '50%',
+                columnWidth: '100%',
               }
             },
             dataLabels: {
@@ -357,13 +307,12 @@ div
                 colors: ['#fff', '#f2f2f2']
               }
             },
+            colors: ['#1E00FF','#FF0000'],
             xaxis: {
               labels: {
                 rotate: -45
               },
-              categories: ['Apples', 'Oranges', 'Strawberries', 'Pineapples', 'Mangoes', 'Bananas',
-                'Blackberries', 'Pears', 'Watermelons', 'Cherries', 'Pomegranates', 'Tangerines', 'Papayas'
-              ],
+              categories: ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"],
               tickPlacement: 'on'
             },
             yaxis: {
@@ -385,6 +334,7 @@ div
               },
             }
           },
+          
         graphic:false,
         alimentacao:null,
         refeicao:null,
@@ -580,6 +530,7 @@ div
         visualizarRegistroDespesa:{},
         centerDialogVisible:false,
         bootbox:null,
+        dashboardBar:[],
         despesasCategory:{
           name:null,
           tipo:{},
@@ -641,7 +592,8 @@ div
       }
   },
     async mounted() {
-        window.dispatchEvent(new Event('resize'));
+      await this.dadosDashBoardBar();
+      window.dispatchEvent(new Event('resize'));
     },
     watch: {
       propriedadeObservada: {
@@ -659,6 +611,7 @@ div
             await this.despesasByCategory();
             await this.tipo();
             await this.loader();
+
             window.dispatchEvent(new Event('resize'));
           }
           
@@ -703,7 +656,6 @@ div
       try {
         const listaData = await actions.getCategoria(this.page);
         this.listaData = listaData.data;
-        console.log(this.listaData)
         const { empty, number, numberOfElements, pageable, totalElements } = this.listaData;
         this.pageable = {
           empty,
@@ -911,6 +863,7 @@ div
           })
           this.centerDialogResgistroDespesas = false
           this.loader()
+          this.dadosDashBoardBar();
         }
       }).catch(response => {
         if(response.status !== 200) {
@@ -968,26 +921,25 @@ div
       return (valor / total) * 100;
     },
     async downloadPDF() {
-  console.log(this.idDespesa);
-  try {
-    const response = await axios({
-      url: `http://localhost:1081/api/despesas/relatorioDownload/${this.idDespesa}`,
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${Cookies.get('token')}`
-      },
-      responseType: 'blob',
-    });
+      try {
+      const response = await axios({
+        url: `http://localhost:1081/api/despesas/relatorioDownload/${this.idDespesa}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${Cookies.get('token')}`
+        },
+        responseType: 'blob',
+      });
 
     // Cria uma URL válida para o arquivo blob
-    const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+        const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
 
-    // Abre o arquivo em uma nova guia
-    window.open(url, '_blank');
-  } catch (error) {
-    console.log(error);
-  }
-},   
+        // Abre o arquivo em uma nova guia
+        window.open(url, '_blank');
+      } catch (error) {
+        console.log(error);
+      }
+    },   
     excluirListagemDespesa(data) {
         this.$confirm("Deseja deletar este registro?")
         .then(confirm => {
@@ -1026,6 +978,44 @@ div
             })
         })
       }, 1000);
+    },
+    async dadosDashBoardBar() {
+      if (this.ano === null) {
+        this.ano = new Date().getFullYear();
+      }
+      const dados =  await actions.visualizarDespesasDashBoard(this.ano);
+      this.dashboardBar = dados.data
+      console.log(this.dashboardBar )
+      
+      this.seriesDashBoard[0].data = [
+        this.dashboardBar[0] ? this.dashboardBar[0].entrada : 0,
+        this.dashboardBar[1] ? this.dashboardBar[1].entrada : 0,
+        this.dashboardBar[2] ? this.dashboardBar[2].entrada : 0,
+        this.dashboardBar[3] ? this.dashboardBar[3].entrada : 0,
+        this.dashboardBar[4] ? this.dashboardBar[4].entrada : 0,
+        this.dashboardBar[5] ? this.dashboardBar[5].entrada : 0,
+        this.dashboardBar[6] ? this.dashboardBar[6].entrada : 0,
+        this.dashboardBar[7] ? this.dashboardBar[7].entrada : 0,
+        this.dashboardBar[8] ? this.dashboardBar[8].entrada : 0,
+        this.dashboardBar[9] ? this.dashboardBar[9].entrada : 0,
+        this.dashboardBar[10] ? this.dashboardBar[10].entrada : 0,
+        this.dashboardBar[11] ? this.dashboardBar[11].entrada : 0,
+      ];
+      this.seriesDashBoard[1].data = [
+      this.dashboardBar[0] ? this.dashboardBar[0].saida : 0,
+        this.dashboardBar[1] ? this.dashboardBar[1].saida : 0,
+        this.dashboardBar[2] ? this.dashboardBar[2].saida : 0,
+        this.dashboardBar[3] ? this.dashboardBar[3].saida : 0,
+        this.dashboardBar[4] ? this.dashboardBar[4].saida : 0,
+        this.dashboardBar[5] ? this.dashboardBar[5].saida : 0,
+        this.dashboardBar[6] ? this.dashboardBar[6].saida : 0,
+        this.dashboardBar[7] ? this.dashboardBar[7].saida : 0,
+        this.dashboardBar[8] ? this.dashboardBar[8].saida : 0,
+        this.dashboardBar[9] ? this.dashboardBar[9].saida : 0,
+        this.dashboardBar[10] ? this.dashboardBar[10].saida : 0,
+        this.dashboardBar[11] ? this.dashboardBar[11].saida : 0,
+      ];
+        window.dispatchEvent(new Event('resize'));
     }
   }
 }

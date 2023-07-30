@@ -5,9 +5,31 @@ import com.projeto.Financas.model.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
 
     Page<Despesas> findAllByUsuario(Pageable pageable, Usuario usuario);
 
+    @Query(nativeQuery = true, value = "SELECT " +
+            "EXTRACT(YEAR FROM calendar) AS ano, " +
+            "DATE_FORMAT(calendar, '%M') AS mes, " +
+            "SUM(entrada) AS soma " +
+            "FROM despesas d " +
+            "WHERE d.usuario = :usuario " +
+            "GROUP BY EXTRACT(YEAR FROM calendar), DATE_FORMAT(calendar, '%M');")
+    List<Object[]> findByDadosDashBoard(Usuario usuario);
+
+    @Query(nativeQuery = true, value = "SELECT " +
+            "EXTRACT(YEAR FROM calendar) AS ano, " +
+            "DATE_FORMAT(calendar, '%M') AS mes, " +
+            "SUM(entrada) AS entrada, " +
+            "SUM(total) AS saida " +
+            "FROM despesas d " +
+            "WHERE d.usuario = :usuario and EXTRACT(YEAR FROM calendar) = :ano " +
+            "GROUP BY EXTRACT(YEAR FROM calendar), DATE_FORMAT(calendar, '%M')")
+    List<Object[]> findByDadosDashBoardAnosUsuario(Usuario usuario, Integer ano);
 }

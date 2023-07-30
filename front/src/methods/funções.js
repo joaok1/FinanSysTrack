@@ -156,6 +156,16 @@ const actions = {
         }
         return axios(data);
     },
-
+    //Metodo de dados do dashBoar - barra e linha
+    async  visualizarDespesasDashBoard(ano){
+        const data = {
+            method: "get",
+            url: `http://localhost:1081/api/despesas/grafico/${Cookies.get('dados_usuario')}/${ano}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
+            }
+        }
+        return  axios(data);
+    },
 }
 export default actions;
