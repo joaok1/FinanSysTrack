@@ -167,5 +167,16 @@ const actions = {
         }
         return  axios(data);
     },
+    //Metodo para pegar os anos 
+    async  getAnos(){
+        const data = {
+            method: "get",
+            url: `http://localhost:1081/api/despesas/grafico/${Cookies.get('dados_usuario')}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
+            }
+        }
+        return  axios(data);
+    },
 }
 export default actions;

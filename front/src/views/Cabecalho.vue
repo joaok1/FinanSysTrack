@@ -189,14 +189,25 @@ div
             :columns='columnsVisualizarListagemDespesas',
           )
       el-row
-        el-col(:span="19")
-          <div id="chart">
-            <apexchart type="bar" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
-          </div>
-        el-col(:span="5")
-          <div id="chart">
-            <apexchart type="pie" width="350" :options="chartOptionsPie" :series="seriesPie"></apexchart>
-          </div>
+        el-col(:span="6")
+          div(style="display:flex; align-items:center;")
+            span(style="margin-left:20px") Selecione o ano:
+            el-select(v-model="ano",clearable,filterable ,style="width:200px; margin-left:10px;", size="small", v-on:change="dadosDashBoardBar()" )
+              el-option(
+                  v-for="select in this.listAnos"
+                  :key="select"
+                  :label="select"
+                  :value="select"
+              )
+        el-col(:span="24")
+          el-col(:span="19")
+            <div id="chart">
+              <apexchart type="bar" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
+            </div>
+          el-col(:span="5")
+            <div id="chart">
+              <apexchart type="pie" width="350" :options="chartOptionsPie" :series="seriesPie"></apexchart>
+            </div>
       el-row
         el-col(:span="4")
           <div id="chart">
@@ -225,6 +236,7 @@ div
     data() {
       return {
         ano:null,
+        listAnos:null,
         seriesRadar: [{
             name: 'Series 1',
             data: [80, 50, 30, 40, 100, 20],
@@ -593,6 +605,7 @@ div
   },
     async mounted() {
       await this.dadosDashBoardBar();
+      await this.getAno();
       window.dispatchEvent(new Event('resize'));
     },
     watch: {
@@ -861,9 +874,10 @@ div
             message: 'Despesa registrada!',
             type: 'success'
           })
-          this.centerDialogResgistroDespesas = false
           this.loader()
+          this.getAno();
           this.dadosDashBoardBar();
+          this.centerDialogResgistroDespesas = false
         }
       }).catch(response => {
         if(response.status !== 200) {
@@ -964,6 +978,7 @@ div
           loading.close();
           actions.deleteDespesas(idDeleteAcoes).then(async response => {
             await this.loader();
+            await this.getAno();
             if(response.status === 200) {
               this.$notify({
                 title: 'Sucesso!',
@@ -1016,6 +1031,11 @@ div
         this.dashboardBar[11] ? this.dashboardBar[11].saida : 0,
       ];
         window.dispatchEvent(new Event('resize'));
+    },
+    async getAno(){
+      const dados = await actions.getAnos();
+      this.listAnos = dados.data;
+      console.log(this.listAnos);
     }
   }
 }

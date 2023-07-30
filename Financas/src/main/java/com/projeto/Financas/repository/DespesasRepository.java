@@ -32,4 +32,11 @@ public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
             "WHERE d.usuario = :usuario and EXTRACT(YEAR FROM calendar) = :ano " +
             "GROUP BY EXTRACT(YEAR FROM calendar), DATE_FORMAT(calendar, '%M')")
     List<Object[]> findByDadosDashBoardAnosUsuario(Usuario usuario, Integer ano);
+
+    @Query(nativeQuery = true, value = "SELECT EXTRACT(YEAR FROM calendar) AS ano " +
+            "FROM despesas d " +
+            "WHERE d.usuario = :usuario " +
+            "GROUP BY EXTRACT(YEAR FROM calendar) " +
+            "ORDER BY ano asc")
+    Object[] findByDadosDashBoardAnosUsuario(Usuario usuario);
 }

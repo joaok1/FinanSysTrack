@@ -248,5 +248,11 @@ public class DespesasService {
         }
         return despesasMes;
     }
+
+
+    public Object[] getAnos(String user) {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(user);
+        return despesasRepository.findByDadosDashBoardAnosUsuario(usuario.get());
+    }
 }
 

@@ -86,4 +86,10 @@ public class DespesasController {
     public DadosDespesa[] grafico(@PathVariable String user, @PathVariable Integer ano) throws Exception {
         return despesasService.getDadosGrafico(user, ano);
     }
+
+    @CrossOrigin(origins ="http://localhost:8080/")
+    @GetMapping("grafico/{user}")
+    public Object[] anos(@PathVariable String user) throws Exception {
+        return despesasService.getAnos(user);
+    }
 }
