@@ -92,4 +92,11 @@ public class DespesasController {
     public Object[] anos(@PathVariable String user) throws Exception {
         return despesasService.getAnos(user);
     }
+    //Servico de listagem do Grafico de area
+    @CrossOrigin(origins ="http://localhost:8080/")
+    @GetMapping("graficoArea/{user}")
+    public List<DadosDespesa> graficoArea(@PathVariable String user) throws Exception {
+        return despesasService.getGraficoArea(user);
+    }
+
 }

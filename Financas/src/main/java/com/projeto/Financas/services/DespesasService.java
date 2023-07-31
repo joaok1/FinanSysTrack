@@ -254,5 +254,26 @@ public class DespesasService {
         Optional<Usuario> usuario = usuarioRepository.findByLogin(user);
         return despesasRepository.findByDadosDashBoardAnosUsuario(usuario.get());
     }
+
+    public List<DadosDespesa> getGraficoArea(String user) throws DomainException {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(user);
+        if (Objects.isNull(usuario)) {
+            throw new DomainException("Usuario não encontrado na base de dados");
+        }
+        List<Object> dadosDespesaList = despesasRepository.findByDadosDashBoardArea(usuario.get());
+        List<DadosDespesa> despesaList = new ArrayList<>();
+        for (Object obj:dadosDespesaList) {
+            Object[] objArray = (Object[]) obj;
+            Integer ano = (Integer) objArray[0];
+            Double entrada = (Double) objArray[1];
+            Double saida = (Double) objArray[2];
+            DadosDespesa dadosDespesa = new DadosDespesa();
+            dadosDespesa.setAno(ano);
+            dadosDespesa.setEntrada(entrada);
+            dadosDespesa.setSaida(saida);
+            despesaList.add(dadosDespesa);
+        }
+        return despesaList;
+    }
 }
 

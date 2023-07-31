@@ -12,4 +12,5 @@ public class DadosDespesa {
     private String mes;
     private Double entrada;
     private Double saida;
+    private String name;
 }

@@ -1,6 +1,7 @@
 package com.projeto.Financas.controller;
 
 
+import com.projeto.Financas.model.DashBoard.DadosDespesa;
 import com.projeto.Financas.model.TipoDespesas;
 import com.projeto.Financas.repository.TipoDespesasRepository;
 import com.projeto.Financas.services.TipoDespesasService;
@@ -37,6 +38,12 @@ public class DespesasTipoController {
     @PostMapping("/inserir")
     public void inserir(@RequestBody TipoDespesas tipoDespesas) {
         tipoDespesasService.inserirTipo(tipoDespesas);
+    }
+
+    @CrossOrigin(origins ="http://localhost:8080/")
+    @GetMapping("graficoPie/{user}")
+    public List<DadosDespesa> tipo(@PathVariable String user) throws Exception {
+        return tipoDespesasService.gettipo(user);
     }
 
 

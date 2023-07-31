@@ -1064,9 +1064,17 @@ div
       const dados = await actions.graficoArea();
       this.getGraficoArea = dados.data;
       const tipo = this.getGraficoArea.map((area) => { return area});
-      // this.seriesRadar = [{
-      //   data: []
-      // },{data:[]}]
+      this.chartOptionsRadar = {
+        xaxis: {
+          categories: []
+        }
+      }
+      this.seriesRadar = [{
+        data: []
+      },
+      {
+        data:[]
+      }]
 
       for (let index = 0; index < tipo.length; index++) {
         this.chartOptionsRadar.xaxis.categories.push(tipo[index].ano)

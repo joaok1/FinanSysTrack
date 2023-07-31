@@ -1,5 +1,6 @@
 package com.projeto.Financas.repository;
 
+import com.projeto.Financas.model.DashBoard.DadosDespesa;
 import com.projeto.Financas.model.Despesas;
 import com.projeto.Financas.model.Usuario;
 import org.springframework.data.domain.Page;
@@ -14,14 +15,14 @@ public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
 
     Page<Despesas> findAllByUsuario(Pageable pageable, Usuario usuario);
 
-    @Query(nativeQuery = true, value = "SELECT " +
-            "EXTRACT(YEAR FROM calendar) AS ano, " +
-            "DATE_FORMAT(calendar, '%M') AS mes, " +
-            "SUM(entrada) AS soma " +
+    @Query(nativeQuery = true, value = "SELECT EXTRACT(YEAR FROM calendar) AS ano, " +
+            "SUM(entrada) AS entrada, " +
+            "SUM(total) AS saida " +
             "FROM despesas d " +
             "WHERE d.usuario = :usuario " +
-            "GROUP BY EXTRACT(YEAR FROM calendar), DATE_FORMAT(calendar, '%M');")
-    List<Object[]> findByDadosDashBoard(Usuario usuario);
+            "GROUP BY EXTRACT(YEAR FROM calendar) " +
+            "ORDER BY ano asc;")
+    List<Object> findByDadosDashBoardArea(Usuario usuario);
 
     @Query(nativeQuery = true, value = "SELECT " +
             "EXTRACT(YEAR FROM calendar) AS ano, " +
@@ -39,4 +40,5 @@ public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
             "GROUP BY EXTRACT(YEAR FROM calendar) " +
             "ORDER BY ano asc")
     Object[] findByDadosDashBoardAnosUsuario(Usuario usuario);
+
 }
