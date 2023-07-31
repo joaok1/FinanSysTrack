@@ -200,22 +200,22 @@ div
                   :value="select"
               )
         el-col(:span="24")
-          el-col(:span="19")
+          el-col(:span="18")
             <div id="chart">
-              <apexchart type="bar" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
+              <apexchart type="bar" height="280" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
             </div>
-          el-col(:span="5")
+          el-col(:span="6")
             <div id="chart">
-              <apexchart type="pie" width="350" :options="chartOptionsPie" :series="seriesPie"></apexchart>
+              <apexchart type="pie" width="450" :options="chartOptionsPie" :series="seriesPie"></apexchart>
             </div>
       el-row
-        el-col(:span="4")
+        el-col(:span="8")
           <div id="chart">
-            <apexchart type="radar" height="300" :options="chartOptionsRadar" :series="seriesRadar"></apexchart>
+            <apexchart type="radar" height="260" width="100%" :options="chartOptionsRadar" :series="seriesRadar"></apexchart>
           </div>
-        el-col(:span="20")
+        el-col(:span="16")
           <div id="chart">
-            <apexchart type="line" height="300" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
+            <apexchart type="line" height="250" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
           </div>
     </template>
 <script>
@@ -238,33 +238,39 @@ div
         ano:null,
         listAnos:null,
         seriesRadar: [{
-            name: 'Series 1',
-            data: [80, 50, 30, 40, 100, 20],
+            name: 'Entrada',
+            data: [],
+          },
+          {
+            name: 'Saída',
+            data: [],
           }],
-          chartOptionsRadar: {
+        chartOptionsRadar: {
+            colors: ['#1E00FF','#FF0000'],
             chart: {
               height: 350,
+              width: '100%',
               type: 'radar',
             },
             title: {
-              text: 'Basic Radar Chart'
+              text: 'Relatorio Anual de entrada e saida'
             },
             xaxis: {
-              categories: ['January', 'February', 'March', 'April', 'May', 'June']
+              categories: []
             }
           },
-        seriesPie: [44, 55, 13, 43, 22],
+        seriesPie: [],
         chartOptionsPie: {
             chart: {
               width: 380,
               type: 'pie',
             },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            labels: [],
             responsive: [{
               breakpoint: 480,
               options: {
                 chart: {
-                  width: 200
+                  width: 350
                 },
                 legend: {
                   position: 'bottom'
@@ -278,7 +284,7 @@ div
             
           },{
             name: 'Saida',
-            data: [0],
+            data: [],
             
           }],
           chartOptionsDashBoard: {
@@ -550,6 +556,8 @@ div
         },
         listaData:{},
         pageable: {},
+        getGraficoArea:{},
+        getGraficoPie:{},
         pageableListagemDespesa:{},
         listaTipo:{},
         page:null,
@@ -606,6 +614,7 @@ div
     async mounted() {
       await this.dadosDashBoardBar();
       await this.getAno();
+
       window.dispatchEvent(new Event('resize'));
     },
     watch: {
@@ -623,6 +632,7 @@ div
           if (this.token) {
             await this.despesasByCategory();
             await this.tipo();
+
             await this.loader();
 
             window.dispatchEvent(new Event('resize'));
@@ -900,6 +910,8 @@ div
           pageable,
           totalElements
       };
+      await this.graficoPie();
+      await this.graficoArea();
       window.dispatchEvent(new Event('resize'));
       this.$emit('excluir')
     },
@@ -1000,7 +1012,6 @@ div
       }
       const dados =  await actions.visualizarDespesasDashBoard(this.ano);
       this.dashboardBar = dados.data
-      console.log(this.dashboardBar )
       
       this.seriesDashBoard[0].data = [
         this.dashboardBar[0] ? this.dashboardBar[0].entrada : 0,
@@ -1035,7 +1046,34 @@ div
     async getAno(){
       const dados = await actions.getAnos();
       this.listAnos = dados.data;
-      console.log(this.listAnos);
+    },
+    async graficoPie() {
+      const dados = await actions.graficoPie();
+      this.getGraficoPie = dados.data;
+      const tipo = this.getGraficoPie.map((area) => { return area});
+      this.chartOptionsPie = {
+        labels : []
+      };
+      this.seriesPie = []
+      for (let index = 0; index < tipo.length; index++) {
+        this.chartOptionsPie.labels.push(tipo[index].name);
+        this.seriesPie.push(tipo[index].saida);
+      }
+    },
+    async graficoArea() {
+      const dados = await actions.graficoArea();
+      this.getGraficoArea = dados.data;
+      const tipo = this.getGraficoArea.map((area) => { return area});
+      // this.seriesRadar = [{
+      //   data: []
+      // },{data:[]}]
+
+      for (let index = 0; index < tipo.length; index++) {
+        this.chartOptionsRadar.xaxis.categories.push(tipo[index].ano)
+        this.seriesRadar[0].data.push(tipo[index].entrada);
+        this.seriesRadar[1].data.push(tipo[index].saida);
+
+      }
     }
   }
 }

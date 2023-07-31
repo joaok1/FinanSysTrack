@@ -178,5 +178,26 @@ const actions = {
         }
         return  axios(data);
     },
+        //Metodo para pegar os dados do grafico area
+        async  graficoPie(){
+            const data = {
+                method: "get",
+                url: `http://localhost:1081/api/despesasTipo/graficoPie/${Cookies.get('dados_usuario')}`,
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`
+                }
+            }
+            return  axios(data);
+        },
+        async  graficoArea(){
+            const data = {
+                method: "get",
+                url: `http://localhost:1081/api/despesas/graficoArea/${Cookies.get('dados_usuario')}`,
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`
+                }
+            }
+            return  axios(data);
+        },
 }
 export default actions;
