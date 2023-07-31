@@ -8,12 +8,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TipoDespesasRepository extends JpaRepository<TipoDespesas,Short> {
-    @Query(nativeQuery = true, value = "select SUM(ld.valor) AS valor, rtd.name  from listagem_despesas ld " +
+    @Query(nativeQuery = true, value = "select SUM(ld.valor) AS valor, rtd.name, EXTRACT(YEAR FROM d.calendar) AS ano from listagem_despesas ld " +
+            "inner join despesas d " +
+            "on ld.despesas_id = d.id " +
             "inner join registro_categoria_despesas rcd " +
             "on ld.registro_categoria_despesas_id  = rcd.id " +
             "inner join registro_tipo_despesas rtd " +
             "on rcd.tipo = rtd.id " +
-            "where rcd.usuario = :usuario " +
-            "GROUP BY rtd.name ")
-    Object[] findByAllDadosAnosUsuario(Usuario usuario);
+            "where rcd.usuario = :usuario and EXTRACT(YEAR FROM d.calendar)=:ano " +
+            "GROUP BY rtd.name,  EXTRACT(YEAR FROM d.calendar)")
+    Object[] findByAllDadosAnosUsuario(Usuario usuario, Integer ano);
 }

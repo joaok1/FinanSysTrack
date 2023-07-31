@@ -910,7 +910,6 @@ div
           pageable,
           totalElements
       };
-      await this.graficoPie();
       await this.graficoArea();
       window.dispatchEvent(new Event('resize'));
       this.$emit('excluir')
@@ -1011,6 +1010,7 @@ div
         this.ano = new Date().getFullYear();
       }
       const dados =  await actions.visualizarDespesasDashBoard(this.ano);
+      await this.graficoPie(this.ano);
       this.dashboardBar = dados.data
       
       this.seriesDashBoard[0].data = [
@@ -1047,8 +1047,8 @@ div
       const dados = await actions.getAnos();
       this.listAnos = dados.data;
     },
-    async graficoPie() {
-      const dados = await actions.graficoPie();
+    async graficoPie(ano) {
+      const dados = await actions.graficoPie(ano);
       this.getGraficoPie = dados.data;
       const tipo = this.getGraficoPie.map((area) => { return area});
       this.chartOptionsPie = {

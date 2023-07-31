@@ -49,12 +49,12 @@ public class TipoDespesasService {
 //        }
 //        return objectList;
 //    }
-    public List<DadosDespesa> gettipo(String user) throws DomainException {
+    public List<DadosDespesa> gettipo(String user, Integer ano) throws DomainException {
         Optional<Usuario> usuario = usuarioRepository.findByLogin(user);
         if (Objects.isNull(usuario.get())) {
             throw new DomainException("Usuario nao localizado na base de dados");
         }
-        Object[] objects =  tipoDespesasRepository.findByAllDadosAnosUsuario(usuario.get());
+        Object[] objects =  tipoDespesasRepository.findByAllDadosAnosUsuario(usuario.get(),ano);
         List<DadosDespesa> objectList = new ArrayList<>();
         for (Object obj:objects) {
             Object[] objArray = (Object[]) obj;

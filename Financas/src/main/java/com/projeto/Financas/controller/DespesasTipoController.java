@@ -41,9 +41,9 @@ public class DespesasTipoController {
     }
 
     @CrossOrigin(origins ="http://localhost:8080/")
-    @GetMapping("graficoPie/{user}")
-    public List<DadosDespesa> tipo(@PathVariable String user) throws Exception {
-        return tipoDespesasService.gettipo(user);
+    @GetMapping("graficoPie/{user}/{ano}")
+    public List<DadosDespesa> tipo(@PathVariable String user, @PathVariable Integer ano) throws Exception {
+        return tipoDespesasService.gettipo(user,ano);
     }
 
 

@@ -179,10 +179,10 @@ const actions = {
         return  axios(data);
     },
         //Metodo para pegar os dados do grafico area
-        async  graficoPie(){
+        async  graficoPie(ano){
             const data = {
                 method: "get",
-                url: `http://localhost:1081/api/despesasTipo/graficoPie/${Cookies.get('dados_usuario')}`,
+                url: `http://localhost:1081/api/despesasTipo/graficoPie/${Cookies.get('dados_usuario')}/${ano}`,
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`
                 }
