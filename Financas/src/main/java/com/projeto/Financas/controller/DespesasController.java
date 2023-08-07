@@ -50,6 +50,7 @@ public class DespesasController {
         return despesasService.getPageDespesas(id, pageable);
     }
 
+    //Metodo de deletar as depesas
     @CrossOrigin(origins = "http://localhost:8080/")
     @DeleteMapping(value = "delete/{id}", produces = "application/json")
     public void deleteByDespesas(@PathVariable Short id) throws DomainException {
@@ -59,6 +60,7 @@ public class DespesasController {
         despesasService.deleteByDespesas(id);
     }
 
+    //Metodo de editar as despesas
     @CrossOrigin(origins = "http://localhost:8080/")
     @PutMapping("edititionFindById")
     public ResponseEntity<String> edititionFindById(@RequestBody Despesas despesas) throws DomainException {
@@ -71,7 +73,6 @@ public class DespesasController {
     public Despesas findDespesasById(@PathVariable Short id) throws DomainException {
         return despesasService.findDespesasById(id);
     }
-
 
     // Serviço de LISTAGEM RELATORIO ou Gerar Relatorio PDF
     @CrossOrigin(origins ="http://localhost:8080/")
@@ -87,11 +88,13 @@ public class DespesasController {
         return despesasService.getDadosGrafico(user, ano);
     }
 
+    // Dados do gradico de barra
     @CrossOrigin(origins ="http://localhost:8080/")
     @GetMapping("grafico/{user}")
     public Object[] anos(@PathVariable String user) throws Exception {
         return despesasService.getAnos(user);
     }
+
     //Servico de listagem do Grafico de area
     @CrossOrigin(origins ="http://localhost:8080/")
     @GetMapping("graficoArea/{user}")

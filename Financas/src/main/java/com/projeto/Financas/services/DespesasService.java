@@ -100,18 +100,28 @@ public class DespesasService {
 
         return despesasPage;
     }
+
     @Transactional
     public void deleteByDespesas(Short id) throws DomainException {
         Optional<Despesas> despesas = despesasRepository.findById(id);
         if (Objects.isNull(despesas)) {
            throw new DomainException("Despesa nao encontrada");
         }
-        deleteByCascade(despesas.get());
+       List<ListagemDespesas> list = deleteByCascade(id);
+        if (list.size() == 0) {
+            for (ListagemDespesas listagemDespesas : despesas.get().getListagemDespesas()) {
+                CategoriaDespesas categoriaDespesas = listagemDespesas.getDespesasCategory();
+                categoriaDespesas.setUsage(0);
+                categoriaDespesasRepository.save(categoriaDespesas);
+            }
+        }
         despesasRepository.deleteById(id);
     }
-    @Transactional
-    private void deleteByCascade(Despesas despesas) {
-        listagemDespesasRepository.deleteByDespesas(despesas);
+
+
+    private List<ListagemDespesas> deleteByCascade(Short id) {
+        return listagemDespesasRepository.get(id);
+
     }
 
     public void edititionFindById(Despesas despesas) throws DomainException {
