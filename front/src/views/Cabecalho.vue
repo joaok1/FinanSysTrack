@@ -988,8 +988,9 @@ div
         setTimeout(() => {
           loading.close();
           actions.deleteDespesas(idDeleteAcoes).then(async response => {
-            await this.loader();
-            await this.getAno();
+            this.loader();
+            this.getAno();
+            this.dadosDashBoardBar();
             if(response.status === 200) {
               this.$notify({
                 title: 'Sucesso!',
