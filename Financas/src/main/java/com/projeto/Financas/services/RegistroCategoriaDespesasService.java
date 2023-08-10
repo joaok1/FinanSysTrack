@@ -41,10 +41,11 @@ public class RegistroCategoriaDespesasService {
     }
 
     public CategoriaDespesas inserirNovaCategoriaDespesas(RegistroCategoriaDespesasDTO categoriaDespesasDTO) throws DomainException {
+        Optional<Usuario> usuario = usuarioRepository.findByLogin(categoriaDespesasDTO.getUsuario());
         if (Objects.isNull(categoriaDespesasDTO.getTipo()) && Objects.isNull(categoriaDespesasDTO.getUsuario())) {
             throw new DomainException("Não foi possivel inserir os dados, á dados com valor nulo.");
         }
-        List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByName(categoriaDespesasDTO.getName());
+        List<CategoriaDespesas> categoriaDespesasList = categoriaDespesasRepository.findByNameAndUsuario(categoriaDespesasDTO.getName(),usuario.get());
         if (categoriaDespesasList.size() > 0) {
             throw new DomainException("Categoria já registrada!");
         }
@@ -52,7 +53,6 @@ public class RegistroCategoriaDespesasService {
 
             Optional<TipoDespesas> registroTipoDespesas = tipoDespesasRepository.findById(categoriaDespesasDTO.getTipo());
             categoriaDespesas.setTipo(registroTipoDespesas.get());
-            Optional<Usuario> usuario = usuarioRepository.findByLogin(categoriaDespesasDTO.getUsuario());
             categoriaDespesas.setUsuario(usuario.get());
             categoriaDespesas.setData(new Date());
             categoriaDespesas.setName(categoriaDespesasDTO.getName());
