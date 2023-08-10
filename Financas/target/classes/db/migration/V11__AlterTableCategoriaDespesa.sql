@@ -1,1 +1,0 @@
-ALTER TABLE registro_categoria_despesas ADD COLUMN active BOOLEAN default false;

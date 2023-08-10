@@ -1,1 +1,0 @@
-ALTER TABLE usuario ADD COLUMN login varchar(150);

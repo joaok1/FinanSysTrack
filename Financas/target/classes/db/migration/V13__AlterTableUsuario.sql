@@ -1,1 +1,0 @@
-ALTER TABLE usuario ADD COLUMN admin boolean default false;
