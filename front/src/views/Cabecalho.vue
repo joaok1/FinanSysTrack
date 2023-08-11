@@ -80,7 +80,7 @@ div
               @excluir="excluirDespesasCategoria"
           )
       //Registro de despesas
-      el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Inserir despesa",:before-close="handleClose")
+      el-dialog(:visible.sync="centerDialogResgistroDespesas", width="50%", center,title="Registro despesa",:before-close="handleClose")
         div(style="margin-right:10px; padding:10px;")
           el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
           div(style="display:flex; position:relative; justify-content:space-around; align-items:center; padding:10px")
@@ -132,7 +132,7 @@ div
               @excluir="excluir"
             )
           div(style="position:relative; display:flex; align-items:end; justify-content:flex-end; padding-top:10px;")
-              el-button(type="primary", @click="inserirDespesas()") Salvar
+              el-button(type="primary", @click="editarId === false ? inserirDespesas() : editarDespesas()") Salvar
       //Relatorio
       el-dialog(title="Listagem", :visible.sync="dialogRelatorio", width="50%", center)
         div
@@ -217,6 +217,7 @@ div
           <div id="chart">
             <apexchart type="line" height="250" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
           </div>
+    //- el-dialog(title="Listagem", :visible.sync="dialogEditarDespesas", width="50%", center)
     </template>
 <script>
   import DataTable from '@/components/DataTable.vue'
@@ -235,6 +236,7 @@ div
   },
     data() {
       return {
+        editarId:false,
         ano:null,
         listAnos:null,
         seriesRadar: [{
@@ -421,6 +423,7 @@ div
           },
         ],
         dialogRelatorio:false,
+        dialogEditarDespesas:false,
         visualizarDialogRelatorio:false,
         valorDespesa:null,
         arrayDespesa:[],
@@ -497,6 +500,7 @@ div
         },
         centerDialogResgistroDespesas:false,
         despesas:{
+          id:null,
           listagemDespesas:[
               {
                 despesasCategory:{
@@ -810,6 +814,39 @@ div
       window.dispatchEvent(new Event('resize'));
       this.centerDialogResgistroDespesas = true
     },
+    //Inserção das despesas
+    abrirModalDespesaEditar(data){
+      console.log(data)
+      this.editarId = true
+      this.despesas = {
+        id : data.id,
+        listagemDespesas:[
+          {
+            despesasCategory:{
+              id:null
+            },
+            valor:null,
+            despesas:null
+          }
+        ],
+        calendar: data.calendar,
+        mes: null,
+        total: 0,
+        entrada:data.entrada,
+        saldo: 0,
+        usuario: null
+      }
+      console.log("deu bom",data.listagemDespesas)
+      this.arrayDespesa.push(data.listagemDespesas);
+      data.listagemDespesas.forEach(data => {
+        this.arrayDespesa.push(data);
+      })
+      this.arrayDespesa.splice(0,1);
+      this.saldo = data.saldo;
+      this.saida = data.total;
+      window.dispatchEvent(new Event('resize'));
+      this.centerDialogResgistroDespesas = true
+    },
     async despesasByCategory() {
         const lista = await actions.getByCategoriaTable()
         this.listaCategoria = lista.data;
@@ -898,6 +935,51 @@ div
         }
       })
     },
+    async editarDespesas() {
+      this.arrayDespesa.map(objec => {
+        this.despesas.listagemDespesas.push(objec);
+      })
+      this.despesas.listagemDespesas.splice(0,1);
+      await actions.editarDespesas(this.despesas).then(response => {
+        if(response.status === 200) {
+          this.editarId = false;
+          this.despesas = {
+            listagemDespesas:[
+              {
+                despesasCategory:{
+                  id:null
+                },
+                valor:null,
+                despesas:null
+              }
+            ],
+            calendar: null,
+            mes: null,
+            total: 0,
+            entrada:0,
+            saldo: 0,
+            usuario: null
+          }
+          this.$notify({
+            title: 'Sucesso!',
+            message: 'Despesa registrada!',
+            type: 'success'
+          })
+          this.loader()
+          this.getAno();
+          this.dadosDashBoardBar();
+          this.centerDialogResgistroDespesas = false
+        }
+      }).catch(response => {
+        if(response.status !== 200) {
+          this.$notify.error({
+              title: 'Erro!',
+              message: 'Erro ao salvar registro!',
+          })
+        }
+      })
+    },
+    
     //Listagem das despesas
     async loader() {
       const listaData = await actions.getListagemDespesas(this.pageListagemDespesas);
@@ -919,12 +1001,12 @@ div
       this.loader();
       this.tipo();
     },
-    editarListagemDespesas(data) {
-      this.data = data.id;
-      this.$router.push({
-          name: 'despesas',
-          params: {data}
-      })
+    async editarListagemDespesas(data) {
+      const dataDespesa = await actions.visualizarDespesas(data.id)
+      console.log(dataDespesa)
+      this.abrirModalDespesaEditar(dataDespesa.data);
+      // this.dialogEditarDespesas = true;
+      // const dados = await actions.editarDespesas();
     },
     async visualizar(data){
       this.idDespesa = data.id;

@@ -156,6 +156,18 @@ const actions = {
         }
         return axios(data);
     },
+        //Metodo para editar as despesas
+        async  editarDespesas(despesas){
+            const data = {
+                method: "put",
+                url: `http://localhost:1081/api/despesas/edititionFindById`,
+                data:despesas,
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`
+                }
+            }
+            return axios(data);
+        },
     //Metodo de dados do dashBoar - barra e linha
     async  visualizarDespesasDashBoard(ano){
         const data = {
