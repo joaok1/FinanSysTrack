@@ -1,0 +1,9 @@
+
+[	java:S112-"FDefine and throw a dedicated exception instead of using a generic one.(êÕ‡Ê
+ƒ
+java:S1488!"hImmediately return this expression instead of assigning it to the temporary variable "registroDespesas".(¡ìöœşÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¨ÂÓè
+7
+java:S1116"Remove this empty statement.(ñªíôøÿÿÿÿ
+V
+java:S4684'"@Replace this persistent entity with a simple POJO or DTO object.(‘œ¹Ú
