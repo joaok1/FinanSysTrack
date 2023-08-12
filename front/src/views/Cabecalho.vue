@@ -98,17 +98,17 @@ div
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor de entrada
               div
-                span(style="font-size:18px;") {{ this.despesas.entrada }}
+                span(style="font-size:18px;") {{ "R$ " + this.despesas.entrada.toLocaleString('pt-br', {minimumFractionDigits: 2}) }}
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor total dos gastos
               div
-                span(style="font-size:18px;") {{ saida ? saida : 0 }}
+                span(style="font-size:18px;") {{ saida ? "R$ " + saida.toLocaleString('pt-br', {minimumFractionDigits: 2}) : "R$ " + 0 }}
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Saldo
               div
-              span(style="font-size:18px;") {{ saldo ? saldo : 0 }}
+              span(style="font-size:18px;") {{ saldo ? "R$ " + saldo.toLocaleString('pt-br', {minimumFractionDigits: 2}) : "R$ " + 0 }}
           div(style="display:flex; align-items:center;")
             div(style="padding:10px")
               label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
@@ -322,7 +322,7 @@ div
                 return val.toLocaleString('pt-br', {minimumFractionDigits: 2});
               },    
               style: {
-                fontSize: '0.6rem', // Definir o tamanho da fonte dos rótulos de dados
+                fontSize: '0.6rem'
               }
             },
             stroke: {
@@ -800,23 +800,13 @@ div
     },
     //Inserção das despesas
     abrirModalDespesa(){
-      this.despesas = {
-        listagemDespesas:[
-          {
-            despesasCategory:{
-              id:null
-            },
-            valor:null,
-            despesas:null
-          }
-        ],
-        calendar: null,
-        mes: null,
-        total: 0,
-        entrada:0,
-        saldo: 0,
-        usuario: null
-      }
+      this.despesas.calendar = null;
+      this.despesas.entrada = 0;
+      this.saida = 0;
+      this.saldo = 0;
+      this.arrayDespesa = [];
+      this.series = [0];
+      console.log(this.despesas)
       window.dispatchEvent(new Event('resize'));
       this.centerDialogResgistroDespesas = true
     },
