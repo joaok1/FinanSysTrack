@@ -272,7 +272,7 @@ div
               breakpoint: 480,
               options: {
                 chart: {
-                  width: 350
+                  width: 450
                 },
                 legend: {
                   position: 'bottom'
@@ -292,7 +292,6 @@ div
           chartOptionsDashBoard: {
             annotations: {
               points: [{
-                x: 'Bananas',
                 seriesIndex: 0,
                 label: {
                   borderColor: '#775DD0',
@@ -301,13 +300,15 @@ div
                     color: '#fff',
                     background: '#775DD0',
                   },
-                  text: 'Bananas are good',
                 }
               }]
             },
             chart: {
               height: 350,
               type: 'bar',
+              zoom: {
+                enabled: false
+              }
             },
             plotOptions: {
               bar: {
@@ -316,10 +317,16 @@ div
               }
             },
             dataLabels: {
-              enabled: false
+              enabled: true,
+              formatter: function(val) {
+                return val.toLocaleString('pt-br', {minimumFractionDigits: 2});
+              },    
+              style: {
+                fontSize: '0.6rem', // Definir o tamanho da fonte dos rótulos de dados
+              }
             },
             stroke: {
-              width: 2
+              width: 4
             },
             
             grid: {
@@ -333,7 +340,6 @@ div
                 rotate: -45
               },
               categories: ["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"],
-              tickPlacement: 'on'
             },
             yaxis: {
               title: {
