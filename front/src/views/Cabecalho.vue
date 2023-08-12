@@ -98,7 +98,7 @@ div
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor de entrada
               div
-                span(style="font-size:18px;") {{ "R$ " + this.despesas.entrada.toLocaleString('pt-br', {minimumFractionDigits: 2}) }}
+                span(style="font-size:18px;") {{this.despesas.entrada === 0 ? "R$ " + 0 : "R$ " + this.despesas.entrada.toLocaleString('pt-br', {minimumFractionDigits: 2}) }}
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor total dos gastos
@@ -806,7 +806,6 @@ div
       this.saldo = 0;
       this.arrayDespesa = [];
       this.series = [0];
-      console.log(this.despesas)
       window.dispatchEvent(new Event('resize'));
       this.centerDialogResgistroDespesas = true
     },
