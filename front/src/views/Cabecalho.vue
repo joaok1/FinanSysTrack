@@ -140,7 +140,6 @@ div
                 div(style='display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;')
                     div
                         label(style='font-size: 20px; text-align:center; display:flex; margin-left:20px; font-weight:bolder') Registro de entrada
-
                 data-table(
                     :pageable='pageableListagemDespesa'
                     :data="listaDataListagemDespesas.content",

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TipoDespesasRepository extends JpaRepository<TipoDespesas,Short> {
-    @Query(nativeQuery = true, value = "select SUM(ld.valor) AS valor, rtd.name, EXTRACT(YEAR FROM d.calendar) AS ano from listagem_despesas ld " +
+    @Query(nativeQuery = true, value = "select ROUND(SUM(ld.valor),2) AS valor, rtd.name, EXTRACT(YEAR FROM d.calendar) AS ano from listagem_despesas ld " +
             "inner join despesas d " +
             "on ld.despesas_id = d.id " +
             "inner join registro_categoria_despesas rcd " +

@@ -16,8 +16,8 @@ public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
     Page<Despesas> findAllByUsuario(Pageable pageable, Usuario usuario);
 
     @Query(nativeQuery = true, value = "SELECT EXTRACT(YEAR FROM calendar) AS ano, " +
-            "SUM(entrada) AS entrada, " +
-            "SUM(total) AS saida " +
+            "ROUND(SUM(entrada),2) AS entrada, " +
+            "ROUND(SUM(total),2) AS saida " +
             "FROM despesas d " +
             "WHERE d.usuario = :usuario " +
             "GROUP BY EXTRACT(YEAR FROM calendar) " +
@@ -27,8 +27,8 @@ public interface DespesasRepository  extends JpaRepository<Despesas, Short> {
     @Query(nativeQuery = true, value = "SELECT " +
             "EXTRACT(YEAR FROM calendar) AS ano, " +
             "DATE_FORMAT(calendar, '%M') AS mes, " +
-            "SUM(entrada) AS entrada, " +
-            "SUM(total) AS saida " +
+            "ROUND(SUM(entrada),2) AS entrada, " +
+            "ROUND(SUM(total),2) AS saida " +
             "FROM despesas d " +
             "WHERE d.usuario = :usuario and EXTRACT(YEAR FROM calendar) = :ano " +
             "GROUP BY EXTRACT(YEAR FROM calendar), DATE_FORMAT(calendar, '%M')")
