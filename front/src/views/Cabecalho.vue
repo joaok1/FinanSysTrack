@@ -441,7 +441,7 @@ div
             name: 'food2.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }],
-        series: [],
+        series: [0],
         chartOptions: {
             chart: {
                 type: 'radialBar',
@@ -973,7 +973,6 @@ div
     },
     async editarListagemDespesas(data) {
       const dataDespesa = await actions.visualizarDespesas(data.id)
-      console.log(dataDespesa)
       this.abrirModalDespesaEditar(dataDespesa.data);
       // this.dialogEditarDespesas = true;
       // const dados = await actions.editarDespesas();
