@@ -803,15 +803,22 @@ div
       this.despesas.calendar = null;
       this.despesas.entrada = 0;
       this.saida = 0;
+      this.despesaId = null;
+      this.despesasCategory.tipo = null;
+      this.valorDespesa = 0;
       this.saldo = 0;
       this.arrayDespesa = [];
       this.series = [0];
       window.dispatchEvent(new Event('resize'));
+      this.editarId = false;
       this.centerDialogResgistroDespesas = true
     },
     //Inserção das despesas
     abrirModalDespesaEditar(data){
-      this.editarId = true
+      this.despesasCategory.tipo = null;
+      this.valorDespesa = 0;
+      this.despesaId = null;
+      this.editarId = true;
       this.despesas = {
         id : data.id,
         listagemDespesas:[
@@ -889,6 +896,7 @@ div
       this.series.push(final);
     },
     async inserirDespesas() {
+      console.log(this.editarId)
       this.arrayDespesa.map(objec => {
         this.despesas.listagemDespesas.push(objec);
       })
@@ -923,7 +931,6 @@ div
       this.despesas.listagemDespesas.splice(0,1);
       await actions.editarDespesas(this.despesas).then(response => {
         if(response.status === 200) {
-          this.editarId = false;
           this.$notify({
             title: 'Sucesso!',
             message: 'Despesa registrada!',
@@ -933,16 +940,17 @@ div
           this.getAno();
           this.dadosDashBoardBar();
           this.abrirModalDespesa();
-          this.centerDialogResgistroDespesas = false
+          this.centerDialogResgistroDespesas = false;
         }
       }).catch(response => {
         if(response.status !== 200) {
           this.$notify.error({
-              title: 'Erro!',
-              message: 'Erro ao salvar registro!',
+            title: 'Erro!',
+            message: 'Erro ao salvar registro!',
           })
         }
       })
+      this.editarId = false;
     },
     
     //Listagem das despesas
@@ -969,8 +977,6 @@ div
     async editarListagemDespesas(data) {
       const dataDespesa = await actions.visualizarDespesas(data.id)
       this.abrirModalDespesaEditar(dataDespesa.data);
-      // this.dialogEditarDespesas = true;
-      // const dados = await actions.editarDespesas();
     },
     async visualizar(data){
       this.idDespesa = data.id;

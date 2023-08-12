@@ -19,13 +19,5 @@ Dsrc/main/java/com/projeto/Financas/services/TipoDespesasService.java,e/0/e0bab
 Msrc/main/java/com/projeto/Financas/repository/ListagemDespesasRepository.java,e/8/e85bed8ce7528ef36bc996168623bde3e401bd2a
 o
 ?src/main/java/com/projeto/Financas/model/CategoriaDespesas.java,5/6/56954dcdb6664db6f494144b2907ae26780b3ac8
-Ü
-Vsrc/main/java/com/projeto/Financas/controller/RegistroCategoriaDespesasController.java,6/5/6599b84aab8e74dc1c2d1780f84874631dd294ad
-~
-Nsrc/main/java/com/projeto/Financas/repository/CategoriaDespesasRepository.java,8/3/83e41bce01bc3d0186941c52344722631a2f8941
-Å
-Qsrc/main/java/com/projeto/Financas/services/RegistroCategoriaDespesasService.java,3/1/31c68c5b47f79f25f00b506e99e8fe5452afe750
 h
 8src/main/java/com/projeto/Financas/Interfaces/Meses.java,c/6/c61d6629b6721ab06e9cfb6385c421f386f46a9f
-h
-8src/main/java/com/projeto/Financas/pdf/PdfGenerator.java,0/4/04d078de1ecb507d78a78fe9fbecd54f0390ae53

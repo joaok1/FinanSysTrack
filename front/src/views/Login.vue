@@ -36,18 +36,6 @@
                             type="password"
                           
                           />
-                            <v-row>
-                              <v-col cols="12" sm="7">
-                                <v-checkbox
-                        label="Remember Me"
-                        class="mt-n1"
-                        color="blue"
-                      > </v-checkbox>
-                              </v-col>
-                              <v-col cols="12" sm="5">
-                                <span class="caption blue--text">Esqueceu a senha?</span>
-                              </v-col>
-                            </v-row>
                           <v-btn @click="logar()" color="blue" dark block tile>Entrar</v-btn>
                           </v-col>
                         </v-row>  

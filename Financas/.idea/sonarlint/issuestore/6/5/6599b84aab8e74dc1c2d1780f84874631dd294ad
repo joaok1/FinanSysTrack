@@ -1,16 +1,0 @@
-
-r
-java:S1488,"\Immediately return this expression instead of assigning it to the temporary variable "list".(ÅËüÔ
-r
-java:S14887"\Immediately return this expression instead of assigning it to the temporary variable "list".(¤Ïœı
-„
-java:S1488D"iImmediately return this expression instead of assigning it to the temporary variable "categoriaDespesas".(ñƒî‚ùÿÿÿÿ
-o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¨ÂÓè
-S
-java:S3010"8Remove this assignment of "categoriaDespesasRepository".(”Ÿç§şÿÿÿÿ
-m
-java:S2737/"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û
-m
-java:S2737:"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û
-m
-java:S2737W"WAdd logic to this catch clause or eliminate it and rethrow the exception automatically.(ö™û
