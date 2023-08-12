@@ -98,17 +98,17 @@ div
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor de entrada
               div
-                span(style="font-size:18px;") {{this.despesas.entrada === 0 ? "R$ " + 0 : "R$ " + this.despesas.entrada.toLocaleString('pt-br', {minimumFractionDigits: 2}) }}
+                span(style="font-size:18px;") {{this.despesas.entrada === 0 ? "R$ " + 0 : "R$ " + this.despesas.entrada }}
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor total dos gastos
               div
-                span(style="font-size:18px;") {{ saida ? "R$ " + saida.toLocaleString('pt-br', {minimumFractionDigits: 2}) : "R$ " + 0 }}
+                span(style="font-size:18px;") {{ saida ? "R$ " + saida : "R$ " + 0 }}
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Saldo
               div
-              span(style="font-size:18px;") {{ saldo ? "R$ " + saldo.toLocaleString('pt-br', {minimumFractionDigits: 2}) : "R$ " + 0 }}
+              span(style="font-size:18px;") {{ saldo ? "R$ " + saldo : "R$ " + 0 }}
           div(style="display:flex; align-items:center;")
             div(style="padding:10px")
               label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
@@ -896,7 +896,6 @@ div
       this.series.push(final);
     },
     async inserirDespesas() {
-      console.log(this.editarId)
       this.arrayDespesa.map(objec => {
         this.despesas.listagemDespesas.push(objec);
       })
@@ -913,13 +912,33 @@ div
           this.loader()
           this.getAno();
           this.dadosDashBoardBar();
-          this.centerDialogResgistroDespesas = false
+          this.centerDialogResgistroDespesas = false;
+          this.despesas = {
+            id:null,
+            listagemDespesas:[
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
+            calendar:null,
+            mes:null,
+            total:0,
+            login:null,
+            entrada:0,
+            saldo:0,
+            usuario:null
+          },
+          this.arrayDespesa = [];
         }
       }).catch(response => {
         if(response.status !== 200) {
           this.$notify.error({
-              title: 'Erro!',
-              message: 'Erro ao salvar registro!',
+            title: 'Erro!',
+            message: 'Erro ao salvar registro!',
           })
         }
       })
@@ -941,6 +960,26 @@ div
           this.dadosDashBoardBar();
           this.abrirModalDespesa();
           this.centerDialogResgistroDespesas = false;
+          this.despesas = {
+            id:null,
+            listagemDespesas:[
+                {
+                  despesasCategory:{
+                    id:null
+                  },
+                  valor:null,
+                  despesas:null
+                }
+              ],
+            calendar:null,
+            mes:null,
+            total:0,
+            login:null,
+            entrada:0,
+            saldo:0,
+            usuario:null
+          },
+          this.arrayDespesa = [];
         }
       }).catch(response => {
         if(response.status !== 200) {
