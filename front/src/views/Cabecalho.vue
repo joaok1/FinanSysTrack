@@ -441,7 +441,7 @@ div
             name: 'food2.jpeg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }],
-        series: [0],
+        series: [],
         chartOptions: {
             chart: {
                 type: 'radialBar',
@@ -816,7 +816,6 @@ div
     },
     //Inserção das despesas
     abrirModalDespesaEditar(data){
-      console.log(data)
       this.editarId = true
       this.despesas = {
         id : data.id,
@@ -836,14 +835,17 @@ div
         saldo: 0,
         usuario: null
       }
-      console.log("deu bom",data.listagemDespesas)
+      this.arrayDespesa = []
       this.arrayDespesa.push(data.listagemDespesas);
       data.listagemDespesas.forEach(data => {
         this.arrayDespesa.push(data);
       })
-      this.arrayDespesa.splice(0,1);
       this.saldo = data.saldo;
       this.saida = data.total;
+      this.arrayDespesa.splice(0,1)
+      this.series.splice(0,1);
+      let final = (this.saida * 100) / this.despesas.entrada
+      this.series.push(final);
       window.dispatchEvent(new Event('resize'));
       this.centerDialogResgistroDespesas = true
     },
@@ -899,23 +901,7 @@ div
       this.despesas.usuario = this.user;
       await actions.inserirDespesas(this.despesas).then(response => {
         if(response.status === 200) {
-          this.despesas = {
-            listagemDespesas:[
-              {
-                despesasCategory:{
-                  id:null
-                },
-                valor:null,
-                despesas:null
-              }
-            ],
-            calendar: null,
-            mes: null,
-            total: 0,
-            entrada:0,
-            saldo: 0,
-            usuario: null
-          }
+          this.abrirModalDespesa();
           this.$notify({
             title: 'Sucesso!',
             message: 'Despesa registrada!',
@@ -943,23 +929,6 @@ div
       await actions.editarDespesas(this.despesas).then(response => {
         if(response.status === 200) {
           this.editarId = false;
-          this.despesas = {
-            listagemDespesas:[
-              {
-                despesasCategory:{
-                  id:null
-                },
-                valor:null,
-                despesas:null
-              }
-            ],
-            calendar: null,
-            mes: null,
-            total: 0,
-            entrada:0,
-            saldo: 0,
-            usuario: null
-          }
           this.$notify({
             title: 'Sucesso!',
             message: 'Despesa registrada!',
@@ -968,6 +937,7 @@ div
           this.loader()
           this.getAno();
           this.dadosDashBoardBar();
+          this.abrirModalDespesa();
           this.centerDialogResgistroDespesas = false
         }
       }).catch(response => {
