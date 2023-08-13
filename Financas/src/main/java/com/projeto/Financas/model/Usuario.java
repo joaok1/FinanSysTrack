@@ -1,6 +1,7 @@
 package com.projeto.Financas.model;
 
 import javax.persistence.*;
+import javax.swing.*;
 import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
@@ -30,5 +31,11 @@ public class Usuario {
     private String senha;
     @Column
     private boolean admin;
+
+    @Column(name = "documento_image")
+    private String documento;
+
+    @Transient
+    private ImageIcon image;
 
 }
