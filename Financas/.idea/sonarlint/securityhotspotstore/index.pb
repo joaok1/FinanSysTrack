@@ -1,6 +1,4 @@
 
-s
-Csrc/main/java/com/projeto/Financas/repository/PessoaRepository.java,3/d/3db6b1d3be74e9b11dcd400a970f3c66682a1847
 d
 4src/main/java/com/projeto/Financas/model/Bancos.java,8/e/8e79600d6e3336063e8cf13c770b5853651e7d96
 7

@@ -1,7 +1,9 @@
 package com.projeto.Financas.services;
 
 import com.projeto.Financas.Exception.DomainException;
+import com.projeto.Financas.model.Pessoa;
 import com.projeto.Financas.model.Usuario;
+import com.projeto.Financas.repository.PessoaRepository;
 import com.projeto.Financas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +22,8 @@ public class UsuarioService implements UserDetailsService {
     private PasswordEncoder encoder;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private PessoaRepository pessoaRepository;
 
     public Optional<Usuario> findById(Short id) {
         return usuarioRepository.findById(id);

@@ -228,6 +228,16 @@ const actions = {
             responseType: "blob"
         });
         return response.data;
-    }
+    },
+    async Pessoa() {
+        const response = await axios({
+            method: "get",
+            url: `http://localhost:1081/api/pessoa/findByUser/${Cookies.get('dados_usuario')}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
+            },
+        });
+        return response.data;
+    },
 }
 export default actions;

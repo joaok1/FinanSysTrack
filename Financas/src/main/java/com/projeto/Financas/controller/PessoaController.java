@@ -47,4 +47,12 @@ public class PessoaController {
     public ResponseEntity<String> deleteById(@PathVariable Short id) {
         return pessoaService.deleteById(id);
     }
+
+    @CrossOrigin(origins = "http://localhost:8080/")
+    @GetMapping(value = "findByUser/{login}", produces = "application/json")
+    public Optional<Pessoa> findByPessoaByUser(@PathVariable String login) {
+        return pessoaService.findByPessoaByUser(login);
+    }
 }
+
+

@@ -22,10 +22,18 @@ div
                 div(style="position:relative; align-items:center; text-align:center; justify-content:center;")
                   div
                     el-dropdown
-                      <el-avatar :size="60" shape="square"  :src="this.imageSrc"></el-avatar>
-                      <el-dropdown-menu>
-
-                        <el-dropdown-item > <el-button type="text"   @click="logout()">Sair </el-button> </el-dropdown-item>
+                      <el-avatar :size="60" :src="this.imageSrc"></el-avatar>
+                      <el-dropdown-menu >
+                        div(style="position:relative; align-items:center; text-align:center; justify-content:center; display:fixed;")
+                          <el-tag type="success" style="border-radius:20px;">Online</el-tag>
+                          div(style="padding:10px;")
+                            div(style="padding:5px;")
+                              span(class="el-icon-user-solid")
+                              span(style="margin-left:0.5rem;") {{ this.pessoa.nome }}
+                            div(style="padding:5px;")
+                              span(class="el-icon-message")
+                              span(style="margin-left:0.5rem;") {{ this.pessoa.email }}
+                          <el-dropdown-item > <el-button type="text" @click="logout()" icon="el-icon-arrow-right">Sair </el-button> </el-dropdown-item>
                       </el-dropdown-menu>
                   div
       //Inserção das categorias//
@@ -239,6 +247,10 @@ div
   },
     data() {
       return {
+        pessoa:{
+          nome:null,
+          email:null
+        },
         fileName: {
           key:null
         },
@@ -632,6 +644,7 @@ div
       await this.getImage();
       await this.dadosDashBoardBar();
       await this.getAno();
+      await this.pessoaLogin();
 
       window.dispatchEvent(new Event('resize'));
     },
@@ -1198,6 +1211,14 @@ div
       } catch (error) {
         console.error("Erro ao buscar imagem:", error);
       }
+    },
+    async pessoaLogin(){
+      const login = await actions.Pessoa();
+      this.pessoa = {
+        nome : login.nome,
+        email: login.email
+      }
+      console.log(login);
     }
   }
 }

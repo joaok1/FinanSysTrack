@@ -36,6 +36,6 @@ public class Usuario {
     private String documento;
 
     @Transient
-    private ImageIcon image;
+    private Pessoa pessoa;
 
 }

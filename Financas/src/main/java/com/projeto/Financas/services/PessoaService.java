@@ -65,4 +65,9 @@ public class PessoaService {
         pessoaRepository.deleteById(id);
         return ResponseEntity.ok("Deletado com sucesso");
     }
+
+    public Optional<Pessoa> findByPessoaByUser(String login) {
+        Optional<Usuario> user = usuarioRepository.findByLogin(login);
+        return pessoaRepository.findByUsuario(user.get());
+    }
 }
