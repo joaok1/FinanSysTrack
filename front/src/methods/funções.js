@@ -19,6 +19,11 @@ const actions = {
         return (await usuario).data.id
     },
 
+    async Login() {
+        const usuario =  axios.get(`http://localhost:1081/api/usuarios/findByLogin/${Cookies.get('dados_usuario')}`)
+        return await usuario
+    },
+
     //
     //Inicio dos Metodos
     //
@@ -190,26 +195,39 @@ const actions = {
         }
         return  axios(data);
     },
-        //Metodo para pegar os dados do grafico area
-        async  graficoPie(ano){
-            const data = {
-                method: "get",
-                url: `http://localhost:1081/api/despesasTipo/graficoPie/${Cookies.get('dados_usuario')}/${ano}`,
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`
-                }
+    //Metodo para pegar os dados do grafico area
+    async  graficoPie(ano){
+        const data = {
+            method: "get",
+            url: `http://localhost:1081/api/despesasTipo/graficoPie/${Cookies.get('dados_usuario')}/${ano}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
             }
-            return  axios(data);
-        },
-        async  graficoArea(){
-            const data = {
-                method: "get",
-                url: `http://localhost:1081/api/despesas/graficoArea/${Cookies.get('dados_usuario')}`,
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`
-                }
+        }
+        return  axios(data);
+    },
+    async  graficoArea(){
+        const data = {
+            method: "get",
+            url: `http://localhost:1081/api/despesas/graficoArea/${Cookies.get('dados_usuario')}`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
             }
-            return  axios(data);
-        },
+        }
+        return  axios(data);
+    },
+    async fetchImage(url) {
+        const response = await axios({
+            method: "post",
+            url: `http://localhost:1081/api/arquivos/image`,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`,
+                "Content-Type": "application/json"
+            },
+            data: url,
+            responseType: "blob"
+        });
+        return response.data;
+    }
 }
 export default actions;

@@ -18,12 +18,12 @@ div
                 </el-dropdown-menu>
               </el-dropdown>
           el-col(:span="2" style="padding-left:10px")
-            div(style="justify-content:flex-end; padding:10px;")
+            div(style="justify-content:flex-end; padding-top:1em;")
                 div(style="position:relative; align-items:center; text-align:center; justify-content:center;")
                   div
-                    <el-avatar :size="75"></el-avatar>
+                    <el-avatar :size="60" shape="square"  :src="this.imageSrc"></el-avatar>
                   div
-                    el-button(type="text" style="font-size:18px; color:#fff; font-weight:900;" @click="logout()") Sair
+                    el-button(type="text" style="font-size:14px; color:#fff; font-weight:900;" @click="logout()") Sair
       //Inserção das categorias//
       el-dialog(title="Incluir despesa." :visible.sync="centerDialog" width="30%" center @before-close="handleClose")
             div(style="padding:10px")
@@ -235,6 +235,9 @@ div
   },
     data() {
       return {
+        fileName: {
+          key:null
+        },
         editarId:false,
         ano:null,
         listAnos:null,
@@ -428,6 +431,7 @@ div
           },
         ],
         dialogRelatorio:false,
+        imageSrc:null,
         dialogEditarDespesas:false,
         visualizarDialogRelatorio:false,
         valorDespesa:null,
@@ -621,6 +625,7 @@ div
       }
   },
     async mounted() {
+      await this.getImage();
       await this.dadosDashBoardBar();
       await this.getAno();
 
@@ -1046,10 +1051,8 @@ div
         responseType: 'blob',
       });
 
-    // Cria uma URL válida para o arquivo blob
         const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
 
-        // Abre o arquivo em uma nova guia
         window.open(url, '_blank');
       } catch (error) {
         console.log(error);
@@ -1172,6 +1175,24 @@ div
         this.seriesRadar[0].data.push(tipo[index].entrada);
         this.seriesRadar[1].data.push(tipo[index].saida);
 
+      }
+    },
+    async getImage() {
+      try {
+        const login = await actions.Login();
+
+        this.fileName.key = login.data.documento;
+
+        // Faz uma solicitação POST para buscar a imagem como blob
+        const blobResponse = await actions.fetchImage(this.fileName);
+
+        // Criar um objeto Blob com os dados da resposta
+        const blob = new Blob([blobResponse], { type: 'image/png' });
+
+        this.imageSrc = URL.createObjectURL(blob);
+
+      } catch (error) {
+        console.error("Erro ao buscar imagem:", error);
       }
     }
   }

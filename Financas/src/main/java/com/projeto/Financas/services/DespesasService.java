@@ -8,7 +8,6 @@ import com.projeto.Financas.model.DashBoard.DadosDespesa;
 import com.projeto.Financas.model.Despesas;
 import com.projeto.Financas.model.ListagemDespesas;
 import com.projeto.Financas.model.Usuario;
-import com.projeto.Financas.pdf.PdfGenerator;
 import com.projeto.Financas.repository.CategoriaDespesasRepository;
 import com.projeto.Financas.repository.DespesasRepository;
 import com.projeto.Financas.repository.ListagemDespesasRepository;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 @Service
