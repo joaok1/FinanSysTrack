@@ -4,7 +4,7 @@ div
     div.dashBoard
       el-card(style="margin: 10px 10px; border-radius:10px; background-color:#409EFF;")
         div(style="display:flex; position:relative; flex-wrap:wrap; align-items:center;")
-          el-col(:span="22")
+          el-col(:span="23")
             div(style="display:flex;  justify-content:flex-end;")
               el-button( plain @click="abrirModalDespesa()" icon="el-icon-s-finance" style="color:#000;") Registrar despesas
               el-button( plain icon="el-icon-tickets"  @click="dialogRelatorio = true"  style="color:#000;") Relatorio
@@ -17,13 +17,17 @@ div
                   <el-button type="text" @click="centerDialogVisibleTable = true"  style="color:#000;">Visualizar tabela categoria</el-button>
                 </el-dropdown-menu>
               </el-dropdown>
-          el-col(:span="2" style="padding-left:10px")
-            div(style="justify-content:flex-end; padding-top:1em;")
+          el-col(:span="1" style="padding-left:10px")
+            div(style="justify-content:flex-end;")
                 div(style="position:relative; align-items:center; text-align:center; justify-content:center;")
                   div
-                    <el-avatar :size="60" shape="square"  :src="this.imageSrc"></el-avatar>
+                    el-dropdown
+                      <el-avatar :size="60" shape="square"  :src="this.imageSrc"></el-avatar>
+                      <el-dropdown-menu>
+
+                        <el-dropdown-item > <el-button type="text"   @click="logout()">Sair </el-button> </el-dropdown-item>
+                      </el-dropdown-menu>
                   div
-                    el-button(type="text" style="font-size:14px; color:#fff; font-weight:900;" @click="logout()") Sair
       //Inserção das categorias//
       el-dialog(title="Incluir despesa." :visible.sync="centerDialog" width="30%" center @before-close="handleClose")
             div(style="padding:10px")
