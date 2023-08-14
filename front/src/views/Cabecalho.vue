@@ -1218,7 +1218,6 @@ div
         nome : login.nome,
         email: login.email
       }
-      console.log(login);
     }
   }
 }
