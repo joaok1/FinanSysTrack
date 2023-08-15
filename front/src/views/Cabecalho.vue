@@ -21,7 +21,7 @@ div
             div(style="justify-content:flex-end;")
                 div(style="position:relative; align-items:center; text-align:center; justify-content:center;")
                   div
-                    el-dropdown
+                    el-dropdown(trigger="click")
                       <el-avatar :size="60" :src="this.imageSrc"></el-avatar>
                       <el-dropdown-menu >
                         div(style="position:relative; align-items:center; text-align:center; justify-content:center; display:fixed;")
@@ -645,7 +645,6 @@ div
       await this.getAno();
       await this.pessoaLogin();
 
-      window.dispatchEvent(new Event('resize'));
     },
     watch: {
       propriedadeObservada: {
@@ -662,9 +661,7 @@ div
           if (this.token) {
             await this.despesasByCategory();
             await this.tipo();
-
             await this.loader();
-
             window.dispatchEvent(new Event('resize'));
           }
           
@@ -858,7 +855,6 @@ div
         saldo: 0,
         usuario: null
       }
-      console.log(this.despesas.calendar)
       this.arrayDespesa = []
       this.arrayDespesa.push(data.listagemDespesas);
       data.listagemDespesas.forEach(data => {
