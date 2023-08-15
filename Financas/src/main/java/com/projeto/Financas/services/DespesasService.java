@@ -134,11 +134,17 @@ public class DespesasService {
             double valor = list.getValor();
             soma+=valor;
         }
+        despesasEdit.setCalendar(despesas.getCalendar());
         despesasEdit.setTotal(soma);
         despesasEdit.setSaldo(despesas.getEntrada() - despesasEdit.getTotal());
         List<ListagemDespesas> listagemDespesasList = despesasEdit.getListagemDespesas();
         listagemDespesasList.clear();
         for (ListagemDespesas listagemDespesas:despesas.getListagemDespesas()) {
+            Optional<CategoriaDespesas> categoriaDespesasOptional = categoriaDespesasRepository.findById(listagemDespesas.getDespesasCategory().getId());
+            if (categoriaDespesasOptional.get().getUsage() == 0) {
+                categoriaDespesasOptional.get().setUsage(1);
+                categoriaDespesasRepository.save(categoriaDespesasOptional.get());
+            }
             ListagemDespesas listagem = new ListagemDespesas();
             listagem.setDespesasCategory(listagemDespesas.getDespesasCategory());
             listagem.setValor(listagemDespesas.getValor());

@@ -96,31 +96,31 @@ div
         div(style="margin-right:10px; padding:10px;")
           el-button(type="text" @click="centerDialogVisibleTable = true") Visualizar tabela categoria
           div(style="display:flex; position:relative; justify-content:space-around; align-items:center; padding:10px")
-            div
+            el-col(:span="12")
               span Insira a data:
-              el-date-picker( type="date", placeholder="Insira a data da despesa", v-model="despesas.calendar", size="small", style="width: auto")
+              input.date( type="date", placeholder="Insira a data da despesa", v-model="despesas.calendar")
             div(style="width:50%")
               div(id="chart")
                 apexchart(type="radialBar" :options="chartOptions" :series="series")
-            div
+            el-col(:span="12")
               span Insira o valor recebido:
-              el-input-number(v-model="despesas.entrada" :min="0" size="small" style="width: auto")
+              el-input-number(v-model="despesas.entrada" :min="0" size="big" style="width: auto")
           div(style="display:flex; position:relative; justify-content:space-around; align-items:center;")
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor de entrada
               div
-                span(style="font-size:18px;") {{this.despesas.entrada === 0 ? "R$ " + 0 : "R$ " + this.despesas.entrada }}
+                el-input(style="font-size:18px;" v-model="this.despesas.entrada" disabled)
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Valor total dos gastos
               div
-                span(style="font-size:18px;") {{ saida ? "R$ " + saida : "R$ " + 0 }}
+              el-input(style="font-size:18px;" v-model="saida" disabled)
             div(style="padding:10px; text-align:center;")
               div(style="display:flex; position:relative; justify-content:center;")
                 span(style="font-size:18px;") Saldo
               div
-              span(style="font-size:18px;") {{ saldo ? "R$ " + saldo : "R$ " + 0 }}
+              el-input(style="font-size:18px;" v-model="saldo" disabled)
           div(style="display:flex; align-items:center;")
             div(style="padding:10px")
               label(style="font-size:14px; margin-right:10px;font-weight:bold;") Selecione a categoria da despesa:
@@ -222,11 +222,11 @@ div
       el-row
         el-col(:span="8")
           <div id="chart">
-            <apexchart type="radar" height="260" width="100%" :options="chartOptionsRadar" :series="seriesRadar"></apexchart>
+            <apexchart type="radar" height="360" width="100%" :options="chartOptionsRadar" :series="seriesRadar"></apexchart>
           </div>
         el-col(:span="16")
           <div id="chart">
-            <apexchart type="line" height="250" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
+            <apexchart type="line" height="350" :options="chartOptionsDashBoard" :series="seriesDashBoard"></apexchart>
           </div>
     //- el-dialog(title="Listagem", :visible.sync="dialogEditarDespesas", width="50%", center)
     </template>
@@ -236,7 +236,6 @@ div
   import Cookies from 'js-cookie';
   import actions from '@/methods/funções'
   import axios from 'axios';
-
       
   export default {
     // eslint-disable-next-line vue/multi-word-component-names
@@ -851,6 +850,7 @@ div
             despesas:null
           }
         ],
+        
         calendar: data.calendar,
         mes: null,
         total: 0,
@@ -858,6 +858,7 @@ div
         saldo: 0,
         usuario: null
       }
+      console.log(this.despesas.calendar)
       this.arrayDespesa = []
       this.arrayDespesa.push(data.listagemDespesas);
       data.listagemDespesas.forEach(data => {
@@ -930,9 +931,11 @@ div
             message: 'Despesa registrada!',
             type: 'success'
           })
-          this.loader()
+          this.loader();
+          this.tipo();
           this.getAno();
           this.dadosDashBoardBar();
+          this.abrirModalDespesa();
           this.centerDialogResgistroDespesas = false;
           this.despesas = {
             id:null,
@@ -976,7 +979,8 @@ div
             message: 'Despesa registrada!',
             type: 'success'
           })
-          this.loader()
+          this.loader();
+          this.tipo();
           this.getAno();
           this.dadosDashBoardBar();
           this.abrirModalDespesa();
@@ -1248,6 +1252,23 @@ div
     padding: 10px;
     background-image: linear-gradient(to right, #8360c3, #2ebf91);
   }
+
+  .date {
+    background-color: #FFF;
+    border-radius: 4px;
+    border: 1px solid #DCDFE6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: 0;
+    padding: 0 15px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    width: 100%;
+  }
+
 
   .card3{
     margin-right: 10px;
