@@ -15,8 +15,6 @@ Isrc/main/java/com/projeto/Financas/controller/DespesasTipoController.java,3/b/
 Nsrc/main/java/com/projeto/Financas/repository/CategoriaDespesasRepository.java,8/3/83e41bce01bc3d0186941c52344722631a2f8941
 y
 Isrc/main/java/com/projeto/Financas/repository/TipoDespesasRepository.java,2/7/275a0472270d956ff591ace48e1060daac310821
-u
-Esrc/main/java/com/projeto/Financas/repository/DespesasRepository.java,c/4/c44b2221f6bed7f30e092b12083b6b6621539f9c
 h
 8src/main/java/com/projeto/Financas/Interfaces/Meses.java,c/6/c61d6629b6721ab06e9cfb6385c421f386f46a9f
 s
@@ -27,5 +25,3 @@ l
 Ksrc/main/java/com/projeto/Financas/repository/ArquivosUploadRepository.java,3/0/3074c4326cc273767b56e5931c370b6ba413af8a
 i
 9src/main/java/com/projeto/Financas/Interfaces/Routes.java,a/b/ab73414b1da2cc5e09e611da0a05a56e6f5641af
-t
-Dsrc/main/java/com/projeto/Financas/model/DashBoard/DadosDespesa.java,c/5/c5c1b4af06bbf0bbe554941182aa261500cf4020

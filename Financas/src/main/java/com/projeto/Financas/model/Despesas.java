@@ -30,7 +30,7 @@ public class Despesas {
     @OneToMany(mappedBy = "despesas", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ListagemDespesas> listagemDespesas;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="GMT-3")
     private Date calendar;
 
     private Double total;

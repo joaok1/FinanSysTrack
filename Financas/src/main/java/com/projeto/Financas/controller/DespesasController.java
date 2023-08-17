@@ -81,7 +81,7 @@ public class DespesasController {
             return despesasService.getRelatorio(id);
         }
 
-    // Serviço de LISTAGEM RELATORIO ou Gerar Relatorio PDF
+    // Serviço grafico
     @CrossOrigin(origins ="http://localhost:8080/")
     @GetMapping("grafico/{user}/{ano}")
     public DadosDespesa[] grafico(@PathVariable String user, @PathVariable Integer ano) throws Exception {
