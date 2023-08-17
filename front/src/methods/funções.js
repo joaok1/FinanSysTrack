@@ -239,5 +239,26 @@ const actions = {
         });
         return response.data;
     },
+    async UploadTemp(file) {
+        const formData = new FormData();
+        formData.append('file', file); 
+        const response = await axios({
+            method: "post",
+            url: `http://localhost:1081/api/arquivos/upload`,
+            data: formData,
+            headers: {
+                Authorization: `Bearer ${Cookies.get('token')}`
+            },
+        });
+        return response.data;
+    },
+    async cadastrar(pessoa) {
+        const response = await axios({
+            method: "post",
+            url: `http://localhost:1081/api/pessoa/adicionar`,
+            data: pessoa
+        });
+        return response.data;
+    },
 }
 export default actions;

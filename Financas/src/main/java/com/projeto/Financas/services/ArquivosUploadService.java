@@ -102,22 +102,28 @@ public class ArquivosUploadService {
 
     //Salva a imagem na pasta definitiva e retorna o caminho cripto
     public String save(FileName file) throws Exception {
-        // Caminho da pasta de destino
-        String destino = Routes.ṔASTA_DEFINITIVA;
+        try {
+            // Caminho da pasta de destino
+            String destino = Routes.ṔASTA_DEFINITIVA;
 
-        // Gere uma chave única para o arquivo
-        String chave = UUID.randomUUID().toString();
+            // Gere uma chave única para o arquivo
+            String chave = UUID.randomUUID().toString();
 
-        // Obtém o nome do arquivo da URL
-        String nomeArquivo = file.getKey();
+            // Obtém o nome do arquivo da URL
+            String nomeArquivo = file.getKey();
 
-        // Crie o arquivo de destino usando a chave no nome do arquivo
-        File arquivoDestino = new File(destino + chave);
+            // Crie o arquivo de destino usando a chave no nome do arquivo
+            File arquivoDestino = new File(destino + chave);
 
-        // Baixa o arquivo da URL e salva no destino
-        saveUrlToFile(file.getKey(), arquivoDestino);
+            // Baixa o arquivo da URL e salva no destino
+            saveUrlToFile(file.getKey(), arquivoDestino);
 
-        return destino + chave ;
+            return destino + chave ;
+
+        } catch (Exception e) {
+            throw new Exception("Não foi possivel resgatar a foto");
+        }
+
     }
 
     private void saveUrlToFile(String url, File destino) throws Exception {

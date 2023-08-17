@@ -30,8 +30,6 @@ public class PessoaController {
     @CrossOrigin(origins = "http://localhost:8080/")
     @PostMapping(value = "adicionar", produces = "application/json")
     public ResponseEntity<String> salvarPessoa(@RequestBody PessoaDTO pessoaDTO) throws DomainException {
-        String senhaCripto = passwordEncoder.encode(pessoaDTO.getUsuario().getSenha());
-        pessoaDTO.getUsuario().setSenha(senhaCripto);
         pessoaService.adicionarPessoa(pessoaDTO);
         return ResponseEntity.ok("Pessoa Cadastrada com sucesso");
     }

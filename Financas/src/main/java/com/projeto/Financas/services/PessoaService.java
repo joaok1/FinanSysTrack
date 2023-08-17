@@ -9,6 +9,7 @@ import com.projeto.Financas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,41 +19,43 @@ import java.util.Optional;
 public class PessoaService {
     @Autowired
     private static PessoaRepository pessoaRepository;
+    private final PasswordEncoder passwordEncoder;
+    private static ArquivosUploadService arquivosUploadService;
 
     @Autowired
     private static UsuarioRepository usuarioRepository;
 
     @Autowired
-    public PessoaService(PessoaRepository pessoaRepository, UsuarioRepository usuarioRepository) {
+    public PessoaService(PessoaRepository pessoaRepository, PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository, ArquivosUploadService arquivosUploadService) {
         PessoaService.pessoaRepository = pessoaRepository;
+        this.passwordEncoder = passwordEncoder;
         PessoaService.usuarioRepository = usuarioRepository;
+        PessoaService.arquivosUploadService = arquivosUploadService;
     }
+
 
     @Transactional(rollbackFor = DomainException.class)
     public void adicionarPessoa(PessoaDTO pessoaDTO) throws DomainException {
         try {
+            String senhaCripto = passwordEncoder.encode(pessoaDTO.getUsuario().getSenha());
+            pessoaDTO.getUsuario().setSenha(senhaCripto);
             Pessoa pessoa = new Pessoa();
-
             pessoa.setNome(pessoaDTO.getNome());
             pessoa.setSobrenome(pessoaDTO.getSobrenome());
-            pessoa.setData_nascimento(pessoaDTO.getData_nascimento());
             pessoa.setCpf(pessoaDTO.getCpf());
-            pessoa.setRg(pessoaDTO.getRg());
-            pessoa.setEndereco(pessoaDTO.getEndereco());
-            pessoa.setCep(pessoaDTO.getCep());
-            pessoa.setCidade(pessoaDTO.getCidade());
-            pessoa.setEstado(pessoaDTO.getEstado());
-            pessoa.setTelefone(pessoaDTO.getTelefone());
             pessoa.setEmail(pessoaDTO.getEmail());
-
+            arquivosUploadService.save(pessoaDTO.getFile());
             Usuario usuario = new Usuario();
             usuario.setLogin(pessoaDTO.getCpf());
             usuario.setSenha(pessoaDTO.getUsuario().getSenha());
+            usuario.setDocumento(arquivosUploadService.save(pessoaDTO.getFile()));
             usuarioRepository.save(usuario);
             pessoa.setUsuario(usuario);
             pessoaRepository.save(pessoa);
         } catch (DataAccessException e) {
             throw new DomainException("Não foi possivel criar o usuario.",e);
+        } catch (Exception e) {
+            throw new RuntimeException("Não foi possivel criar o usuario",e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.projeto.Financas.DTO;
 
+import com.projeto.Financas.model.FileName;
 import com.projeto.Financas.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,5 +37,7 @@ public class PessoaDTO {
     private String email;
 
     private Usuario usuario;
+
+    private FileName file;
 
 }

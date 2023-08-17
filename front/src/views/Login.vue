@@ -83,49 +83,75 @@
                         primeira experiência de integração</h6>
                         <v-row align="center" justify="center">
                           <v-col cols="12" sm="8">
+                            <el-upload
+                              ref="upload"
+                              action="http://localhost:1081/api/arquivos/upload"
+                              list-type="picture-card"
+                              :on-preview="handlePictureCardPreview"
+                              :accept="'image/png'"
+                              :on-success="handleUploadSuccess"
+                              :limit="1"
+                              >
+                              <i class="el-icon-plus"></i>
+                            </el-upload>
+                            <el-dialog :visible.sync="dialogVisible">
+                              <img width="100%" :src="dialogImageUrl" alt="">
+                            </el-dialog>
                            <v-row>
                            <v-col cols="12" sm="6">
                             <v-text-field
-                            label="First Name"
+                            label="Primeiro nome"
                             outlined
                             dense
                             color="blue"
                             autocomplete="false"
                            class="mt-4"
+                           v-model="pessoa.nome"
                           />
                            </v-col>
                            <v-col cols="12" sm="6">
                             <v-text-field
-                            label="Last Name"
+                            label="Sobrenome"
                             outlined
                             dense
                             color="blue"
                             autocomplete="false"
                            class="mt-4"
+                           v-model="pessoa.sobrenome"
                           />
                            </v-col>
                            </v-row>
+                          <v-text-field
+                            label="CPF"
+                            outlined
+                            dense
+                            color="blue"
+                            autocomplete="false"
+                            v-model="pessoa.cpf"
+                          />
                           <v-text-field
                             label="Email"
                             outlined
                             dense
                             color="blue"
                             autocomplete="false"
+                            v-model="pessoa.email"
                           />
                           <v-text-field
                             label="Password"
                             outlined
                             dense
                             color="blue"
-                          autocomplete="false"
-                           type="password"
+                            autocomplete="false"
+                            type="password"
+                            v-model="pessoa.usuario.senha"
                           
                           />
                             <v-row>
                               <br>
                               <br>
                             </v-row>
-                          <v-btn color="blue" dark block tile>Sign up</v-btn>
+                          <v-btn color="blue" dark block tile @click="cadastrar()">Sign up</v-btn>
                           </v-col>
                         </v-row>  
                       </v-card-text>
@@ -141,26 +167,87 @@
 
 <script>
 import store from '../store/index.js';
-
+import actions from '@/methods/funções'
   export default {
     data() {
       return {
+        uploadComponent: null ,
+        fileList: {},
+        dialogImageUrl: '',
+        dialogVisible: false,
         step: 1,
         length: 0, 
         formLogin: {
           login:null,
           senha:null
-        }
+        },
+        pessoa:{
+          nome:null,
+          sobrenome:null,
+          cpf:null,
+          email:null,
+          usuario:{
+            senha:null
+          },
+          file:{
+            key:null
+          }
+        },
+        imageTemp:null
       }
   },
+  mounted(){
+    this.uploadComponent = this.$refs.upload;
+  },
   methods:{
+    async handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleUploadSuccess(response,fileList){
+      this.fileList = fileList
+     this.pessoa.file.key = response;
+    },
+
     async logar() {
-        // Chame uma ação do Vuex para realizar o login
-        await store.dispatch('login', this.formLogin)
+      await store.dispatch('login', this.formLogin)
+    },
+
+    async cadastrar() {
+      actions.cadastrar(this.pessoa).then(response => {
+        this.pessoa={
+          nome:null,
+          sobrenome:null,
+          cpf:null,
+          email:null,
+          usuario:{
+            senha:null
+          },
+          file:{
+            key:null
+          }
+        },
+        this.step = 1;
+        this.$refs.upload.clearFiles();
+        this.$notify({
+            title: 'Sucesso!',
+            message: response,
+            type: 'success'
+          })
+      }).catch(error =>{
+        this.$refs.upload.clearFiles();
+        this.$notify.error({
+            title: 'Erro!',
+            message: error.response.data.message,
+          })
+      })
+
+    
     }
   } 
 }
 
+    
     
 </script>
 <style scoped>
