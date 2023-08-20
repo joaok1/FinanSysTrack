@@ -33,7 +33,7 @@ div
                             div(style="padding:5px;")
                               span(class="el-icon-message")
                               span(style="margin-left:0.5rem;") {{ this.pessoa.email }}
-                          <el-dropdown-item > <el-button type="text" @click="logout()" icon="el-icon-arrow-right">Sair </el-button> </el-dropdown-item>
+                          <el-dropdown-item > <el-button type="text" @click="logout()" >Sair </el-button> </el-dropdown-item>
                       </el-dropdown-menu>
                   div
       //Inserção das categorias//

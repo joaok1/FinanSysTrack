@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Despesas {
     private List<ListagemDespesas> listagemDespesas;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="GMT-3")
-    private Date calendar;
+    private LocalDate calendar;
 
     private Double total;
 

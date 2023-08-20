@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public class DespesasDTO {
     private Short id;
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private List<ListagemDespesas> listagemDespesas;
-    private Date calendar;
+    private LocalDate calendar;
     private String mes;
     private Double total;
     private Double entrada;

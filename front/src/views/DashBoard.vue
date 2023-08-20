@@ -1,11 +1,10 @@
 <template lang="pug">
 div
   Cabecalho
-
 </template>
 
 <script>
-import Cabecalho from './Cabecalho.vue'
+import Cabecalho from './Dash.vue'
 export default {
   components: {
     Cabecalho
