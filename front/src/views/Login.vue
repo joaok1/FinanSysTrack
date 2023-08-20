@@ -20,6 +20,7 @@
                           <v-text-field
                             label="Cpf"
                             outlined
+                            v-mask="'###.###.###-##'"
                             dense
                             v-model="formLogin.login"
                             color="blue"
@@ -123,6 +124,7 @@
                            </v-row>
                           <v-text-field
                             label="CPF"
+                            v-mask="'###.###.###-##'"
                             outlined
                             dense
                             color="blue"
@@ -204,16 +206,28 @@ import actions from '@/methods/funções'
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
+    sendFormattedCPF(dados) {
+      const cpfWithoutFormat = dados.replace(/[^\d]/g, "");
+      return this.formLogin.login = cpfWithoutFormat;
+    },
     handleUploadSuccess(response,fileList){
       this.fileList = fileList
      this.pessoa.file.key = response;
     },
 
     async logar() {
+      this.formLogin.login = this.sendFormattedCPF(this.formLogin.login);
       await store.dispatch('login', this.formLogin)
     },
 
     async cadastrar() {
+      this.pessoa.cpf = this.sendFormattedCPF(this.pessoa.cpf);
+      if (this.pessoa.file.key === null) {
+        this.$notify.error({
+          title: 'Erro!',
+          message: "Insira uma foto!"
+        })
+      }
       actions.cadastrar(this.pessoa).then(response => {
         this.pessoa={
           nome:null,
