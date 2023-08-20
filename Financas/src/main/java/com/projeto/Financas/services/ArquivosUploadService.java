@@ -104,7 +104,7 @@ public class ArquivosUploadService {
     public String save(FileName file) throws Exception {
         try {
             // Caminho da pasta de destino
-            String destino = Routes.ṔASTA_DEFINITIVA;
+            String destino = Routes.PASTA_DEFINITIVA;
 
             // Gere uma chave única para o arquivo
             String chave = UUID.randomUUID().toString();
