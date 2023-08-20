@@ -219,7 +219,6 @@ import actions from '@/methods/funções'
       this.formLogin.login = this.sendFormattedCPF(this.formLogin.login);
       await store.dispatch('login', this.formLogin)
     },
-
     async cadastrar() {
       this.pessoa.cpf = this.sendFormattedCPF(this.pessoa.cpf);
       if (this.pessoa.file.key === null) {
