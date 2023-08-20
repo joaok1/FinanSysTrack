@@ -12,6 +12,9 @@ VueJs
 <h5>Banco de dados</h5>
 Mysql
 
+<h2>Sistema</h2>
+Este sistema foi desenvolvido no linux, caso possua um sistema operacional diferente será necessário fazer ajustes nas pastas abaixo.
+
 <h2>Manual de usabilidade</h2>
 
 Onde possui um ícone apontado para baixo, é possível registrar uma despesa e adicionar um tipo a ela, dentre os quais estão: mobilidade, alimentação, refeição e saúde. Mais ao centro, é possível verificar todos os registros de entrada, permitindo a exclusão e edição dos mesmos, assim como gerar um pequeno relatório. Por fim, temos o botão para inserir as despesas. Ali, é possível verificar em um menu suspenso todas as despesas registradas. Ao selecionar uma despesa, à direita do menu, é possível inserir o valor e, por fim, salvar este registro.
