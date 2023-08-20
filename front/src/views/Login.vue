@@ -214,7 +214,6 @@ import actions from '@/methods/funções'
       this.fileList = fileList
      this.pessoa.file.key = response;
     },
-
     async logar() {
       this.formLogin.login = this.sendFormattedCPF(this.formLogin.login);
       await store.dispatch('login', this.formLogin)
