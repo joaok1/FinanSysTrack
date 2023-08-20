@@ -31,7 +31,7 @@ Este sistema foi desenvolvido no linux, caso possua um sistema operacional difer
 <h2>Manual de usabilidade</h2>
 
 Onde possui um ícone apontado para baixo, é possível registrar uma despesa e adicionar um tipo a ela, dentre os quais estão: mobilidade, alimentação, refeição e saúde. Mais ao centro, é possível verificar todos os registros de entrada, permitindo a exclusão e edição dos mesmos, assim como gerar um pequeno relatório. Por fim, temos o botão para inserir as despesas. Ali, é possível verificar em um menu suspenso todas as despesas registradas. Ao selecionar uma despesa, à direita do menu, é possível inserir o valor e, por fim, salvar este registro.
-* O sistema conta com login, sendo assim nenhum outro usuario tem acesso aos dados pessoais
+* O sistema conta com login, sendo assim nenhum outro usuario tem acesso aos registros pessoais
 
 <h2>Fotos</h2>
 
