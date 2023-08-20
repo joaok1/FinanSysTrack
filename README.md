@@ -23,13 +23,15 @@ Onde possui um ícone apontado para baixo, é possível registrar uma despesa e 
 <h2>Instalação</h2>
 
 * criar uma pasta em /home chamada 'arquivos_financas'
+* E necessário liberar tanto a pasta tmp e a arquivos_financas, rode um chmod nelas.
 * Criar um banco de dados chamado de financeiro na porta 3306 com usuario chamado root e senha = 'Brasileirao1@'
+* Não é necessário se preocupar com as tabelas, o sistema está equipado com o Flyway. Sendo assim, quando compilado, ele irá criar automaticamente as tabelas necessárias para o seu funcionamento.
 * Instalar node igual ou superior ao 8
 * Instalar java igual ou superior ao 17
-* comando para rodar o front = npm run serve / porta:8080
-* comando para rodar o back = mvn spring-boot:run / porta:1081
-* E necessário liberar tanto a pasta tmp e a arquivos_financas, rode um chmod nelas.
-* Não é necessário se preocupar com as tabelas, o sistema está equipado com o Flyway. Sendo assim, quando for compilado, ele irá criar automaticamente as tabelas necessárias para o seu funcionamento.
+* comando para rodar o front = npm run serve
+* OBS: o front roda na porta:8080
+* comando para rodar o back = mvn spring-boot:run
+* OBS: o back roda na porta:1081
 
 <h2>Fotos</h2>
 
