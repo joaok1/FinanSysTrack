@@ -28,6 +28,7 @@ Onde possui um ícone apontado para baixo, é possível registrar uma despesa e 
 * comando para rodar o front = npm run serve
 * comando para rodar o back = mvn spring-boot:run
 * E necessário liberar tanto a pasta tmp e a arquivos_financas, rode um chmod nelas.
+* Não é necessário se preocupar com as tabelas, o sistema está equipado com o Flyway. Sendo assim, quando for compilado, ele irá criar automaticamente as tabelas necessárias para o seu funcionamento.
 
 <h2>Fotos</h2>
 
