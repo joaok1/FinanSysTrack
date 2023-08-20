@@ -4,7 +4,7 @@ Nome do Projeto: FinanSysTrack
 Este projeto foi desenvolvido para uso pessoal e estudos, tendo como principal função o registro das despesas mensais. Surgiu com base na minha necessidade de armazenar todos os registros de despesas do mês, possibilitando a visualização do fluxo de entrada e saída de todos os meses e anos através de gráficos.<h2 align="start">Tecnologias</h1>
 
 <h5>Back-end</h5>
-Java
+Java Spring
 
 <h5>Front-end</h5>
 VueJs
