@@ -477,20 +477,23 @@ div
             plotOptions: {
                 max:null,
                 radialBar: {
+                  hollow: {
+                    size: '80%',
+                    },
                     startAngle: -90,
                     endAngle: 90,
                     track: {
-                        background: "#e7e7e7",
-                        strokeWidth: '97%',
-                        margin: 5, // margin is in pixels
-                        dropShadow: {
-                            enabled: true,
-                            top: 2,
-                            left: 0,
-                            color: '#999',
-                            opacity: 1,
-                            blur: 2
-                        }
+                      background: "#e7e7e7",
+                      strokeWidth: '97%',
+                      margin: 5, 
+                      dropShadow: {
+                          enabled: true,
+                          top: 2,
+                          left: 0,
+                          color: '#999',
+                          opacity: 1,
+                          blur: 2
+                      }
                     },
                     dataLabels: {
                         name: {
@@ -499,11 +502,12 @@ div
                         value: {
                             offsetY: -2,
                             fontSize: '22px',
-                            formatter: (value) => value.toFixed(2)
+                            formatter: (value) => value.toFixed(2)+"%"
                         }
                     }
                 }
             },
+            labels: ['Porcentagem de gastos'],
             grid: {
                 padding: {
                     top: -10
@@ -860,7 +864,7 @@ div
       data.listagemDespesas.forEach(data => {
         this.arrayDespesa.push(data);
       })
-      this.saldo = data.saldo;
+      this.saldo = data.saldo.toFixed(2);
       this.saida = data.total;
       this.arrayDespesa.splice(0,1)
       this.series.splice(0,1);
@@ -890,6 +894,7 @@ div
           this.arrayDespesa.forEach(item => {
             this.saida += item.valor
             this.saldo = this.despesas.entrada - this.saida
+            this.saldo = this.saldo.toFixed(2);
             this.despesas.saldo = this.saldo;
             this.despesas.total = this.saida;
           });
@@ -907,6 +912,7 @@ div
         this.saida += this.arrayDespesa[ind].valor;
       }
       this.saldo = this.despesas.entrada - this.saida;
+      this.saldo = this.saldo.toFixed(2);
       this.despesas.saldo = this.saldo;
       this.despesas.total = this.saida;
       let final = (this.saida * 100) / this.despesas.entrada
