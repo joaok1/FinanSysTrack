@@ -38,7 +38,6 @@ Onde possui um ícone apontado para baixo, é possível registrar uma despesa e 
 ![Captura de tela de 2023-08-19 22-53-54](https://github.com/joaok1/FinanSysTrack/assets/137024088/eaa8e52d-4925-46e9-9a42-a98fd4d3a4c3)
 ![Captura de tela de 2023-08-20 10-42-05](https://github.com/joaok1/FinanSysTrack/assets/137024088/9820708f-be7c-46d7-8a45-c8f12fc9e63d)
 ![Captura de tela de 2023-08-20 12-24-02](https://github.com/joaok1/FinanSysTrack/assets/137024088/6ff6019b-8b88-448f-baea-6611cae295e6)
-![Captura de tela de 2023-08-20 12-24-40](https://github.com/joaok1/FinanSysTrack/assets/137024088/a0f312b2-b53d-47b6-bc14-5624258ded07)
-
 ![Captura de tela de 2023-08-19 22-54-39](https://github.com/joaok1/FinanSysTrack/assets/137024088/394a62f5-aaf9-4aef-92f3-4757f08185f2)
+![Captura de tela de 2023-08-20 12-24-40](https://github.com/joaok1/FinanSysTrack/assets/137024088/a0f312b2-b53d-47b6-bc14-5624258ded07)
 
