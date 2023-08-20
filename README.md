@@ -13,7 +13,7 @@ VueJs
 Mysql
 
 <h2>Sistema</h2>
-Este sistema foi desenvolvido no linux, caso possua um sistema operacional diferente, será necessário fazer ajustes nas pastas abaixo.
+Este sistema foi desenvolvido no linux, caso possua um sistema operacional diferente, será necessário fazer ajustes no arquivo Routes.java, este arquivo possui a rota onde salva os documentos do sistema.
 
 <h2>Instalação</h2>
 
