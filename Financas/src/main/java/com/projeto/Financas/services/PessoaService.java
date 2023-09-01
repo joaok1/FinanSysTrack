@@ -44,7 +44,6 @@ public class PessoaService {
             pessoa.setSobrenome(pessoaDTO.getSobrenome());
             pessoa.setCpf(pessoaDTO.getCpf());
             pessoa.setEmail(pessoaDTO.getEmail());
-            arquivosUploadService.save(pessoaDTO.getFile());
             Usuario usuario = new Usuario();
             usuario.setLogin(pessoaDTO.getCpf());
             usuario.setSenha(pessoaDTO.getUsuario().getSenha());
