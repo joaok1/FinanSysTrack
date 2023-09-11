@@ -14,6 +14,7 @@ public class FinancasApplication {
 		this.jwtService = jwtService;
 	}
 
+	// O job deve sempre ficar em uma classe separada. Cada job tem que ter uma entidade unica
 	public static void main(String[] args) throws SchedulerException {
 		SpringApplication.run(FinancasApplication.class, args);
 		JobDetail job = JobBuilder.newJob(JwtService.class).build();
