@@ -5,7 +5,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,7 +18,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Service
-public class JwtService {
+public class JwtService implements Job {
 
     @Value("${security.jwt.expiracao}")
     private String expiracao;
@@ -59,5 +63,11 @@ public class JwtService {
 
     public String obterLoginUsuario(String token) throws ExpiredJwtException{
         return (String) obterClaims(token).getSubject();
+    }
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        System.out.println("Job em andamento");
+
     }
 }
