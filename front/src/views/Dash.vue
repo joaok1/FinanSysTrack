@@ -903,6 +903,8 @@ div
       this.series.splice(0,1);
       let final = (this.saida * 100) / this.despesas.entrada
       this.series.push(final);
+      this.despesaId = null;
+      this.valorDespesa = 0;
     },
     excluir(val) {
       const index = this.arrayDespesa.indexOf(val);
